@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'crossgame.android.application'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "crossgame.android.application"
