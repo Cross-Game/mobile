@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_with_transparency">#33FFFFFF</color>
+    <color name="label_information_background">#80333333</color>
+
 
     <color name="seed">#00FF33</color>
     <color name="md_theme_light_primary">#006E0F</color>
@@ -64,4 +67,5 @@
     <color name="md_theme_dark_surfaceTint">#00E62D</color>
     <color name="md_theme_dark_outlineVariant">#42493F</color>
     <color name="md_theme_dark_scrim">#000000</color>
+    <color name="md_theme_font_color_gray">#7C7A7A</color>
 </resources>
