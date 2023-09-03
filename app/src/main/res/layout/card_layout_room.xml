@@ -43,7 +43,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/set_room_information_background_drawable"
             android:padding="10dp"
             android:text="Ranking: Gold"
             android:textColor="@color/white"
