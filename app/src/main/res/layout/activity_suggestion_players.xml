@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Imagem de fundo -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/image_usuario_kakashi"
+        android:scaleType="centerCrop"/>
+
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="4"
+    android:alignmentMode="alignBounds"
+    android:rowOrderPreserved="false"
+    android:columnOrderPreserved="false"
+    android:background="#32000000">
+
+    <!-- Top Bar -->
+    <GridLayout
+        android:layout_height="64dp"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="16dp"
+        android:columnCount="4"
+        android:useDefaultMargins="true"
+        android:layout_gravity="fill_horizontal"
+        >
+
+
+        <!-- Adicione elementos da top bar aqui -->
+        <Button
+            android:layout_column="0"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:paddingLeft="33dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_arrow_back_ios_24"
+            />
+
+        <Button
+            android:layout_column="3"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_icon"
+            />
+
+        <ImageView
+            android:padding="6dp"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_row="0"
+            android:layout_column="3"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/image_medalha_diamante" />
+
+
+    </GridLayout>
+
+
+    <!-- Information Group -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:paddingHorizontal="16dp"
+        android:layout_columnSpan="4"
+        android:layout_gravity="fill_horizontal"
+        android:background="#4D8CF390"
+        >
+
+<!--        <ImageView-->
+<!--            android:padding="6dp"-->
+<!--            android:layout_width="500dp"-->
+<!--            android:layout_height="500dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/image_usuario_kakashi" />-->
+
+        <!-- Adicione elementos da Information Group aqui -->
+
+
+    </LinearLayout>
+
+    <!-- Body -->
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        android:layout_columnSpan="4"
+        android:layout_rowWeight="1"
+        android:layout_gravity="fill"
+        android:background="#36FF0000">
+
+        <!-- Conteúdo do Body aqui -->
+
+    </FrameLayout>
+
+    <!-- Bottom Bar -->
+    <LinearLayout
+        android:layout_width="match_parent / 2"
+        android:layout_height="64dp"
+        android:layout_gravity="end"
+        android:background="#4B03A9F4"
+        android:paddingHorizontal="16dp">
+
+
+        <!-- Adicione elementos da top bar aqui -->
+        <Button
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_favorite_24"
+            android:gravity="center_horizontal|center_vertical"
+            android:paddingTop="9dp"
+            />
+
+        <Button
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_chat_24"
+            android:paddingLeft="24dp"
+            android:paddingTop="9dp"
+            />
+
+        <Button
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_column="3"
+            android:layout_gravity="center"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_reply_24"
+            android:paddingLeft="24dp"
+            android:scaleX="-1"
+            />
+
+    </LinearLayout>
+
+</GridLayout>
+</RelativeLayout>
+
