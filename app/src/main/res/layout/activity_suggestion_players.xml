@@ -10,7 +10,7 @@
         android:src="@drawable/image_usuario_kakashi"
         android:scaleType="centerCrop"/>
 
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:columnCount="4"
@@ -87,14 +87,58 @@
     <!-- Body -->
     <FrameLayout
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        android:layout_columnSpan="4"
+        android:layout_height="441dp"
         android:layout_rowWeight="1"
+        android:layout_columnSpan="4"
         android:layout_gravity="fill"
-        android:background="#36FF0000">
+        android:background="#36FF0000"
+        android:padding="16dp">
 
         <!-- Conteúdo do Body aqui -->
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            style="@style/Widget.AppCompat.ProgressBar"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NomeUsuário"
+            android:textSize="32sp"
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Free Fire"
+            style="@style/Widget.Material3.Chip.Assist.Elevated"
+            />
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Valorant"
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                />
+
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <RatingBar
+            style="@style/Widget.AppCompat.RatingBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:rating="0"
+            android:stepSize="1" />
 
     </FrameLayout>
 
@@ -103,7 +147,6 @@
         android:layout_width="match_parent / 2"
         android:layout_height="64dp"
         android:layout_gravity="end"
-        android:background="#4B03A9F4"
         android:paddingHorizontal="16dp">
 
 
