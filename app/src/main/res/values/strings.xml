@@ -2,4 +2,5 @@
     <string name="app_name">CrossGame Mobile Application</string>
     <string name="salas_publicas">Salas Públicas</string>
     <string name="minhas_salas">Minhas salas</string>
+    <string name="meus_amigos">Meus Amigos</string>
 </resources>
