@@ -12,4 +12,5 @@
     <string name="entrar_com_google">Entrar com Google</string>
     <string name="entrar_com_discord">Entrar com Discord</string>
     <string name="email_gmail_com">email@gmail.com</string>
+    <string name="cadastrar_titulo">Cadastrar</string>
 </resources>

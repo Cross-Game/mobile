@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="#1A1A1A"
     android:orientation="vertical"
-    android:paddingStart="65dp"
-    android:paddingEnd="65dp">
+    android:paddingHorizontal="50dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,7 +17,7 @@
         android:text="@string/entrar"
         android:textAllCaps="true"
         android:textColor="@color/seed"
-        android:textSize="40sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <ImageView
@@ -100,7 +99,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginVertical="20dp"
         android:fontFamily="@font/krona_one"
         android:text="@string/nao_possui_conta"
         android:textColor="@color/cardview_light_background"
@@ -132,7 +131,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginVertical="20dp"
         android:fontFamily="@font/krona_one"
         android:text="@string/ou_faca_login_atraves_das_seguintes_plataformas"
         android:textColor="@color/cardview_light_background"
@@ -142,7 +141,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:background="@drawable/background_btn_login"
         android:backgroundTint="@color/white"
         android:padding="10dp"
@@ -176,7 +174,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/background_btn_login"
         android:backgroundTint="@color/white"
-        android:padding="10dp"
+        android:padding="10.5dp"
         android:text="@string/entrar_com_google"
         app:rippleColor="#FFFFFF">
 
@@ -199,5 +197,5 @@
             android:text="@string/entrar_com_google"
             android:textColor="@color/cardview_light_background"
             android:textSize="12sp" />
-    </RelativeLayout>rr
+    </RelativeLayout>
 </LinearLayout>
