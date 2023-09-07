@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="4"
+    android:alignmentMode="alignBounds"
+    android:rowOrderPreserved="false"
+    android:columnOrderPreserved="false"
+    android:background="@color/black">
+
+    <!-- Top Bar -->
+    <GridLayout
+        android:layout_height="64dp"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="16dp"
+        android:columnCount="4"
+        android:useDefaultMargins="true"
+        android:layout_gravity="fill_horizontal"
+        android:background="#4B03A9F4"
+        >
+
+
+        <!-- Adicione elementos da top bar aqui -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:text="aqui"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:text="aqui"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="2"
+            android:text="aqui"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="3"
+            android:text="aqui"
+            />
+
+    </GridLayout>
+
+    <!-- Information Group -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:paddingHorizontal="16dp"
+        android:layout_columnSpan="4"
+        android:layout_gravity="fill_horizontal"
+        android:background="#4D8CF390"
+        >
+
+        <!-- Adicione elementos da Information Group aqui -->
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
+
+    <!-- Body -->
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        android:layout_columnSpan="4"
+        android:layout_rowWeight="1"
+        android:layout_gravity="fill"
+        android:background="#36FF0000">
+
+        <!-- Conteúdo do Body aqui -->
+
+    </FrameLayout>
+
+    <!-- Bottom Bar -->
+    <GridLayout
+        android:layout_height="64dp"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="16dp"
+        android:columnCount="4"
+        android:useDefaultMargins="true"
+        android:layout_gravity="fill_horizontal"
+        android:background="#4B03A9F4"
+        >
+
+
+        <!-- Adicione elementos da top bar aqui -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:text="aqui"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:text="aqui"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="2"
+            android:text="aqui"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="3"
+            android:text="aqui"
+            />
+
+    </GridLayout>
+
+</GridLayout>
