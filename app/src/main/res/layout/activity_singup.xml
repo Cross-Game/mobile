@@ -6,32 +6,32 @@
     android:layout_height="match_parent"
     android:background="#1A1A1A"
     android:orientation="vertical"
-    android:paddingStart="65dp"
-    android:paddingEnd="65dp">
+    android:paddingStart="50dp"
+    android:paddingEnd="50dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="35dp"
         android:fontFamily="@font/krona_one"
-        android:text="@string/entrar"
+        android:text="Cadastrar"
         android:textAllCaps="true"
         android:textColor="@color/seed"
-        android:textSize="40sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/union" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:orientation="vertical">
 
         <TextView
@@ -56,7 +56,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/krona_one"
+            android:text="Email"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="12sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/design_default_color_on_primary"
+            android:fontFamily="@font/krona_one"
+            android:hint="@string/email_gmail_com"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textColorHint="@color/md_theme_light_outline"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:orientation="vertical">
 
         <TextView
@@ -91,7 +116,49 @@
                 android:src="@drawable/baseline_remove_red_eye_24"
                 android:layout_alignRight="@id/edit_text_senha"
                 android:layout_alignTop="@id/edit_text_senha"
-                android:layout_alignBottom="@id/edit_text_senha"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/krona_one"
+            android:text="Confirmar senha"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/edit_text_senha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/design_default_color_on_primary"
+                android:fontFamily="@font/krona_one"
+                android:hint="@string/senha"
+                android:inputType="textPassword"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textColorHint="@color/md_theme_light_outline"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+
+                android:src="@drawable/baseline_remove_red_eye_24"
+                android:layout_alignRight="@id/edit_text_senha"
+                android:layout_alignTop="@id/edit_text_senha"
                 />
         </RelativeLayout>
 
@@ -100,7 +167,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/krona_one"
         android:text="@string/nao_possui_conta"
         android:textColor="@color/cardview_light_background"
@@ -113,8 +180,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/background_btn_login"
         android:backgroundTint="@color/white"
-        android:padding="15dp"
-        android:text="@string/entrar_com_google"
+        android:padding="12dp"
         app:rippleColor="#FFFFFF">
 
 
@@ -125,14 +191,14 @@
             android:layout_alignParentEnd="true"
             android:fontFamily="@font/krona_one"
             android:gravity="center"
-            android:text="@string/entrar"
+            android:text="Próximo"
             android:textColor="@color/cardview_light_background" />
     </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/krona_one"
         android:text="@string/ou_faca_login_atraves_das_seguintes_plataformas"
         android:textColor="@color/cardview_light_background"
@@ -142,10 +208,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/background_btn_login"
         android:backgroundTint="@color/white"
-        android:padding="10dp"
+        android:padding="7dp"
         android:text="@string/entrar_com_google"
         app:rippleColor="#FFFFFF">
 
@@ -199,5 +265,5 @@
             android:text="@string/entrar_com_google"
             android:textColor="@color/cardview_light_background"
             android:textSize="12sp" />
-    </RelativeLayout>rr
+    </RelativeLayout>
 </LinearLayout>
