@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -144,10 +144,11 @@
 
     <!-- Bottom Bar -->
     <LinearLayout
-        android:layout_width="match_parent / 2"
+        android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_gravity="end"
-        android:paddingHorizontal="16dp">
+        android:paddingHorizontal="16dp"
+        android:gravity="end">
 
 
         <!-- Adicione elementos da top bar aqui -->
@@ -187,5 +188,5 @@
     </LinearLayout>
 
 </GridLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
