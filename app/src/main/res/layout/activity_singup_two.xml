@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A1A1A"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="50dp">
+
+
+
+    <TextView
+        android:id="@+id/subtitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/krona_one"
+        android:text="@string/subtitulo_cadastro_two"
+        android:textColor="@color/seed"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SmallSp" />
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitulo">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/imagem_do_jogo_valorant"
+                android:src="@drawable/valorant" />
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/imagem_do_jogo_fortnite"
+                android:src="@drawable/game_example_2" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/imagem_do_jogo_minecraft"
+                android:src="@drawable/minecraft" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/frase_digitar_jogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/caso_n_o_encontre_o_seu_jogo_digite_o_abaixo"
+        android:textAlignment="center"
+        android:textColor="@color/seed"
+        android:textSize="12sp"
+        android:layout_marginVertical="30dp"
+        android:fontFamily="@font/krona_one"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll_view"
+        tools:ignore="SmallSp" />
+
+    <EditText
+        android:id="@+id/edit_text_nome_jogo"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/cardview_light_background"
+        android:hint="@string/nome_do_jogo"
+        android:textSize="12sp"
+        android:textColorHint="#41FFFFFF"
+        android:fontFamily="@font/krona_one"
+        android:backgroundTint="@color/cardview_light_background"
+        app:layout_constraintTop_toBottomOf="@id/frase_digitar_jogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SmallSp" />
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_view_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_nome_jogo">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/imagem_do_jogo_fifa"
+                android:src="@drawable/fifa" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/text_inserir_nome_perfil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/krona_one"
+        android:text="@string/insira_o_perfil_do_jogo_selecioando"
+        android:textColor="@color/seed"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scroll_view_two"
+        tools:ignore="SmallSp" />
+
+    <EditText
+        android:id="@+id/edit_text_nome_perfil_usuario"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/cardview_light_background"
+        android:hint="@string/nome_do_perfil_de_usuario"
+        android:textSize="12sp"
+        android:textColorHint="#41FFFFFF"
+        android:fontFamily="@font/krona_one"
+        android:backgroundTint="@color/cardview_light_background"
+        app:layout_constraintTop_toBottomOf="@id/text_inserir_nome_perfil"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SmallSp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_btn_login"
+        android:backgroundTint="@color/white"
+        android:layout_marginTop="20dp"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_nome_perfil_usuario"
+        >
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="@fonrt/krona_one"
+            android:gravity="center"
+            android:text="@string/cadastrar_titulo"
+            android:textColor="@color/cardview_light_background" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

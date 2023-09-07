@@ -194,7 +194,7 @@
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/image_discord"
             android:fontFamily="@font/krona_one"
-            android:text="@string/entrar_com_google"
+            android:text="@string/entrar_com_discord"
             android:textColor="@color/cardview_light_background"
             android:textSize="12sp" />
     </RelativeLayout>
