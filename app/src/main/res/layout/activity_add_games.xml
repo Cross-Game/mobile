@@ -55,7 +55,7 @@
         android:paddingHorizontal="16dp"
         android:layout_columnSpan="4"
         android:layout_gravity="fill_horizontal"
-        android:background="#4D8CF390"
+        android:background="@color/black"
         android:orientation="vertical"
         android:gravity="center">
 
@@ -88,7 +88,7 @@
         android:layout_columnSpan="4"
         android:layout_rowWeight="1"
         android:layout_gravity="fill"
-        android:background="#36FF0000">
+        android:background="@color/black">
 
         <!-- Conteúdo do Body aqui -->
 
@@ -143,38 +143,38 @@
         android:columnCount="4"
         android:useDefaultMargins="true"
         android:layout_gravity="fill_horizontal"
-        android:background="#4B03A9F4"
+        android:background="@color/black"
         >
 
 
-        <!-- Adicione elementos da top bar aqui -->
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_column="0"
-            android:text="aqui"
-            />
+<!--        &lt;!&ndash; Adicione elementos da top bar aqui &ndash;&gt;-->
+<!--        <Button-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_column="0"-->
+<!--            android:text="aqui"-->
+<!--            />-->
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:text="aqui"
-            />
+<!--        <Button-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_column="1"-->
+<!--            android:text="aqui"-->
+<!--            />-->
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="2"
-            android:text="aqui"
-            />
+<!--        <Button-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_column="2"-->
+<!--            android:text="aqui"-->
+<!--            />-->
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="3"
-            android:text="aqui"
-            />
+<!--        <Button-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_column="3"-->
+<!--            android:text="aqui"-->
+<!--            />-->
 
     </GridLayout>
 
