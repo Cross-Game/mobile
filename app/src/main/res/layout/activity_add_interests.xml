@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="4"
+    android:alignmentMode="alignBounds"
+    android:rowOrderPreserved="false"
+    android:columnOrderPreserved="false"
+    android:background="@color/black">
+
+    <!-- Top Bar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="64dp"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="16dp"
+        android:columnCount="4"
+        android:useDefaultMargins="true"
+        android:layout_gravity="fill_horizontal"
+        >
+
+        <!-- Adicione elementos da top bar aqui -->
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_arrow_back_ios_24"
+            android:paddingLeft="33dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Information Group -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:paddingHorizontal="16dp"
+        android:layout_columnSpan="4"
+        android:layout_gravity="fill_horizontal"
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Adicione elementos da Information Group aqui -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecione seus interesses"
+            android:textColor="@color/seed"
+            android:textSize="24sp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/md_theme_dark_onBackground"
+            android:text="E obtenha melhores recomendações de players"
+            />
+
+    </LinearLayout>
+
+    <!-- Body -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+
+        android:layout_columnSpan="4"
+        android:layout_rowWeight="1"
+        android:layout_gravity="fill"
+        android:background="@color/black">
+
+        <!-- Conteúdo do Body aqui -->
+
+        <TextView
+            android:id="@+id/titleComida"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comidas"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            app:layout_constraintTop_toBottomOf="@id/titleComida"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/listComidas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+           >
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Assist.Elevated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Arroz"
+            android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+            android:textColor="@color/white"/>
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Assist.Elevated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feijoada"
+            android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+            android:textColor="@color/white"
+            />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/titleFilmes"
+            app:layout_constraintTop_toBottomOf="@id/listComidas"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Filmes"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            app:layout_constraintTop_toBottomOf="@id/titleFilmes"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/listFilmes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp">
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arroz"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"/>
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feijoada"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/titleJogos"
+            app:layout_constraintTop_toBottomOf="@id/listFilmes"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estilos de jogo"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            app:layout_constraintTop_toBottomOf="@id/titleJogos"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/listJogos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            >
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arroz"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feijoada"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/titleMusicas"
+            app:layout_constraintTop_toBottomOf="@id/listJogos"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Músicas"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            app:layout_constraintTop_toBottomOf="@id/titleMusicas"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/listMusicas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp">
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arroz"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"/>
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feijoada"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/titleSeries"
+            app:layout_constraintTop_toBottomOf="@id/listMusicas"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Séries"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            app:layout_constraintTop_toBottomOf="@id/titleSeries"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/listSeries"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            >
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arroz"
+                app:chipBackgroundColor="@color/md_theme_dark_onPrimary"
+                android:textColor="@color/white"
+                app:closeIconEnabled="true"
+                app:closeIconTint="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feijoada"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Bottom Bar -->
+    <GridLayout
+        android:layout_height="64dp"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="16dp"
+        android:columnCount="4"
+        android:useDefaultMargins="true"
+        android:layout_gravity="fill_horizontal"
+        android:background="@color/black"
+        >
+
+
+        <!--        &lt;!&ndash; Adicione elementos da top bar aqui &ndash;&gt;-->
+        <!--        <Button-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_column="0"-->
+        <!--            android:text="aqui"-->
+        <!--            />-->
+
+        <!--        <Button-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_column="1"-->
+        <!--            android:text="aqui"-->
+        <!--            />-->
+
+        <!--        <Button-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_column="2"-->
+        <!--            android:text="aqui"-->
+        <!--            />-->
+
+        <!--        <Button-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_column="3"-->
+        <!--            android:text="aqui"-->
+        <!--            />-->
+
+    </GridLayout>
+
+</GridLayout>
