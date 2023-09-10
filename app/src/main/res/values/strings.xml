@@ -2,4 +2,26 @@
     <string name="app_name">CrossGame Mobile Application</string>
     <string name="salas_publicas">Salas Públicas</string>
     <string name="minhas_salas">Minhas salas</string>
+    <string name="entrar">Entrar</string>
+    <string name="usuario">Usuário</string>
+    <string name="senha">************</string>
+    <string name="nome_do_usuario">nome do usuário</string>
+    <string name="senha_label">Senha</string>
+    <string name="nao_possui_conta">Não possui conta?</string>
+    <string name="ou_faca_login_atraves_das_seguintes_plataformas">Ou faça login através das seguintes plataformas:</string>
+    <string name="entrar_com_google">Entrar com Google</string>
+    <string name="entrar_com_discord">Entrar com Discord</string>
+    <string name="email_gmail_com">email@gmail.com</string>
+    <string name="cadastrar_titulo">Cadastrar</string>
+    <string name="text_home_screen">A jornada para uma equipe forte começa agora !</string>
+    <string name="cross_game">cross game</string>
+    <string name="subtitulo_cadastro_two">Selecione um jogo da lista abaixo:</string>
+    <string name="imagem_do_jogo_valorant">Imagem do jogo valorant</string>
+    <string name="imagem_do_jogo_fortnite">Imagem do jogo fortnite</string>
+    <string name="imagem_do_jogo_minecraft">Imagem do jogo minecraft</string>
+    <string name="imagem_do_jogo_fifa">Imagem do jogo fifa 23</string>
+    <string name="caso_n_o_encontre_o_seu_jogo_digite_o_abaixo">Caso não encontre o seu jogo, digite-o abaixo:</string>
+    <string name="nome_do_jogo">Nome do jogo</string>
+    <string name="insira_o_perfil_do_jogo_selecioando">Insira o nome de usuário do jogo:</string>
+    <string name="nome_do_perfil_de_usuario">Nome do perfil de usuário</string>
 </resources>

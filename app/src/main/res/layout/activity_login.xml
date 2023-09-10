@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A1A1A"
+    android:orientation="vertical"
+    android:paddingHorizontal="50dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="48dp"
+        android:fontFamily="@font/krona_one"
+        android:text="@string/entrar"
+        android:textAllCaps="true"
+        android:textColor="@color/seed"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/union" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/krona_one"
+            android:text="@string/usuario"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="12sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/design_default_color_on_primary"
+            android:fontFamily="@font/krona_one"
+            android:hint="@string/nome_do_usuario"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textColorHint="@color/md_theme_light_outline"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/krona_one"
+            android:text="@string/senha_label"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/edit_text_senha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/design_default_color_on_primary"
+                android:fontFamily="@font/krona_one"
+                android:hint="@string/senha"
+                android:inputType="textPassword"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textColorHint="@color/md_theme_light_outline"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+
+                android:src="@drawable/baseline_remove_red_eye_24"
+                android:layout_alignRight="@id/edit_text_senha"
+                android:layout_alignTop="@id/edit_text_senha"
+                android:layout_alignBottom="@id/edit_text_senha"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:fontFamily="@font/krona_one"
+        android:text="@string/nao_possui_conta"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="10sp"
+        tools:ignore="SmallSp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background_btn_login"
+        android:backgroundTint="@color/white"
+        android:padding="15dp"
+        android:text="@string/entrar_com_google"
+        app:rippleColor="#FFFFFF">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="@font/krona_one"
+            android:gravity="center"
+            android:text="@string/entrar"
+            android:textColor="@color/cardview_light_background" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:fontFamily="@font/krona_one"
+        android:text="@string/ou_faca_login_atraves_das_seguintes_plataformas"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="8sp"
+        tools:ignore="SmallSp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_btn_login"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"
+        android:text="@string/entrar_com_google"
+        app:rippleColor="#FFFFFF">
+
+        <ImageView
+            android:id="@+id/image_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/google" />
+
+        <TextView
+            android:id="@+id/text_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/image_google"
+            android:fontFamily="@font/krona_one"
+            android:text="@string/entrar_com_google"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background_btn_login"
+        android:backgroundTint="@color/white"
+        android:padding="10.5dp"
+        android:text="@string/entrar_com_google"
+        app:rippleColor="#FFFFFF">
+
+        <ImageView
+            android:id="@+id/image_discord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/vector" />
+
+        <TextView
+            android:id="@+id/text_discord_singup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/image_discord"
+            android:fontFamily="@font/krona_one"
+            android:text="@string/entrar_com_discord"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="12sp" />
+    </RelativeLayout>
+</LinearLayout>
