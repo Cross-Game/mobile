@@ -92,6 +92,7 @@
             />
 
         <com.google.android.material.chip.ChipGroup
+            app:chipSpacingVertical="-5dp"
             app:layout_constraintTop_toBottomOf="@id/titleComida"
             app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/listComidas"
@@ -105,7 +106,7 @@
             style="@style/Widget.Material3.Chip.Assist.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Arroz"
+            android:text="Brasileira"
             android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
             android:textColor="@color/white"/>
 
@@ -113,16 +114,174 @@
             style="@style/Widget.Material3.Chip.Assist.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Feijoada"
+            android:text="Cafés"
             android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
             android:textColor="@color/white"
             />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chinesa"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coreana"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fast Food"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Indiana"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Italiana"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Japonesa"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mexicana"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/titleJogos"
+            app:layout_constraintTop_toBottomOf="@id/listComidas"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estilos de Jogos"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
+            />
+
+        <com.google.android.material.chip.ChipGroup
+            app:chipSpacingVertical="-5dp"
+            app:layout_constraintTop_toBottomOf="@id/titleJogos"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/listJogos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp">
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Battle Royale"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"/>
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cartas"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cartas"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FPS"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Luta"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MMORPG"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MOBA"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RPG"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
 
         </com.google.android.material.chip.ChipGroup>
 
         <TextView
             android:id="@+id/titleFilmes"
-            app:layout_constraintTop_toBottomOf="@id/listComidas"
+            app:layout_constraintTop_toBottomOf="@id/listJogos"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -138,21 +297,105 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            app:chipSpacingVertical="-5dp"
+            >
 
             <com.google.android.material.chip.Chip
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Arroz"
+                android:text="Ação"
                 android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                />
 
             <com.google.android.material.chip.Chip
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Feijoada"
+                android:text="Animação"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aventura"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comédia"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Criminal"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Documentário"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drama"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fantasia"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ficção Científica"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Romance"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Suspense"
                 android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
                 android:textColor="@color/white"
                 />
@@ -160,20 +403,21 @@
         </com.google.android.material.chip.ChipGroup>
 
         <TextView
-            android:id="@+id/titleJogos"
+            android:id="@+id/titleMusicas"
             app:layout_constraintTop_toBottomOf="@id/listFilmes"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Estilos de jogo"
+            android:text="Músicas"
             style="@style/TextAppearance.Material3.TitleMedium"
             android:textColor="@color/white"
             />
 
         <com.google.android.material.chip.ChipGroup
-            app:layout_constraintTop_toBottomOf="@id/titleJogos"
+            app:chipSpacingVertical="-5dp"
+            app:layout_constraintTop_toBottomOf="@id/titleMusicas"
             app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/listJogos"
+            android:id="@+id/listMusicas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
@@ -184,47 +428,7 @@
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Arroz"
-                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
-                android:textColor="@color/white"
-                />
-
-            <com.google.android.material.chip.Chip
-                style="@style/Widget.Material3.Chip.Assist.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Feijoada"
-                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
-                android:textColor="@color/white"
-                />
-
-        </com.google.android.material.chip.ChipGroup>
-
-        <TextView
-            android:id="@+id/titleMusicas"
-            app:layout_constraintTop_toBottomOf="@id/listJogos"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Músicas"
-            style="@style/TextAppearance.Material3.TitleMedium"
-            android:textColor="@color/white"
-            />
-
-        <com.google.android.material.chip.ChipGroup
-            app:layout_constraintTop_toBottomOf="@id/titleMusicas"
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/listMusicas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="10dp">
-
-            <com.google.android.material.chip.Chip
-                style="@style/Widget.Material3.Chip.Assist.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Arroz"
+                android:text="Eletrônica"
                 android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
                 android:textColor="@color/white"/>
 
@@ -232,7 +436,61 @@
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Feijoada"
+                android:text="Funk"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hip Hop"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Indie"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pop"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rap"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rock"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sertanejo"
                 android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
                 android:textColor="@color/white"
                 />
@@ -251,6 +509,7 @@
             />
 
         <com.google.android.material.chip.ChipGroup
+            app:chipSpacingVertical="-5dp"
             app:layout_constraintTop_toBottomOf="@id/titleSeries"
             app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/listSeries"
@@ -264,7 +523,7 @@
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Arroz"
+                android:text="Ação"
                 app:chipBackgroundColor="@color/md_theme_dark_onPrimary"
                 android:textColor="@color/white"
                 app:closeIconEnabled="true"
@@ -275,7 +534,70 @@
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Feijoada"
+                android:text="Comédia"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drama"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fantasia"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ficção Científica"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mistério"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Romance"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Suspense"
+                android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Terror"
                 android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
                 android:textColor="@color/white"
                 />
