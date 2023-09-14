@@ -4,6 +4,11 @@ plugins {
 }
 
 android {
+
+    viewBinding {
+        enable = true
+    }
+
     namespace 'crossgame.android.application'
     compileSdk 34
 

@@ -172,11 +172,12 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/btn_possui_conta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
         android:fontFamily="@font/krona_one"
-        android:text="@string/nao_possui_conta"
+        android:text="@string/possui_conta"
         android:textColor="@color/cardview_light_background"
         android:textSize="10sp"
         tools:ignore="SmallSp" />
@@ -267,7 +268,7 @@
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/image_discord"
             android:fontFamily="@font/krona_one"
-            android:text="@string/entrar_com_google"
+            android:text="@string/entrar_com_discord"
             android:textColor="@color/cardview_light_background"
             android:textSize="12sp" />
     </RelativeLayout>
