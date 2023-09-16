@@ -30,6 +30,7 @@
         />
 
     <QuickContactBadge
+        android:layout_marginTop="10dp"
         android:id="@+id/user_id"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -145,5 +146,5 @@
         style="@style/Widget.Material3.FloatingActionButton.Large.Tertiary"
         android:textColor="@color/white"
         />
-    
+
 </androidx.constraintlayout.widget.ConstraintLayout>
