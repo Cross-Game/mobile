@@ -49,6 +49,7 @@
             android:textSize="12sp" />
 
         <EditText
+            android:id="@+id/editTextNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/design_default_color_on_primary"
@@ -74,6 +75,7 @@
             android:textSize="12sp" />
 
         <EditText
+            android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/design_default_color_on_primary"
@@ -91,6 +93,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/textInputSenha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/krona_one"
@@ -103,7 +106,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/edit_text_senha"
+                android:id="@+id/editTextSenha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/design_default_color_on_primary"
@@ -116,13 +119,14 @@
                 android:textSize="12sp" />
 
             <ImageButton
+                android:id="@+id/imageMostraSenha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#00000000"
 
                 android:src="@drawable/baseline_remove_red_eye_24"
-                android:layout_alignRight="@id/edit_text_senha"
-                android:layout_alignTop="@id/edit_text_senha"
+                android:layout_alignRight="@id/editTextSenha"
+                android:layout_alignTop="@id/editTextSenha"
                 />
         </RelativeLayout>
 
@@ -135,6 +139,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/textInputConfirmarSenha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/krona_one"
@@ -147,7 +152,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/edit_text_confirmar_senha"
+                android:id="@+id/editTextConfirmarSenha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/design_default_color_on_primary"
@@ -159,13 +164,14 @@
                 android:textSize="12sp" />
 
             <ImageButton
+                android:id="@+id/imageMostrarConfirmarSenha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#00000000"
 
                 android:src="@drawable/baseline_remove_red_eye_24"
-                android:layout_alignRight="@id/edit_text_confirmar_senha"
-                android:layout_alignTop="@id/edit_text_confirmar_senha"
+                android:layout_alignRight="@id/editTextConfirmarSenha"
+                android:layout_alignTop="@id/editTextConfirmarSenha"
                 />
         </RelativeLayout>
 
@@ -192,13 +198,14 @@
 
 
         <TextView
+            android:id="@+id/btnRegistrar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:fontFamily="@font/krona_one"
             android:gravity="center"
-            android:text="Próximo"
+            android:text="Cadastrar"
             android:textColor="@color/cardview_light_background" />
     </RelativeLayout>
 
