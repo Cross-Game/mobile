@@ -80,7 +80,7 @@ class SingupActivity: AppCompatActivity() {
     }
 
     private fun isValidPassword(password: String): Boolean {
-        return password.length >= 8 && password.any { it.isUpperCase() }
+        return password.length >= 12 && password.any { it.isUpperCase() }
     }
 
     private fun mostrarOcultarSenha(editText: EditText, visivel: Boolean) {
