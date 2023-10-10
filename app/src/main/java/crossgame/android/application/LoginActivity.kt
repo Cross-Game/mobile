@@ -30,10 +30,9 @@ class LoginActivity: AppCompatActivity() {
     }
 
     private fun register() {
+        username = binding.editTextUsername.toString()
+        password = binding.editTextSenha.toString()
 
-    }
 
-    private fun showError(errorMessage: String) {
-        // Implemente a lógica para exibir a mensagem de erro ao usuário (por exemplo, usando um TextView)
     }
 }
