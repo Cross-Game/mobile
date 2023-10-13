@@ -8,9 +8,10 @@ import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputLayout
 import crossgame.android.application.databinding.ActivitySingupBinding
 
-class SingupActivity: AppCompatActivity() {
+class SingupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySingupBinding
     private var senhaVisivel = false
@@ -20,7 +21,6 @@ class SingupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySingupBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         binding.imageMostraSenha.setOnClickListener {
             senhaVisivel = !senhaVisivel
@@ -37,14 +37,38 @@ class SingupActivity: AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validarSenha()
             }
 
             override fun afterTextChanged(s: Editable?) {
-                validarSenha()
             }
         })
 
+        // Adicionar TextWatcher para validar o email em tempo real
+        binding.editTextEmail.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validarEmail(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
+
+        // Adicionar TextWatcher para validar a senha em tempo real
+        binding.editTextSenha.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validarSenhaEmTempoReal(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
 
         binding.btnRegistrar.setOnClickListener {
             val nome = binding.editTextNome.text.toString()
@@ -53,17 +77,13 @@ class SingupActivity: AppCompatActivity() {
             val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
 
             if (isValidEmail(email) && isValidPassword(senha) && senha == confirmarSenha) {
-                // Mostre um Toast para indicar o registro bem-sucedido
                 Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                // Dados válidos, continue com o registro
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
-                // Exiba uma mensagem de erro se os dados forem inválidos
                 Toast.makeText(this, "Dados inválidos. Verifique seu email e senha.", Toast.LENGTH_SHORT).show()
             }
-
         }
 
         binding.btnPossuiConta.setOnClickListener {
@@ -76,7 +96,7 @@ class SingupActivity: AppCompatActivity() {
     }
 
     private fun isValidEmail(email: String): Boolean {
-        return email.contains("@") && email.contains(".com")
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     private fun isValidPassword(password: String): Boolean {
@@ -104,6 +124,22 @@ class SingupActivity: AppCompatActivity() {
                 binding.textInputSenha.error = null
                 binding.textInputConfirmarSenha.error = null
             }
+        }
+    }
+
+    private fun validarEmail(email: String) {
+        if (!isValidEmail(email)) {
+            binding.editTextEmail.error = "Email inválido Deve conter @ e .com"
+        } else {
+            binding.editTextEmail.error = null
+        }
+    }
+
+    private fun validarSenhaEmTempoReal(password: String) {
+        if (!isValidPassword(password)) {
+            binding.editTextSenha.error = "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
+        } else {
+            binding.editTextSenha.error = null
         }
     }
 }
