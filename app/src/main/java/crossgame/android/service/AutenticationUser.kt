@@ -1,11 +1,14 @@
 package crossgame.android.service
 
-import crossgame.android.domain.models.notifications.Notification
+import crossgame.android.domain.models.user.UserRequest
+import crossgame.android.domain.models.user.UserResponse
 import retrofit2.Call
 import retrofit2.http.POST
+import retrofit2.http.Body
 
 interface AutenticationUser {
 
-    @POST("/login")
-    fun registerUser(userId : Long): Call<List<Notification>>
+    @POST("/user-auth")
+    fun singIn(@Body userRequest: UserRequest) :
+            Call<UserResponse>
 }
