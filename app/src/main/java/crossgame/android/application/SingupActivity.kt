@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import com.google.android.material.textfield.TextInputLayout
 import crossgame.android.application.databinding.ActivitySingupBinding
 
@@ -137,8 +138,10 @@ class SingupActivity : AppCompatActivity() {
 
     private fun validarSenhaEmTempoReal(password: String) {
         if (!isValidPassword(password)) {
+            binding.imageMostraSenha.isGone = true
             binding.editTextSenha.error = "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
         } else {
+            binding.imageMostraSenha.isGone = false
             binding.editTextSenha.error = null
         }
     }
