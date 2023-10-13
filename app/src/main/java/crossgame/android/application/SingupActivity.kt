@@ -10,7 +10,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.GsonBuilder
 import crossgame.android.application.databinding.ActivitySingupBinding
+import crossgame.android.domain.httpClient.Rest
+import crossgame.android.domain.models.user.UserRegisterRequest
+import crossgame.android.domain.models.user.UserRequest
+import crossgame.android.service.AutenticationUser
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SingupActivity : AppCompatActivity() {
 
@@ -45,7 +53,6 @@ class SingupActivity : AppCompatActivity() {
             }
         })
 
-        // Adicionar TextWatcher para validar o email em tempo real
         binding.editTextEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -57,8 +64,6 @@ class SingupActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
         })
-
-        // Adicionar TextWatcher para validar a senha em tempo real
         binding.editTextSenha.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -71,26 +76,82 @@ class SingupActivity : AppCompatActivity() {
             }
         })
 
-        binding.btnRegistrar.setOnClickListener {
-            val nome = binding.editTextNome.text.toString()
-            val email = binding.editTextEmail.text.toString()
-            val senha = binding.editTextSenha.text.toString()
-            val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
+        binding.btnRegistrar.setOnClickListener { cadastrar() }
 
-            if (isValidEmail(email) && isValidPassword(senha) && senha == confirmarSenha) {
-                Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                Toast.makeText(this, "Dados inválidos. Verifique seu email e senha.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.btnPossuiConta.setOnClickListener {
-            telaEntrar()
-        }
+        binding.btnPossuiConta.setOnClickListener { telaEntrar() }
     }
+
+    private fun cadastrar() {
+        val nome = binding.editTextNome.text.toString()
+        val email = binding.editTextEmail.text.toString()
+        val senha = binding.editTextSenha.text.toString()
+        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
+
+        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
+            Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (!isValidEmail(email)) {
+            Toast.makeText(
+                this,
+                "Email inválido. Verifique o formato do email.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        if (!isValidPassword(senha)) {
+            Toast.makeText(
+                this,
+                "Senha inválida. A senha deve conter pelo menos 12 caracteres com pelo menos uma letra maiúscula.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        if (senha != confirmarSenha) {
+            Toast.makeText(
+                this,
+                "As senhas não coincidem. Verifique sua senha e confirmação de senha.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        val userRegisterRequest =
+            UserRegisterRequest(nome.toString(), email.toString(), senha.toString(), "USER")
+
+        Rest.getInstance()
+            .create(AutenticationUser::class.java)
+            .singUp(userRegisterRequest).enqueue(object : Callback<GsonBuilder> {
+                override fun onResponse(
+                    call: Call<GsonBuilder>,
+                    response: Response<GsonBuilder>
+                ) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(
+                            this@SingupActivity,
+                            "Cadastro realizado com sucesso!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this@SingupActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        val errorMessage = "Erro ao registrar: " + response.message()
+                        Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
+                    val errorMessage = "Erro de comunicação com o servidor: " + t.message
+                    Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            })
+
+    }
+
 
     private fun telaEntrar() {
         startActivity(Intent(this, LoginActivity::class.java))
@@ -139,7 +200,8 @@ class SingupActivity : AppCompatActivity() {
     private fun validarSenhaEmTempoReal(password: String) {
         if (!isValidPassword(password)) {
             binding.imageMostraSenha.isGone = true
-            binding.editTextSenha.error = "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
+            binding.editTextSenha.error =
+                "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
         } else {
             binding.imageMostraSenha.isGone = false
             binding.editTextSenha.error = null
