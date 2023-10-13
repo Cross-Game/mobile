@@ -1,5 +1,6 @@
 package crossgame.android.service
 
+import crossgame.android.domain.models.user.UserRegisterRequest
 import crossgame.android.domain.models.user.UserRequest
 import crossgame.android.domain.models.user.UserResponse
 import retrofit2.Call
@@ -11,4 +12,6 @@ interface AutenticationUser {
     @POST("/user-auth")
     fun singIn(@Body userRequest: UserRequest) :
             Call<UserResponse>
+    @POST("/user")
+    fun singUp(@Body userRegisterRequest: UserRegisterRequest)
 }
