@@ -8,5 +8,5 @@ data class UserPreference(
     val email : String,
     val role : String,
     val isOnline : Boolean,
-    val preference: List<Preference>
+    val preferences: List<Preference>
 )
