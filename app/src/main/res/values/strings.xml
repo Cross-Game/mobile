@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CrossGame Mobile Application</string>
+    <string name="app_name">CrossGame</string>
     <string name="salas_publicas">Salas Públicas</string>
     <string name="minhas_salas">Minhas salas</string>
     <string name="entrar">Entrar</string>
