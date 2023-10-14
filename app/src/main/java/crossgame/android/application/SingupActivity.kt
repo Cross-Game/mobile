@@ -1,7 +1,9 @@
 package crossgame.android.application
 
-import android.app.Activity
+
 import android.content.Intent
+import android.net.Uri
+
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,16 +11,23 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
-import com.google.android.material.textfield.TextInputLayout
+
 import com.google.gson.GsonBuilder
 import crossgame.android.application.databinding.ActivitySingupBinding
 import crossgame.android.domain.httpClient.Rest
+import crossgame.android.domain.models.token.TokenResponse
 import crossgame.android.domain.models.user.UserRegisterRequest
-import crossgame.android.domain.models.user.UserRequest
+
 import crossgame.android.service.AutenticationUser
+import crossgame.android.service.DiscordApiService
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
+
 
 class SingupActivity : AppCompatActivity() {
 
@@ -26,10 +35,25 @@ class SingupActivity : AppCompatActivity() {
     private var senhaVisivel = false
     private var confirmarSenhaVisivel = false
 
+    private val CLIENT_ID = "1102730864972009612"
+    private val CLIENT_SECRET = "WBk5k6uAQNLFJ0nZFBBbwtuzP9XUUKkn"
+    private val REDIRECT_URI = "myapp://discord_auth_callback"
+    private var redirectIntent: Intent? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySingupBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (intent != null && intent.data != null && intent.data.toString()
+                .startsWith(REDIRECT_URI)
+        ) {
+            redirectIntent = intent
+        }
+
+        setupUI()
+
 
         binding.imageMostraSenha.setOnClickListener {
             senhaVisivel = !senhaVisivel
@@ -76,9 +100,83 @@ class SingupActivity : AppCompatActivity() {
             }
         })
 
+        binding.textDiscordSingup.setOnClickListener {
+            iniciarAutenticacaoDiscord()
+        }
+
+
+
         binding.btnRegistrar.setOnClickListener { cadastrar() }
 
         binding.btnPossuiConta.setOnClickListener { telaEntrar() }
+    }
+
+    private fun setupUI() {
+        binding.textDiscordSingup.setOnClickListener {
+            if (redirectIntent != null) {
+                val uri = redirectIntent?.data
+                if (uri != null && uri.toString().startsWith(REDIRECT_URI)) {
+                    val code = uri.getQueryParameter("code")
+                    if (code != null) {
+                        trocarCodigoPorTokenDeAcesso(code)
+                    } else if (uri.getQueryParameter("error") != null) {
+                        // Lida com erros de autorização aqui
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun iniciarAutenticacaoDiscord() {
+        val authUrl = "https://discord.com/api/oauth2/authorize" +
+                "?client_id=$CLIENT_ID" +
+                "&redirect_uri=$REDIRECT_URI" +
+                "&response_type=code" +
+                "&scope=identify"  // Escopo de acesso
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
+        startActivity(intent)
+    }
+
+    private fun trocarCodigoPorTokenDeAcesso(code: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://discord.com/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(DiscordApiService::class.java)
+
+        val call = service.trocarCodigoPorToken(
+            CLIENT_ID, CLIENT_SECRET, code, REDIRECT_URI, "authorization_code"
+        )
+
+        call.enqueue(object : Callback<TokenResponse> {
+            override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
+                if (response.isSuccessful) {
+                    val tokenResponse = response.body()
+                    val accessToken = tokenResponse?.access_token
+
+                    if (accessToken != null) {
+                        // Implemente aqui a lógica para autenticar o usuário com o token
+                    } else {
+                        // Lida com cenários em que o token de acesso está ausente na resposta
+                        val errorMessage = "Erro: Token de acesso ausente na resposta."
+                        Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Lida com erros na solicitação de token
+                    val errorMessage = "Erro na solicitação de token: ${response.message()}"
+                    Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                // Lida com erros de comunicação
+                val errorMessage = "Erro de comunicação com o servidor: ${t.message}"
+                Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun cadastrar() {
