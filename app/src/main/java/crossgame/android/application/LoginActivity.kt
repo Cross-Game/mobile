@@ -1,31 +1,27 @@
 package crossgame.android.application
 
-import android.app.ActionBar
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.DecodedJWT
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import crossgame.android.application.databinding.ActivityLoginBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.user.UserRequest
 import crossgame.android.domain.models.user.UserResponse
 import crossgame.android.service.AutenticationUser
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
@@ -83,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     register(
                         UserRequest(
-                            task.result.familyName.toString(),
+                            task.result.displayName.toString(),
                             task.result.idToken.toString()
                         )
                     )
@@ -125,6 +121,7 @@ class LoginActivity : AppCompatActivity() {
                             "Login Realizado !",
                             Toast.LENGTH_SHORT
                         ).show()
+                        decodeJWT(response.body()?.encodedToken.toString())
                         redirectToMatch()
                     } else {
                         Toast.makeText(baseContext, "Usuario não cadastrado !", Toast.LENGTH_SHORT)
@@ -143,5 +140,31 @@ class LoginActivity : AppCompatActivity() {
 
             })
 
+    }
+
+    private fun decodeJWT(token: String){
+        try {
+            val decodedJWT: DecodedJWT = JWT.decode(token)
+            val payload = decodedJWT.claims
+
+            val usernameUser = payload["username"]?.asString()
+            val emailUser = payload["email"]?.asString()
+            val idUser = payload["id"]?.asInt()
+
+            savaSharedPreference(usernameUser, emailUser, idUser!!)
+
+        } catch (exception: Exception) {
+            googleSingInClient.signOut()
+            println("Erro ao decodificar o token: ${exception.message}")
+        }
+    }
+
+    private fun savaSharedPreference(usernameUser: String?, emailUser: String?, idUser: Int) {
+        val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("username", usernameUser)
+        editor.putString("email", emailUser)
+        editor.putInt("id", idUser)
+        editor.apply()
     }
 }

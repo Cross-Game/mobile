@@ -1,4 +1,5 @@
 <resources>
+    <string name="google_web_client_id">159829132486-8p9g8nfvnkn0gbg53b5tkkncndolr53v.apps.googleusercontent.com</string>
     <string name="app_name">CrossGame</string>
     <string name="salas_publicas">Salas Públicas</string>
     <string name="minhas_salas">Minhas salas</string>

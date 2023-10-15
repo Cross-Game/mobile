@@ -108,7 +108,7 @@ class SingupActivity : AppCompatActivity() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 if (task.isSuccessful) {
                     cadastrar(
-                        task.result.familyName.toString(),
+                        task.result.displayName.toString(),
                         task.result.email.toString(),
                         task.result.idToken.toString(),
                         task.result.idToken.toString()
@@ -122,9 +122,9 @@ class SingupActivity : AppCompatActivity() {
         }
 
     private fun cadastrar(nome: String, email: String, senha: String, confirmarSenha: String) {
+        googleSingInClient.signOut()
         if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
             Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show()
-            googleSingInClient.signOut()
             return
         }
 
@@ -175,14 +175,12 @@ class SingupActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        googleSingInClient.signOut()
                         val errorMessage = "Erro ao registrar: " + response.message()
                         Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
-                    googleSingInClient.signOut()
                     val errorMessage = "Erro de comunicação com o servidor: " + t.message
                     Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
                 }
