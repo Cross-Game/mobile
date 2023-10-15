@@ -1,5 +1,6 @@
 package crossgame.android.application
 
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +19,7 @@ class HomeScreenActivity: AppCompatActivity() {
     }
 
     private fun telaCadastro(){
-        startActivity(Intent(baseContext, SingupActivity::class.java))
+        startActivity(Intent(this,SingupActivity::class.java))
     }
 
     private fun telaEntrar() {

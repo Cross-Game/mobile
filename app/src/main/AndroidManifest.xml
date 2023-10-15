@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -38,18 +37,21 @@
             android:exported="false" />
         <activity
             android:name=".HomeScreenActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask"> <!-- Defina launchMode como singleTask para garantir que a Activity seja única e volte corretamente ao seu aplicativo -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" /> <!-- Esta é a tela inicial do seu aplicativo -->
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="discord_auth_callback"
-                    android:scheme="myapp" />
-
-
+                    android:scheme="myapp"
+                    android:host="cross-game" /> <!-- Especificação do esquema e host que você deseja capturar -->
             </intent-filter>
         </activity>
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
