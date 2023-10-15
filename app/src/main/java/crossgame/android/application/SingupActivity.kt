@@ -7,8 +7,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.GsonBuilder
 import crossgame.android.application.databinding.ActivitySingupBinding
@@ -23,6 +27,7 @@ import retrofit2.Response
 class SingupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySingupBinding
+    private lateinit var googleSingInClient: GoogleSignInClient
     private var senhaVisivel = false
     private var confirmarSenhaVisivel = false
 
@@ -30,6 +35,11 @@ class SingupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySingupBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_web_client_id))
+            .requestEmail().requestProfile().build()
+        googleSingInClient = GoogleSignIn.getClient(this, gso)
 
         binding.imageMostraSenha.setOnClickListener {
             senhaVisivel = !senhaVisivel
@@ -76,19 +86,45 @@ class SingupActivity : AppCompatActivity() {
             }
         })
 
-        binding.btnRegistrar.setOnClickListener { cadastrar() }
+        binding.btnRegistrar.setOnClickListener { cadastrar(
+            binding.editTextNome.text.toString(),
+            binding.editTextEmail.text.toString(),
+            binding.editTextSenha.text.toString(),
+            binding.editTextConfirmarSenha.text.toString()
+        ) }
 
         binding.btnPossuiConta.setOnClickListener { telaEntrar() }
+
+        binding.buttonGoogle.setOnClickListener { signUpGoogle() }
     }
 
-    private fun cadastrar() {
-        val nome = binding.editTextNome.text.toString()
-        val email = binding.editTextEmail.text.toString()
-        val senha = binding.editTextSenha.text.toString()
-        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
+    private fun signUpGoogle() {
+        var signInIntent = googleSingInClient.signInIntent
+        launcher.launch(signInIntent)
+    }
 
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                if (task.isSuccessful) {
+                    cadastrar(
+                        task.result.familyName.toString(),
+                        task.result.email.toString(),
+                        task.result.idToken.toString(),
+                        task.result.idToken.toString()
+                    )
+                } else {
+                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, result.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private fun cadastrar(nome: String, email: String, senha: String, confirmarSenha: String) {
         if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
             Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show()
+            googleSingInClient.signOut()
             return
         }
 
@@ -139,12 +175,14 @@ class SingupActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
+                        googleSingInClient.signOut()
                         val errorMessage = "Erro ao registrar: " + response.message()
                         Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
+                    googleSingInClient.signOut()
                     val errorMessage = "Erro de comunicação com o servidor: " + t.message
                     Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
                 }

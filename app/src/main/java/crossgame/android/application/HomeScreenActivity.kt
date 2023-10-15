@@ -3,6 +3,7 @@ package crossgame.android.application
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import crossgame.android.application.databinding.ActivityHomeScreenBinding
 
 class HomeScreenActivity: AppCompatActivity() {
@@ -15,6 +16,19 @@ class HomeScreenActivity: AppCompatActivity() {
 
         binding.btnHomeCadastrar.setOnClickListener { telaCadastro() }
         binding.btnEntrar.setOnClickListener { telaEntrar() }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val currentUser = GoogleSignIn.getLastSignedInAccount(this)
+        println(currentUser)
+        if (currentUser != null) {
+            redirectToMatch()
+        }
+    }
+
+    private fun redirectToMatch() {
+        startActivity(Intent(baseContext, NotificationsActivity::class.java))
     }
 
     private fun telaCadastro(){
