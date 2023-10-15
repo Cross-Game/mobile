@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardFeedback"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/black"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="8dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/group_userFeedback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                >
+
+                <QuickContactBadge
+                    app:layout_constraintTop_toTopOf="@id/group_userFeedback"
+                    app:layout_constraintStart_toStartOf="@id/group_userFeedback"
+                    android:id="@+id/imageUserFeedback"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+
+                <TextView
+                    android:id="@+id/text_nameUser"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NomeUsuario"
+                    android:textSize="13sp"
+                    app:layout_constraintTop_toBottomOf="@id/imageUserFeedback"
+                    app:layout_constraintStart_toStartOf="@id/imageUserFeedback"
+                    android:layout_marginBottom="10dp"
+                    />
+
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginLeft="40dp"
+                android:id="@+id/comportamentoSession"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toStartOf="@+id/habilidadeSession"
+                app:layout_constraintStart_toEndOf="@id/group_userFeedback"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Comportamento"
+                    android:textSize="11sp"/>
+
+                <RatingBar
+                    android:id="@+id/ratingBar_comportamento"
+                    android:layout_marginTop="10dp"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:rating="4" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/habilidadeSession"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Habilidade"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar_habilidade"
+                    android:layout_marginTop="10dp"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:rating="3" />
+
+            </LinearLayout>
+
+            <TextView
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="#141414"
+                android:padding="10dp"
+                android:text="Message"
+                android:id="@+id/input_message"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/group_userFeedback" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
