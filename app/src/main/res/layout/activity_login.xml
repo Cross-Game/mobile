@@ -85,6 +85,7 @@
                 android:textSize="12sp" />
 
             <ImageButton
+                android:id="@+id/mostrar_senha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#00000000"
@@ -142,6 +143,7 @@
         tools:ignore="SmallSp" />
 
     <RelativeLayout
+        android:id="@+id/button_google"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_btn_login"
@@ -159,7 +161,6 @@
             android:src="@drawable/google" />
 
         <TextView
-            android:id="@+id/text_google"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
