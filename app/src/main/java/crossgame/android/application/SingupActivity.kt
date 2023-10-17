@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.google.gson.GsonBuilder
 import crossgame.android.application.databinding.ActivitySingupBinding
-import crossgame.android.application.databinding.ActivitySingupBinding.inflate
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.token.TokenResponse
 import crossgame.android.domain.models.user.DiscordUserResponse
@@ -25,20 +24,21 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SingupActivity : AppCompatActivity() {
-    // Constantes
     private val CLIENT_ID = "1102730864972009612"
     private val CLIENT_SECRET = "WBk5k6uAQNLFJ0nZFBBbwtuzP9XUUKkn"
     private val REDIRECT_URI = "myapp://cross-game"
 
-    private val DISCORD_BASE_URL = "https://discord.com/api/v10/"
+    private val DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
+    private val DISCORD_ME_URL = "https://discord.com/api/v10/users/@me"
 
     private lateinit var binding: ActivitySingupBinding
     private var senhaVisivel = false
     private var discordAccessToken: String? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = inflate(layoutInflater)
+        binding = ActivitySingupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
@@ -54,6 +54,7 @@ class SingupActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 validarSenha()
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
 
@@ -62,6 +63,7 @@ class SingupActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 validarEmail(s.toString())
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
 
@@ -70,15 +72,19 @@ class SingupActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 validarSenhaEmTempoReal(s.toString())
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        binding.textDiscordSingup.setOnClickListener {
-            iniciarAutenticacaoDiscord()
+
+
+        binding.btnRegistrar.setOnClickListener {
+            cadastrar()
         }
 
-        binding.btnRegistrar.setOnClickListener { cadastrar() }
-        binding.btnPossuiConta.setOnClickListener { telaEntrar() }
+        binding.btnPossuiConta.setOnClickListener {
+            telaEntrar()
+        }
     }
 
     private fun setupUI() {
@@ -90,6 +96,8 @@ class SingupActivity : AppCompatActivity() {
                 } else {
                     exibirMensagemErro("Erro de autorização")
                 }
+            } else {
+                iniciarAutenticacaoDiscord()
             }
         }
     }
@@ -107,16 +115,88 @@ class SingupActivity : AppCompatActivity() {
         return intent.data?.getQueryParameter("code")
     }
 
+    private fun mostrarOcultarSenha(editText: EditText, visivel: Boolean) {
+        if (visivel) {
+            editText.transformationMethod = null
+        } else {
+            editText.transformationMethod = android.text.method.PasswordTransformationMethod()
+        }
+        editText.setSelection(editText.text.length)
+    }
+
+    private fun validarSenha() {
+        val senha = binding.editTextSenha.text.toString()
+        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
+
+        if (senha.isNotEmpty() || confirmarSenha.isNotEmpty()) {
+            if (senha != confirmarSenha) {
+                binding.textInputSenha.error = "Senhas não coincidem"
+                binding.textInputConfirmarSenha.error = "Senhas não coincidem"
+            } else {
+                binding.textInputSenha.error = null
+                binding.textInputConfirmarSenha.error = null
+            }
+        }
+    }
+
+    private fun validarEmail(email: String) {
+        if (!isValidEmail(email)) {
+            binding.editTextEmail.error = "Email inválido. Deve conter @ e .com"
+        } else {
+            binding.editTextEmail.error = null
+        }
+    }
+
+    private fun validarSenhaEmTempoReal(password: String) {
+        if (!isValidPassword(password)) {
+            binding.imageMostraSenha.isGone = true
+            binding.editTextSenha.error =
+                "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
+        } else {
+            binding.imageMostraSenha.isGone = false
+            binding.editTextSenha.error = null
+        }
+    }
+
+    private fun exibirMensagemErro(mensagem: String) {
+        Toast.makeText(this@SingupActivity, mensagem, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun iniciarAutenticacaoDiscord() {
+        val authUrl = "https://discord.com/api/oauth2/authorize" +
+                "?client_id=$CLIENT_ID" +
+                "&redirect_uri=$REDIRECT_URI" +
+                "&response_type=code" +
+                "&scope=identify"
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
+        startActivity(intent)
+    }
+
+    private fun processarCodigoDiscord() {
+        if (isRedirectedFromDiscord()) {
+            val code = extractCodeFromIntent()
+            if (code != null) {
+                trocarCodigoPorTokenDeAcesso(code)
+            } else {
+                exibirMensagemErro("Erro de autorização")
+            }
+        }
+    }
+
     private fun trocarCodigoPorTokenDeAcesso(code: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl(DISCORD_BASE_URL)
+            .baseUrl(DISCORD_TOKEN_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val service = retrofit.create(DiscordApiService::class.java)
 
+        val grantType = "authorization_code"
+        val redirectUri = Uri.encode(REDIRECT_URI)
+
         val call = service.trocarCodigoPorToken(
-            CLIENT_ID, CLIENT_SECRET, code, REDIRECT_URI, "authorization_code"
+            CLIENT_ID, CLIENT_SECRET, code, redirectUri, grantType
         )
 
         call.enqueue(object : Callback<TokenResponse> {
@@ -143,16 +223,16 @@ class SingupActivity : AppCompatActivity() {
     }
 
     private fun obterInformacoesUsuarioDiscord(accessToken: String) {
-        val discordRetrofit = Retrofit.Builder()
-            .baseUrl(DISCORD_BASE_URL)
+        val retrofit = Retrofit.Builder()
+            .baseUrl(DISCORD_ME_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val discordService = discordRetrofit.create(DiscordApiService::class.java)
+        val service = retrofit.create(DiscordApiService::class.java)
 
-        val userCall = discordService.obterInformacoesUsuario("Bearer $accessToken")
+        val call = service.obterInformacoesUsuario("Bearer $accessToken")
 
-        userCall.enqueue(object : Callback<DiscordUserResponse> {
+        call.enqueue(object : Callback<DiscordUserResponse> {
             override fun onResponse(
                 call: Call<DiscordUserResponse>,
                 response: Response<DiscordUserResponse>
@@ -268,74 +348,5 @@ class SingupActivity : AppCompatActivity() {
 
     private fun isValidPassword(password: String): Boolean {
         return password.length >= 12 && password.any { it.isUpperCase() }
-    }
-
-    private fun mostrarOcultarSenha(editText: EditText, visivel: Boolean) {
-        if (visivel) {
-            editText.transformationMethod = null
-        } else {
-            editText.transformationMethod = android.text.method.PasswordTransformationMethod()
-        }
-        editText.setSelection(editText.text.length)
-    }
-
-    private fun validarSenha() {
-        val senha = binding.editTextSenha.text.toString()
-        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
-
-        if (senha.isNotEmpty() || confirmarSenha.isNotEmpty()) {
-            if (senha != confirmarSenha) {
-                binding.textInputSenha.error = "Senhas não coincidem"
-                binding.textInputConfirmarSenha.error = "Senhas não coincidem"
-            } else {
-                binding.textInputSenha.error = null
-                binding.textInputConfirmarSenha.error = null
-            }
-        }
-    }
-
-    private fun validarEmail(email: String) {
-        if (!isValidEmail(email)) {
-            binding.editTextEmail.error = "Email inválido. Deve conter @ e .com"
-        } else {
-            binding.editTextEmail.error = null
-        }
-    }
-
-    private fun validarSenhaEmTempoReal(password: String) {
-        if (!isValidPassword(password)) {
-            binding.imageMostraSenha.isGone = true
-            binding.editTextSenha.error =
-                "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
-        } else {
-            binding.imageMostraSenha.isGone = false
-            binding.editTextSenha.error = null
-        }
-    }
-
-    private fun exibirMensagemErro(mensagem: String) {
-        Toast.makeText(this@SingupActivity, mensagem, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun iniciarAutenticacaoDiscord() {
-        val authUrl = "https://discord.com/api/oauth2/authorize" +
-                "?client_id=$CLIENT_ID" +
-                "&redirect_uri=$REDIRECT_URI" +
-                "&response_type=code" +
-                "&scope=identify"
-
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
-        startActivity(intent)
-    }
-
-    private fun processarCodigoDiscord() {
-        if (isRedirectedFromDiscord()) {
-            val code = extractCodeFromIntent()
-            if (code != null) {
-                trocarCodigoPorTokenDeAcesso(code)
-            } else {
-                exibirMensagemErro("Erro de autorização")
-            }
-        }
     }
 }
