@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="4"
+    android:alignmentMode="alignBounds"
+    android:rowOrderPreserved="false"
+    android:columnOrderPreserved="false"
+    android:background="@color/black">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="64dp"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="16dp"
+        android:columnCount="4"
+        android:useDefaultMargins="true"
+        android:layout_gravity="fill_horizontal"
+        >
+
+        <Button
+            android:id="@+id/btn_voltar"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_arrow_back_ios_24"
+            android:paddingLeft="33dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Information Group -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:paddingHorizontal="16dp"
+        android:layout_columnSpan="4"
+        android:layout_gravity="fill_horizontal"
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecione as plataformas"
+            android:textColor="#00FF33"
+            android:textSize="24sp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/md_theme_dark_onBackground"
+            android:text="que você utiliza para jogar!"
+            />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        android:layout_columnSpan="4"
+        android:layout_rowWeight="1"
+        android:layout_gravity="fill"
+        android:background="@color/black">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/computer_image"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/pc_image"
+                app:layout_constraintEnd_toStartOf="@+id/xbox_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/selected_background_pc" />
+
+            <ImageView
+                android:id="@+id/xbox_image"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center"
+                android:src="@drawable/xbox_platform"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/computer_image"
+                app:layout_constraintTop_toTopOf="@+id/computer_image"
+                android:background="@drawable/selected_background_xbox" />
+
+            <ImageView
+                android:id="@+id/mobile_image"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center"
+                android:src="@drawable/mobile_image"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/computer_image"
+                app:layout_constraintTop_toBottomOf="@+id/computer_image"
+                android:background="@drawable/selected_backbackground_mobile" />
+
+            <ImageView
+                android:id="@+id/playstation_image"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center"
+                android:src="@drawable/playstation_image"
+                app:layout_constraintBottom_toBottomOf="@+id/mobile_image"
+                app:layout_constraintEnd_toEndOf="@+id/xbox_image"
+                app:layout_constraintTop_toTopOf="@+id/mobile_image"
+                android:background="@drawable/selected_background_playstation" />
+
+            <Button
+                android:id="@+id/btn_cadastrar_plataforma"
+                android:layout_width="250dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="50dp"
+                android:text="Cadastrar plataforma"
+                android:backgroundTint="#00951E"
+                app:layout_constraintEnd_toEndOf="@+id/playstation_image"
+                app:layout_constraintStart_toStartOf="@+id/mobile_image"
+                app:layout_constraintTop_toBottomOf="@+id/mobile_image"></Button>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</GridLayout>
