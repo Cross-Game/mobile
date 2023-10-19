@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.google.gson.GsonBuilder
+import crossgame.android.application.LoginActivity
 import crossgame.android.application.databinding.ActivitySingupBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.token.TokenResponse
@@ -24,59 +25,27 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SingupActivity : AppCompatActivity() {
-    private val CLIENT_ID = "1102730864972009612"
-    private val CLIENT_SECRET = "WBk5k6uAQNLFJ0nZFBBbwtuzP9XUUKkn"
-    private val REDIRECT_URI = "myapp://cross-game"
-
-    private val DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
-    private val DISCORD_ME_URL = "https://discord.com/api/v10/users/@me"
+    private val CLIENT_ID = "1102730864972009612" // Substitua pelo seu ID de cliente do Discord
+    private val CLIENT_SECRET =
+        "2OQPvF3bRMrwH5nKzDN9YPycQ7NO6Jkq" // Substitua pelo seu segredo de cliente do Discord
+    private val REDIRECT_URI = "http://myawesomeapp.com/oauth"
 
     private lateinit var binding: ActivitySingupBinding
     private var senhaVisivel = false
-    private var discordAccessToken: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySingupBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
-
-        setupUI()
+        setContentView(binding.root)
 
         binding.imageMostraSenha.setOnClickListener {
             senhaVisivel = !senhaVisivel
             mostrarOcultarSenha(binding.editTextSenha, senhaVisivel)
         }
 
-        binding.editTextConfirmarSenha.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validarSenha()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        binding.editTextEmail.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validarEmail(s.toString())
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        binding.editTextSenha.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validarSenhaEmTempoReal(s.toString())
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-
+        binding.editTextConfirmarSenha.addTextChangedListener(createTextWatcher { validarSenha() })
+        binding.editTextEmail.addTextChangedListener(createTextWatcher { validarEmail(it) })
+        binding.editTextSenha.addTextChangedListener(createTextWatcher { validarSenhaEmTempoReal(it) })
 
         binding.btnRegistrar.setOnClickListener {
             cadastrar()
@@ -85,34 +54,27 @@ class SingupActivity : AppCompatActivity() {
         binding.btnPossuiConta.setOnClickListener {
             telaEntrar()
         }
-    }
 
-    private fun setupUI() {
-        binding.textDiscordSingup.setOnClickListener {
-            if (isRedirectedFromDiscord()) {
-                val code = extractCodeFromIntent()
-                if (code != null) {
-                    trocarCodigoPorTokenDeAcesso(code)
-                } else {
-                    exibirMensagemErro("Erro de autorização")
-                }
+        val authUrl = "https://discord.com/api/oauth2/authorize" +
+                "?client_id=$CLIENT_ID" +
+                "&redirect_uri=$REDIRECT_URI" +
+                "&response_type=code" +
+                "&scope=identify"
+
+        binding.textDiscordSingup.setOnClickListener { iniciarAutenticacaoDiscord(authUrl) }
+
+        val data: Uri? = intent?.data
+        if (data != null) {
+            val code = data.getQueryParameter("code")
+
+            if (code != null) {
+                // Você recebeu o código de autorização. Agora você pode processá-lo.
+                processarCodigoAutorizacao(code)
             } else {
-                iniciarAutenticacaoDiscord()
+                // Não foi recebido um código de autorização no deep link.
             }
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        processarCodigoDiscord()
-    }
-
-    private fun isRedirectedFromDiscord(): Boolean {
-        return intent?.data != null && intent.data.toString().startsWith(REDIRECT_URI)
-    }
-
-    private fun extractCodeFromIntent(): String? {
-        return intent.data?.getQueryParameter("code")
     }
 
     private fun mostrarOcultarSenha(editText: EditText, visivel: Boolean) {
@@ -162,128 +124,9 @@ class SingupActivity : AppCompatActivity() {
         Toast.makeText(this@SingupActivity, mensagem, Toast.LENGTH_SHORT).show()
     }
 
-    private fun iniciarAutenticacaoDiscord() {
-        val authUrl = "https://discord.com/api/oauth2/authorize" +
-                "?client_id=$CLIENT_ID" +
-                "&redirect_uri=$REDIRECT_URI" +
-                "&response_type=code" +
-                "&scope=identify"
-
+    private fun iniciarAutenticacaoDiscord(authUrl: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
         startActivity(intent)
-    }
-
-    private fun processarCodigoDiscord() {
-        if (isRedirectedFromDiscord()) {
-            val code = extractCodeFromIntent()
-            if (code != null) {
-                trocarCodigoPorTokenDeAcesso(code)
-            } else {
-                exibirMensagemErro("Erro de autorização")
-            }
-        }
-    }
-
-    private fun trocarCodigoPorTokenDeAcesso(code: String) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(DISCORD_TOKEN_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(DiscordApiService::class.java)
-
-        val grantType = "authorization_code"
-        val redirectUri = Uri.encode(REDIRECT_URI)
-
-        val call = service.trocarCodigoPorToken(
-            CLIENT_ID, CLIENT_SECRET, code, redirectUri, grantType
-        )
-
-        call.enqueue(object : Callback<TokenResponse> {
-            override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
-                if (response.isSuccessful) {
-                    val tokenResponse = response.body()
-                    val accessToken = tokenResponse?.access_token
-
-                    if (accessToken != null) {
-                        discordAccessToken = accessToken
-                        obterInformacoesUsuarioDiscord(accessToken)
-                    } else {
-                        exibirMensagemErro("Erro: Token de acesso ausente na resposta.")
-                    }
-                } else {
-                    exibirMensagemErro("Erro na solicitação de token: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
-                exibirMensagemErro("Erro de comunicação com o servidor: ${t.message}")
-            }
-        })
-    }
-
-    private fun obterInformacoesUsuarioDiscord(accessToken: String) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(DISCORD_ME_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(DiscordApiService::class.java)
-
-        val call = service.obterInformacoesUsuario("Bearer $accessToken")
-
-        call.enqueue(object : Callback<DiscordUserResponse> {
-            override fun onResponse(
-                call: Call<DiscordUserResponse>,
-                response: Response<DiscordUserResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val discordUser = response.body()
-                    if (discordUser != null) {
-                        val nome = discordUser.username
-                        val email = discordUser.email.toString()
-                        registrarUsuarioNoSeuServidor(accessToken, nome, email)
-                    }
-                } else {
-                    exibirMensagemErro("Erro ao obter informações do usuário do Discord: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<DiscordUserResponse>, t: Throwable) {
-                exibirMensagemErro("Erro de comunicação com o servidor do Discord: ${t.message}")
-            }
-        })
-    }
-
-    private fun registrarUsuarioNoSeuServidor(
-        tokenDeAcessoDiscord: String,
-        nome: String,
-        email: String
-    ) {
-        val userRegisterRequest = UserRegisterRequest(nome, email, tokenDeAcessoDiscord, "USER")
-
-        Rest.getInstance()
-            .create(AutenticationUser::class.java)
-            .singUp(userRegisterRequest).enqueue(object : Callback<GsonBuilder> {
-                override fun onResponse(call: Call<GsonBuilder>, response: Response<GsonBuilder>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(
-                            this@SingupActivity,
-                            "Cadastro realizado com sucesso!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val intent = Intent(this@SingupActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        exibirMensagemErro("Erro ao registrar: ${response.message()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
-                    exibirMensagemErro("Erro de comunicação com o servidor: ${t.message}")
-                }
-            })
     }
 
     private fun cadastrar() {
@@ -338,6 +181,7 @@ class SingupActivity : AppCompatActivity() {
             })
     }
 
+
     private fun telaEntrar() {
         startActivity(Intent(this, LoginActivity::class.java))
     }
@@ -349,4 +193,146 @@ class SingupActivity : AppCompatActivity() {
     private fun isValidPassword(password: String): Boolean {
         return password.length >= 12 && password.any { it.isUpperCase() }
     }
+
+    private fun createTextWatcher(action: (String) -> Unit) = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            action(s.toString())
+        }
+
+        override fun afterTextChanged(s: Editable?) {}
+    }
+
+    // Processar o código de autorização e obter o token de acesso e detalhes do usuário
+    private fun processarCodigoAutorizacao(codigoAutorizacao: String) {
+        // Configuração do Retrofit para fazer a solicitação ao Discord
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://discord.com/api/v10/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val discordApiService = retrofit.create(DiscordApiService::class.java)
+
+        val clientId = CLIENT_ID // Usando a variável global
+        val clientSecret = CLIENT_SECRET // Usando a variável global
+        val redirectUri = REDIRECT_URI // Usando a variável global
+        val grantType = "authorization_code"
+
+        val call = discordApiService.exchangeCodeForToken(
+            clientId,
+            clientSecret,
+            redirectUri,
+            codigoAutorizacao,
+            grantType
+        )
+
+        call.enqueue(object : Callback<TokenResponse> {
+            override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
+                if (response.isSuccessful) {
+                    val tokenResponse = response.body()
+                    if (tokenResponse != null) {
+                        val tokenDeAcesso = tokenResponse.access_token
+
+                        // Aqui você tem o token de acesso, que pode ser usado para acessar recursos do Discord
+
+                        // Agora você pode obter os detalhes do usuário
+                        obterDadosDoDiscordETokenDeAcesso(tokenDeAcesso)
+                        startActivity(Intent(this@SingupActivity, SingupActivity::class.java))
+                        cadastrarPeloDiscord(codigoAutorizacao)
+                    } else {
+                        exibirMensagemErro("Erro ao obter o token de acesso do Discord")
+                    }
+                } else {
+                    // Trate erros na resposta do Discord
+                    exibirMensagemErro("Erro ao trocar código por token no Discord")
+                }
+            }
+
+            override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                // Trate erros na comunicação com o servidor
+                exibirMensagemErro("Erro na comunicação com o servidor do Discord: ${t.message}")
+            }
+        })
+    }
+
+    private fun cadastrarPeloDiscord(codigoAutorizacao: String) {
+        // Processar o código de autorização e obter o token de acesso
+        processarCodigoAutorizacao(codigoAutorizacao)
+    }
+
+    // Função para obter os detalhes do usuário do Discord e preencher o formulário
+    private fun obterDadosDoDiscordETokenDeAcesso(tokenDeAcesso: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://discord.com/api/v10/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val discordApiService = retrofit.create(DiscordApiService::class.java)
+
+        val call = discordApiService.getDiscordUser("Bearer $tokenDeAcesso")
+
+        call.enqueue(object : Callback<DiscordUserResponse> {
+            override fun onResponse(
+                call: Call<DiscordUserResponse>,
+                response: Response<DiscordUserResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val discordUser = response.body()
+                    if (discordUser != null) {
+                        val nomeDeUsuario = discordUser.username
+                        val email = discordUser.email.toString()
+
+                        // Agora você tem o nome de usuário (username) e o e-mail do usuário
+
+                        // Realize o cadastro do usuário usando as informações obtidas do Discord
+                        val nome = nomeDeUsuario
+                        val senha = tokenDeAcesso // Use o token de acesso como senha
+                        val confirmarSenha = tokenDeAcesso // Confirme com o token de acesso
+                        val userRegisterRequest = UserRegisterRequest(nome, email, senha, "USER")
+
+                        // Faça a chamada para cadastrar o usuário
+                        cadastrarUsuarioNoSeuSistema(userRegisterRequest)
+                    } else {
+                        exibirMensagemErro("Erro ao obter dados do usuário do Discord")
+                    }
+                } else {
+                    // Trate erros na resposta do Discord
+                    exibirMensagemErro("Erro ao obter dados do usuário do Discord")
+                }
+            }
+
+            override fun onFailure(call: Call<DiscordUserResponse>, t: Throwable) {
+                // Trate erros na comunicação com o servidor
+                exibirMensagemErro("Erro na comunicação com o servidor do Discord: ${t.message}")
+            }
+        })
+    }
+
+    // Função para cadastrar o usuário no seu sistema
+    private fun cadastrarUsuarioNoSeuSistema(userRegisterRequest: UserRegisterRequest) {
+        Rest.getInstance()
+            .create(AutenticationUser::class.java)
+            .singUp(userRegisterRequest).enqueue(object : Callback<GsonBuilder> {
+                override fun onResponse(call: Call<GsonBuilder>, response: Response<GsonBuilder>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(
+                            this@SingupActivity,
+                            "Cadastro realizado com sucesso!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this@SingupActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        exibirMensagemErro("Erro ao registrar: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
+                    exibirMensagemErro("Erro de comunicação com o servidor: ${t.message}")
+                }
+            })
+    }
+
+
 }
