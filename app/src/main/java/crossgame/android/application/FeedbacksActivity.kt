@@ -37,8 +37,9 @@ class FeedbacksActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeedbacksBinding.inflate(layoutInflater)
-        getAllUserFeedbacksInDatabase()
         buildingServices()
+        getAllUserFeedbacksInDatabase()
+        atualizarQuantidadeDeFeedbacks()
         setContentView(binding.root)
     }
 
@@ -69,6 +70,11 @@ class FeedbacksActivity : AppCompatActivity() {
         })
     }
 
+    fun countFeedbacksInDatabase() : Int {return userFeedbacks.size}
+
+    fun atualizarQuantidadeDeFeedbacks() {
+        binding.textTotal.text = countFeedbacksInDatabase().toString();
+    }
     fun criarCardsFeedbacks(feedback: Feedback) {
         val cardView = layoutInflater.inflate(R.layout.card_feedback, null) as CardView
         val userNameTextView = cardView.findViewById<TextView>(R.id.text_nameUser)
