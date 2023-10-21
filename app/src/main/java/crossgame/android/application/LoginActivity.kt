@@ -123,7 +123,11 @@ class LoginActivity : AppCompatActivity() {
                         ).show()
                         decodeJWT(response.body()?.encodedToken.toString())
                         redirectToMatch()
-                    } else {
+                    } else if(!response.isSuccessful) {
+
+                    }
+                    else {
+
                         Toast.makeText(baseContext, "Usuario não cadastrado !", Toast.LENGTH_SHORT)
                             .show()
                         googleSingInClient.signOut()

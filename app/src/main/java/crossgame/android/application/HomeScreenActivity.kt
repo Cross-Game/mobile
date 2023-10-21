@@ -1,5 +1,6 @@
 package crossgame.android.application
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -20,9 +21,9 @@ class HomeScreenActivity: AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser = GoogleSignIn.getLastSignedInAccount(this)
-        println(currentUser)
-        if (currentUser != null) {
+        val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val username = sharedPreferences.getString("username", "")
+        if (username != null || username != "") {
             redirectToMatch()
         }
     }
