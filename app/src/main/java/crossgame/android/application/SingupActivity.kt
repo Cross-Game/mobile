@@ -1,16 +1,20 @@
 package crossgame.android.application
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import com.google.gson.GsonBuilder
-import crossgame.android.application.LoginActivity
 import crossgame.android.application.databinding.ActivitySingupBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.token.TokenResponse
@@ -25,13 +29,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SingupActivity : AppCompatActivity() {
-    private val CLIENT_ID = "1102730864972009612" // Substitua pelo seu ID de cliente do Discord
-    private val CLIENT_SECRET =
-        "2OQPvF3bRMrwH5nKzDN9YPycQ7NO6Jkq" // Substitua pelo seu segredo de cliente do Discord
-    private val REDIRECT_URI = "http://myawesomeapp.com/oauth"
+    private val CLIENT_ID = "1102730864972009612"
+    private val REDIRECT_URI = "https://myawesomeapp.com/oauth"
+    private val CLIENT_SECRET = "Tq5jUUh9AwcRXV1RfTPRCkRUOpUPE6IC"
 
     private lateinit var binding: ActivitySingupBinding
     private var senhaVisivel = false
+    private lateinit var webView: WebView
+    private var isDiscordLoginProcess = false
+
+    private val DISCORD_API_URL = "https://discord.com/api/v10/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,168 +62,62 @@ class SingupActivity : AppCompatActivity() {
             telaEntrar()
         }
 
+        webView = WebView(this)
+        webView.settings.javaScriptEnabled = true
+        webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+
+        // Defina um WebViewClient para controlar o fluxo de autorização
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val url = request?.url.toString()
+                if (url.startsWith(REDIRECT_URI) && isDiscordLoginProcess) {
+                    // O usuário autorizou o acesso
+                    val code = Uri.parse(url).getQueryParameter("code")
+                    if (code != null) {
+                        processarCodigoAutorizacao(code)
+                    }
+                    isDiscordLoginProcess = false
+                    return true
+                } else {
+                    // Abra links externos no aplicativo do Discord
+                    view?.loadUrl(url)
+                }
+                return true
+            }
+        }
+
+        binding.textDiscordSingup.setOnClickListener {
+            iniciarAutenticacaoDiscord()
+        }
+    }
+
+
+    // Função para iniciar a autenticação no aplicativo do Discord
+    private fun iniciarAutenticacaoDiscord() {
+        isDiscordLoginProcess = true
+
         val authUrl = "https://discord.com/api/oauth2/authorize" +
                 "?client_id=$CLIENT_ID" +
                 "&redirect_uri=$REDIRECT_URI" +
                 "&response_type=code" +
                 "&scope=identify"
 
-        binding.textDiscordSingup.setOnClickListener { iniciarAutenticacaoDiscord(authUrl) }
-
-        val data: Uri? = intent?.data
-        if (data != null) {
-            val code = data.getQueryParameter("code")
-
-            if (code != null) {
-                // Você recebeu o código de autorização. Agora você pode processá-lo.
-                processarCodigoAutorizacao(code)
-            } else {
-                // Não foi recebido um código de autorização no deep link.
-            }
-        }
-
+        webView.loadUrl(authUrl)
     }
 
-    private fun mostrarOcultarSenha(editText: EditText, visivel: Boolean) {
-        if (visivel) {
-            editText.transformationMethod = null
-        } else {
-            editText.transformationMethod = android.text.method.PasswordTransformationMethod()
-        }
-        editText.setSelection(editText.text.length)
-    }
-
-    private fun validarSenha() {
-        val senha = binding.editTextSenha.text.toString()
-        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
-
-        if (senha.isNotEmpty() || confirmarSenha.isNotEmpty()) {
-            if (senha != confirmarSenha) {
-                binding.textInputSenha.error = "Senhas não coincidem"
-                binding.textInputConfirmarSenha.error = "Senhas não coincidem"
-            } else {
-                binding.textInputSenha.error = null
-                binding.textInputConfirmarSenha.error = null
-            }
-        }
-    }
-
-    private fun validarEmail(email: String) {
-        if (!isValidEmail(email)) {
-            binding.editTextEmail.error = "Email inválido. Deve conter @ e .com"
-        } else {
-            binding.editTextEmail.error = null
-        }
-    }
-
-    private fun validarSenhaEmTempoReal(password: String) {
-        if (!isValidPassword(password)) {
-            binding.imageMostraSenha.isGone = true
-            binding.editTextSenha.error =
-                "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
-        } else {
-            binding.imageMostraSenha.isGone = false
-            binding.editTextSenha.error = null
-        }
-    }
-
-    private fun exibirMensagemErro(mensagem: String) {
-        Toast.makeText(this@SingupActivity, mensagem, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun iniciarAutenticacaoDiscord(authUrl: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
-        startActivity(intent)
-    }
-
-    private fun cadastrar() {
-        val nome = binding.editTextNome.text.toString()
-        val email = binding.editTextEmail.text.toString()
-        val senha = binding.editTextSenha.text.toString()
-        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
-
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
-            exibirMensagemErro("Por favor, preencha todos os campos.")
-            return
-        }
-
-        if (!isValidEmail(email)) {
-            exibirMensagemErro("Email inválido. Verifique o formato do email.")
-            return
-        }
-
-        if (!isValidPassword(senha)) {
-            exibirMensagemErro("Senha inválida. A senha deve conter pelo menos 12 caracteres com pelo menos uma letra maiúscula.")
-            return
-        }
-
-        if (senha != confirmarSenha) {
-            exibirMensagemErro("As senhas não coincidem. Verifique sua senha e confirmação de senha.")
-            return
-        }
-
-        val userRegisterRequest = UserRegisterRequest(nome, email, senha, "USER")
-
-        Rest.getInstance()
-            .create(AutenticationUser::class.java)
-            .singUp(userRegisterRequest).enqueue(object : Callback<GsonBuilder> {
-                override fun onResponse(call: Call<GsonBuilder>, response: Response<GsonBuilder>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(
-                            this@SingupActivity,
-                            "Cadastro realizado com sucesso!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val intent = Intent(this@SingupActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        exibirMensagemErro("Erro ao registrar: ${response.message()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
-                    exibirMensagemErro("Erro de comunicação com o servidor: ${t.message}")
-                }
-            })
-    }
-
-
-    private fun telaEntrar() {
-        startActivity(Intent(this, LoginActivity::class.java))
-    }
-
-    private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    private fun isValidPassword(password: String): Boolean {
-        return password.length >= 12 && password.any { it.isUpperCase() }
-    }
-
-    private fun createTextWatcher(action: (String) -> Unit) = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            action(s.toString())
-        }
-
-        override fun afterTextChanged(s: Editable?) {}
-    }
-
-    // Processar o código de autorização e obter o token de acesso e detalhes do usuário
+    // Adicione a função processarCodigoAutorizacao
     private fun processarCodigoAutorizacao(codigoAutorizacao: String) {
-        // Configuração do Retrofit para fazer a solicitação ao Discord
+        val clientId = CLIENT_ID // Usando a variável global
+        val clientSecret = CLIENT_SECRET // Seu segredo de cliente do Discord
+        val redirectUri = REDIRECT_URI // Usando a variável global
+        val grantType = "authorization_code"
+
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://discord.com/api/v10/")
+            .baseUrl(DISCORD_API_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val discordApiService = retrofit.create(DiscordApiService::class.java)
-
-        val clientId = CLIENT_ID // Usando a variável global
-        val clientSecret = CLIENT_SECRET // Usando a variável global
-        val redirectUri = REDIRECT_URI // Usando a variável global
-        val grantType = "authorization_code"
 
         val call = discordApiService.exchangeCodeForToken(
             clientId,
@@ -237,8 +138,6 @@ class SingupActivity : AppCompatActivity() {
 
                         // Agora você pode obter os detalhes do usuário
                         obterDadosDoDiscordETokenDeAcesso(tokenDeAcesso)
-                        startActivity(Intent(this@SingupActivity, SingupActivity::class.java))
-                        cadastrarPeloDiscord(codigoAutorizacao)
                     } else {
                         exibirMensagemErro("Erro ao obter o token de acesso do Discord")
                     }
@@ -255,15 +154,10 @@ class SingupActivity : AppCompatActivity() {
         })
     }
 
-    private fun cadastrarPeloDiscord(codigoAutorizacao: String) {
-        // Processar o código de autorização e obter o token de acesso
-        processarCodigoAutorizacao(codigoAutorizacao)
-    }
-
     // Função para obter os detalhes do usuário do Discord e preencher o formulário
     private fun obterDadosDoDiscordETokenDeAcesso(tokenDeAcesso: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://discord.com/api/v10/")
+            .baseUrl(DISCORD_API_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -272,10 +166,7 @@ class SingupActivity : AppCompatActivity() {
         val call = discordApiService.getDiscordUser("Bearer $tokenDeAcesso")
 
         call.enqueue(object : Callback<DiscordUserResponse> {
-            override fun onResponse(
-                call: Call<DiscordUserResponse>,
-                response: Response<DiscordUserResponse>
-            ) {
+            override fun onResponse(call: Call<DiscordUserResponse>, response: Response<DiscordUserResponse>) {
                 if (response.isSuccessful) {
                     val discordUser = response.body()
                     if (discordUser != null) {
@@ -335,4 +226,127 @@ class SingupActivity : AppCompatActivity() {
     }
 
 
+
+
+    private fun mostrarOcultarSenha(editText: EditText, visivel: Boolean) {
+        if (visivel) {
+            editText.transformationMethod = null
+        } else {
+            editText.transformationMethod = android.text.method.PasswordTransformationMethod()
+        }
+        editText.setSelection(editText.text.length)
+    }
+
+    private fun validarSenha() {
+        val senha = binding.editTextSenha.text.toString()
+        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
+
+        if (senha.isNotEmpty() || confirmarSenha.isNotEmpty()) {
+            if (senha != confirmarSenha) {
+                binding.textInputSenha.error = "Senhas não coincidem"
+                binding.textInputConfirmarSenha.error = "Senhas não coincidem"
+            } else {
+                binding.textInputSenha.error = null
+                binding.textInputConfirmarSenha.error = null
+            }
+        }
+    }
+
+    private fun validarEmail(email: String) {
+        if (!isValidEmail(email)) {
+            binding.editTextEmail.error = "Email inválido. Deve conter @ e .com"
+        } else {
+            binding.editTextEmail.error = null
+        }
+    }
+
+    private fun validarSenhaEmTempoReal(password: String) {
+        if (!isValidPassword(password)) {
+            binding.imageMostraSenha.isGone = true
+            binding.editTextSenha.error =
+                "A senha deve conter pelo menos 12 caracteres e pelo menos uma letra maiúscula"
+        } else {
+            binding.imageMostraSenha.isGone = false
+            binding.editTextSenha.error = null
+        }
+    }
+
+    private fun exibirMensagemErro(mensagem: String) {
+        Toast.makeText(this@SingupActivity, mensagem, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun cadastrar() {
+        val nome = binding.editTextNome.text.toString()
+        val email = binding.editTextEmail.text.toString()
+        val senha = binding.editTextSenha.text.toString()
+        val confirmarSenha = binding.editTextConfirmarSenha.text.toString()
+
+        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
+            exibirMensagemErro("Por favor, preencha todos os campos.")
+            return
+        }
+
+        if (!isValidEmail(email)) {
+            exibirMensagemErro("Email inválido. Verifique o formato do email.")
+            return
+        }
+
+        if (!isValidPassword(senha)) {
+            exibirMensagemErro("Senha inválida. A senha deve conter pelo menos 12 caracteres com pelo menos uma letra maiúscula.")
+            return
+        }
+
+        if (senha != confirmarSenha) {
+            exibirMensagemErro("As senhas não coincidem. Verifique sua senha e confirmação de senha.")
+            return
+        }
+
+        val userRegisterRequest = UserRegisterRequest(nome, email, senha, "USER")
+
+        Rest.getInstance()
+            .create(AutenticationUser::class.java)
+            .singUp(userRegisterRequest).enqueue(object : Callback<GsonBuilder> {
+                override fun onResponse(call: Call<GsonBuilder>, response: Response<GsonBuilder>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(
+                            this@SingupActivity,
+                            "Cadastro realizado com sucesso!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this@SingupActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        exibirMensagemErro("Erro ao registrar: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
+                    exibirMensagemErro("Erro de comunicação com o servidor: ${t.message}")
+                }
+            })
+    }
+
+    private fun telaEntrar() {
+        startActivity(Intent(this, LoginActivity::class.java))
+    }
+
+
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    private fun isValidPassword(password: String): Boolean {
+        return password.length >= 12 && password.any { it.isUpperCase() }
+    }
+
+    private fun createTextWatcher(action: (String) -> Unit) = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            action(s.toString())
+        }
+
+        override fun afterTextChanged(s: Editable?) {}
+    }
 }
+
