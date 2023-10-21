@@ -22,8 +22,8 @@ class HomeScreenActivity: AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-        val username = sharedPreferences.getString("username", "")
-        if (username != null || username != "") {
+        val username = sharedPreferences.getString("username", null)
+        if (username != null) {
             redirectToMatch()
         }
     }
