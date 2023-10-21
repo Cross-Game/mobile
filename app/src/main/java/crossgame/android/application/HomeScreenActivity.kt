@@ -33,10 +33,10 @@ class HomeScreenActivity: AppCompatActivity() {
     }
 
     private fun telaCadastro(){
-        startActivity(Intent(baseContext, PlatformsActivity::class.java))
+        startActivity(Intent(baseContext, SingupActivity::class.java))
     }
 
     private fun telaEntrar() {
-        startActivity(Intent(this, PlatformsActivity::class.java))
+        startActivity(Intent(this, LoginActivity::class.java))
     }
 }
