@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">https://matchmakingapi.sytes.net/</domain>
+    </domain-config>
     <base-config cleartextTrafficPermitted="true">
-        <trust-anchors>
-            <certificates src="system" />
-        </trust-anchors>
     </base-config>
 </network-security-config>
