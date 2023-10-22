@@ -15,6 +15,7 @@
         android:roundIcon="@drawable/union"
         android:supportsRtl="true"
         android:theme="@style/Theme.CrossGameMobileApplication"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".FeedbacksActivity"
