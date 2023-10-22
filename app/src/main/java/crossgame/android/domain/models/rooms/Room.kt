@@ -1,13 +1,18 @@
 package crossgame.android.domain.models.rooms
 
+import crossgame.android.domain.models.user.User
+
 data class Room(
     val id: Long,
-    val idUserAdmin: Integer,
-    val roomName: String,
-    val capacity : Integer,
-    val gameName : String,
-    val description : String,
-    val tokenAcess : String,
-    val terminated : Boolean,
-//    val usersInRoom : MutableList<User>
+    val name: String,
+    val capacity: Int,
+    val gameName: String,
+    val rankName: String,
+    val levelGame: String,
+    val user: MutableList<User>,
+    val isPrivate: Boolean,
+    val tokeAccess: String,
+    val description: String,
+    val isTerminated: Boolean,
+    val idUserAdmin: Long,
 )

@@ -11,7 +11,7 @@
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@color/md_theme_light_outline"
+        android:background="@color/md_theme_dark_errorContainer"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
