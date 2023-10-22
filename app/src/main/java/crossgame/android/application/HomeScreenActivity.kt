@@ -1,8 +1,10 @@
 package crossgame.android.application
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import crossgame.android.application.databinding.ActivityHomeScreenBinding
 
 class HomeScreenActivity: AppCompatActivity() {
@@ -17,11 +19,24 @@ class HomeScreenActivity: AppCompatActivity() {
         binding.btnEntrar.setOnClickListener { telaEntrar() }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val username = sharedPreferences.getString("username", null)
+        if (username != null) {
+            redirectToMatch()
+        }
+    }
+
+    private fun redirectToMatch() {
+        startActivity(Intent(baseContext, NotificationsActivity::class.java))
+    }
+
     private fun telaCadastro(){
-        startActivity(Intent(baseContext, SingupActivity::class.java))
+        startActivity(Intent(baseContext, PlatformsActivity::class.java))
     }
 
     private fun telaEntrar() {
-        startActivity(Intent(this, LoginActivity::class.java))
+        startActivity(Intent(this, PlatformsActivity::class.java))
     }
 }

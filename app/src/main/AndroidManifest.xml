@@ -3,29 +3,50 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/union"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@drawable/union"
         android:supportsRtl="true"
         android:theme="@style/Theme.CrossGameMobileApplication"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".FeedbacksActivity"
+            android:exported="false" />
+        <activity
             android:name=".ListFriendActivity"
             android:exported="false" />
         <activity
+            android:name=".PlatformsActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".LoadingActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddInterestsActivity"
             android:exported="false" />
         <activity
             android:name=".SingupActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationsActivity"
             android:exported="false" />
         <activity
             android:name=".HomeScreenActivity"
