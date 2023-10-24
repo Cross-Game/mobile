@@ -44,6 +44,8 @@
         android:paddingVertical="10dp"
         android:layout_height="wrap_content"
         android:text="NomeUsuario"
+        style="@style/TextAppearance.Material3.TitleMedium"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/user_id"
         android:gravity="center"
         />
@@ -124,6 +126,8 @@
         android:paddingVertical="10dp"
         android:layout_height="wrap_content"
         android:text="Comentário"
+        style="@style/TextAppearance.Material3.TitleMedium"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/sessionAvaliation"
         />
 

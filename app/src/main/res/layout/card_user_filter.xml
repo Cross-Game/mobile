@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/md_theme_dark_inverseOnSurface"
+    app:cardCornerRadius="10dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/text_nomepessoa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:breakStrategy="balanced"
+            android:text="NameUser"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/imagePessoa"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.material.chip.ChipGroup
+            app:layout_constraintTop_toBottomOf="@id/text_nomepessoa"
+            app:layout_constraintStart_toEndOf="@id/imagePessoa"
+            app:chipSpacingVertical="-5dp"
+            android:id="@+id/listInteresses"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            app:singleLine="false"
+
+            >
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:id="@+id/BRASILEIRA"
+                android:tag="BRASILEIRA"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brasileira"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:id="@+id/CAFES"
+                android:tag="CAFES"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cafés"
+                app:closeIconTint="@color/white"
+                android:textColor="@color/white"
+                />
+
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:id="@+id/INDIANA"
+                android:tag="INDIANA"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Indiana"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:id="@+id/ITALIANA"
+                android:tag="ITALIANA"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Italiana"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:id="@+id/JAPONESA"
+                android:tag="JAPONESA"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Japonesa"
+                android:textColor="@color/white"
+                />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:id="@+id/MEXICANA"
+                android:tag="MEXICANA"
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mexicana"
+                android:textColor="@color/white"
+                />
+
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/imagePessoa"
+            android:layout_width="100dp"
+            android:layout_height="125dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/game_example1" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/listInteresses"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_marginBottom="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/baseline_reply_24"
+                android:rotationY="180" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/baseline_favorite_24" />
+
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

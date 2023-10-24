@@ -28,7 +28,6 @@
         app:layout_constraintBottom_toBottomOf="@id/image_jogador"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:="@dra/background_user_profile"
         />
 
 
