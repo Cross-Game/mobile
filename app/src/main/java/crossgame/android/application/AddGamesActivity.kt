@@ -10,6 +10,12 @@ class AddGamesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddGamesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.buttonBack.setOnClickListener { backScreen() }
+    }
+
+    private fun backScreen() {
+        finish()
     }
 
     private var games = 10;

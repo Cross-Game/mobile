@@ -1,26 +1,15 @@
 package crossgame.android.application
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.QuickContactBadge
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatRatingBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import com.google.android.material.chip.Chip
-import crossgame.android.application.databinding.ActivityAddInterestsBinding
 import crossgame.android.application.databinding.ActivityFeedbacksBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.feedbacks.Feedback
-import crossgame.android.domain.models.users.UserPreference
 import crossgame.android.service.FeedbackService
-import crossgame.android.service.PreferencesService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,8 +30,13 @@ class FeedbacksActivity : AppCompatActivity() {
         getAllUserFeedbacksInDatabase()
         atualizarQuantidadeDeFeedbacks()
         setContentView(binding.root)
+
+        binding.buttonBack.setOnClickListener { backProfile() }
     }
 
+    private fun backProfile() {
+        finish()
+    }
     private fun buildingServices() {
         feedbacksService = Rest.getInstance().create(FeedbackService::class.java)
     }
