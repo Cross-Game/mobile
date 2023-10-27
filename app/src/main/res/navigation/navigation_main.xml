@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/nav_match">
+
+    <fragment
+        android:id="@+id/nav_notifications"
+        android:name="crossgame.android.application.menu.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" >
+        <action
+            android:id="@+id/action_notificationFragment_to_profileFragment"
+            app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_nav_notifications_to_chatFragment"
+            app:destination="@id/nav_chat" />
+        <action
+            android:id="@+id/action_nav_notifications_to_groupsFragment"
+            app:destination="@id/nav_groups" />
+        <action
+            android:id="@+id/action_nav_notifications_to_matchFragment"
+            app:destination="@id/nav_match" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="crossgame.android.application.menu.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_nav_notifications"
+            app:destination="@id/nav_notifications" />
+        <action
+            android:id="@+id/action_nav_profile_to_chatFragment"
+            app:destination="@id/nav_chat" />
+        <action
+            android:id="@+id/action_nav_profile_to_groupsFragment"
+            app:destination="@id/nav_groups" />
+        <action
+            android:id="@+id/action_nav_profile_to_matchFragment"
+            app:destination="@id/nav_match" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_chat"
+        android:name="crossgame.android.application.menu.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" >
+        <action
+            android:id="@+id/action_chatFragment_to_nav_profile"
+            app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_chatFragment_to_nav_notifications"
+            app:destination="@id/nav_notifications" />
+        <action
+            android:id="@+id/action_chatFragment_to_groupsFragment"
+            app:destination="@id/nav_groups" />
+        <action
+            android:id="@+id/action_chatFragment_to_matchFragment"
+            app:destination="@id/nav_match" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_groups"
+        android:name="crossgame.android.application.menu.GroupsFragment"
+        android:label="fragment_groups"
+        tools:layout="@layout/fragment_groups" >
+        <action
+            android:id="@+id/action_groupsFragment_to_chatFragment"
+            app:destination="@id/nav_chat" />
+        <action
+            android:id="@+id/action_groupsFragment_to_matchFragment"
+            app:destination="@id/nav_match" />
+        <action
+            android:id="@+id/action_groupsFragment_to_nav_profile"
+            app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_groupsFragment_to_nav_notifications"
+            app:destination="@id/nav_notifications" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_match"
+        android:name="crossgame.android.application.menu.MatchFragment"
+        android:label="fragment_match"
+        tools:layout="@layout/fragment_match" >
+        <action
+            android:id="@+id/action_matchFragment_to_nav_notifications"
+            app:destination="@id/nav_notifications" />
+        <action
+            android:id="@+id/action_matchFragment_to_groupsFragment"
+            app:destination="@id/nav_groups" />
+        <action
+            android:id="@+id/action_matchFragment_to_nav_profile"
+            app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_matchFragment_to_chatFragment"
+            app:destination="@id/nav_chat" />
+    </fragment>
+</navigation>
