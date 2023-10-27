@@ -49,6 +49,9 @@
             android:name=".HomeScreenActivity"
             android:exported="false" />
         <activity
+            android:name=".AddGamesActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="true">
             <intent-filter>
