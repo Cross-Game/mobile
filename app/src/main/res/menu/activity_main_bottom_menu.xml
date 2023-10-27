@@ -4,24 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_uefa"
+            android:id="@+id/nav_match"
             android:checked="true"
-            android:icon="@drawable/baseline_home_24"
-            android:title="Home" />
+            android:icon="@drawable/baseline_person_add_24"
+            android:title="Match" />
         <item
-            android:id="@+id/nav_libertadores"
+            android:id="@+id/nav_groups"
             android:icon="@drawable/baseline_group_24"
             android:title="Grupos" />
         <item
-            android:id="@+id/nav_afc"
+            android:id="@+id/nav_chat"
             android:icon="@drawable/baseline_chat_24"
             android:title="Chat" />
         <item
-            android:id="@+id/nav_last"
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/baseline_notifications_active_24"
+            android:title="Notificação" />
+        <item
+            android:id="@+id/nav_profile"
             android:icon="@drawable/baseline_person_24"
             android:title="Perfil" />
-    </group>
 </menu>
