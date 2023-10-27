@@ -169,6 +169,6 @@ class AddInterestsActivity : AppCompatActivity() {
     fun onExit(v : View) {
         Log.i("EXIT", "Saindo da tela")
         insertOrDeleteInterestForUser()
-        //TODO Mudar de Tela
+        finish()
     }
 }

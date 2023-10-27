@@ -48,6 +48,5 @@
 
     </LinearLayout>
 
-    <include layout="@layout/bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

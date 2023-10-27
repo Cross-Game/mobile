@@ -22,7 +22,7 @@
 
         <!-- Adicione elementos da top bar aqui -->
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/button_back"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_column="0"
