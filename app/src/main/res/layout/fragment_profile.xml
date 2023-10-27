@@ -43,6 +43,7 @@
             app:srcCompat="@drawable/image_15" />
 
         <Button
+            android:id="@+id/btn_setting_profile"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_column="0"
