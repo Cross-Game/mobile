@@ -1,9 +1,12 @@
 package crossgame.android.application
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -59,35 +62,39 @@ class PlatformsActivity : AppCompatActivity() {
         val selectedPlatformNames = selectedPlatforms.map { getPlatformName(it) }
         if (selectedPlatformNames.isNotEmpty()) {
             val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-            val id = sharedPreferences.getInt("id", 0)
-            val plat = arrayOf("XBOX")
-            platformsService.retrieveGamePlatformsForUserById(5L).enqueue(object :Callback<List<GameplayPlatformType>>{
+            val id = sharedPreferences.getString("id",null)
+            platformsService.updateGamePlatformsForUserById(id?.toLong() ?: 0, listOf("XBOX")).enqueue(object :Callback<List<String>>{
             override fun onResponse(
-                call: Call<List<GameplayPlatformType>>,
-                response: Response<List<GameplayPlatformType>>
+                call: Call<List<String>>,
+                response: Response<List<String>>
             ) {
                 val rootView = findViewById<View>(android.R.id.content)
-                val mensagem = response.body().toString()
+                val mensagem = "Plataformas adicionadas com sucesso!"
                 val duracao = Snackbar.LENGTH_SHORT
 
                 val snackbar = Snackbar.make(rootView, mensagem, duracao)
+                snackbar.setBackgroundTint(Color.parseColor("#68f273"))
+                snackbar.setTextColor(Color.parseColor("#212121"))
                 snackbar.show()
+
             }
 
-            override fun onFailure(call: Call<List<GameplayPlatformType>>, t: Throwable) {
+            override fun onFailure(call: Call<List<String>>, t: Throwable) {
 
                 val rootView = findViewById<View>(android.R.id.content)
-                val mensagem = "ERRO AO CADASTRAR"
+                val mensagem = "Erro ao adicionar plataformas!"
                 val duracao = Snackbar.LENGTH_SHORT
 
                 val snackbar = Snackbar.make(rootView, mensagem, duracao)
-                snackbar.setBackgroundTint(Color.parseColor("#00ff33"))
+                snackbar.setBackgroundTint(Color.parseColor("#F44336"))
+                snackbar.setTextColor(Color.parseColor("#FFFFFF"))
                 snackbar.show()
             }
 
         })
         }
     }
+
 
     private fun getPlatformName(imageView: ImageView): GameplayPlatformType {
         return when (imageView) {
