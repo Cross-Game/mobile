@@ -9,9 +9,10 @@ import retrofit2.http.Path
 
 interface PlatformsService {
 
-    @PATCH("/{userId}")
-    fun updateGamePlatformsForUserById(@Path("userId") userId: Long, @Body platforms: Array<String>):Call<List<GameplayPlatformType>>
-    @GET("/{userId}")
+    @PATCH("/user-platforms/{userId}")
+    fun updateGamePlatformsForUserById(@Path("userId") userId: Long, @Body platforms: List<String>):Call<List<String>>
+
+    @GET("/user-platforms/{userId}")
     fun retrieveGamePlatformsForUserById(@Path("userId") userId: Long):Call<List<GameplayPlatformType>>
 
 }
