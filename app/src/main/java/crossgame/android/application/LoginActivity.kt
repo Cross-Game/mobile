@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import crossgame.android.application.databinding.ActivityLoginBinding
+import crossgame.android.application.menu.ProfileFragment
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.user.UserRequest
 import crossgame.android.domain.models.user.UserResponse
@@ -98,7 +99,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun redirectToMatch() {
-        startActivity(Intent(baseContext, NotificationsActivity::class.java))
+        startActivity(Intent(baseContext, ProfileActivity::class.java))
     }
 
     private fun register(userRequest: UserRequest) {
@@ -114,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
                         val prefs =
                             getSharedPreferences("AUTH", MODE_PRIVATE)
                         val editor = prefs.edit()
-                        editor.putString("TOKEN", response.body().toString())
+                        editor.putString("TOKEN", response.body()?.encodedToken.toString())
                         editor.apply()
                         Toast.makeText(
                             baseContext,
@@ -123,10 +124,7 @@ class LoginActivity : AppCompatActivity() {
                         ).show()
                         decodeJWT(response.body()?.encodedToken.toString())
                         redirectToMatch()
-                    } else if(!response.isSuccessful) {
-
-                    }
-                    else {
+                    } else {
 
                         Toast.makeText(baseContext, "Usuario não cadastrado !", Toast.LENGTH_SHORT)
                             .show()
