@@ -33,13 +33,13 @@
 
         <ImageView
             android:id="@+id/image_jogador"
+            android:adjustViewBounds="true"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/carbon_user_avatar_empty" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
             android:id="@+id/btn_setting_profile"
@@ -53,6 +53,19 @@
             android:drawableTop="@drawable/baseline_settings_24"
             android:paddingLeft="22dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_add_photo"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_add_photo_alternate_24"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
