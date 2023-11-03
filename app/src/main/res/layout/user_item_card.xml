@@ -21,19 +21,21 @@
         android:id="@+id/userNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/userProfileImageView"
         android:layout_alignBaseline="@+id/userProfileImageView"
+        android:layout_marginStart="18dp"
+        android:layout_toEndOf="@+id/userProfileImageView"
         android:text="Nome do Usuário"
         android:textColor="@color/white"
         android:textSize="20sp" />
-
 
     <TextView
         android:id="@+id/userMessageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/userProfileImageView"
         android:layout_below="@+id/userNameTextView"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="1dp"
+        android:layout_toEndOf="@+id/userProfileImageView"
         android:text="Mensagem do Usuário"
         android:textColor="@color/white"
         android:textSize="15sp" />
