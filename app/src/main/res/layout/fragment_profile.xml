@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
     tools:context=".menu.ProfileFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black">
+        android:background="@color/black"
+        app:cardCornerRadius="50dp">
 
         <ImageView
             android:layout_width="match_parent"
@@ -31,15 +31,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/image_jogador"
-            android:adjustViewBounds="true"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_setting_profile"
@@ -61,8 +60,8 @@
             android:layout_height="46dp"
             android:layout_column="0"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/button_icon"
             android:drawableTop="@drawable/baseline_add_photo_alternate_24"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,10 +1,12 @@
 package crossgame.android.application.menu
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
@@ -12,9 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import crossgame.android.application.AddGamesActivity
@@ -35,6 +35,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 
 class ProfileFragment : Fragment() {
@@ -55,18 +57,21 @@ class ProfileFragment : Fragment() {
         binding.imageJogador.setImageResource(R.drawable.carbon_user_avatar_empty)
         binding.btnSettingProfile.setOnClickListener { showBottomSheet() }
         binding.btnAddPhoto.setOnClickListener { updatePhotoUser() }
-        getPhotoUser()
         updateNameUser()
         updateFeedbacksUser()
         updateFriendsUser()
         return binding.root
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             requestCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openGallery()
+
                 } else {
                     //falar o pq temos que acessar a galeria do usuario
                 }
@@ -79,13 +84,54 @@ class ProfileFragment : Fragment() {
     }
 
     private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {result ->
-            Toast.makeText(this.requireContext(), result.data.toString(), Toast.LENGTH_LONG).show()
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val selectedImageUri: Uri? = result.data?.data
+                selectedImageUri?.let { uri ->
+
+                    binding.imageJogador.setImageURI(uri)
+                    //Ajeitar para salvar no banco como binario
+//                    val imageBytes: ByteArray? = getImageBytesFromUri(uri)
+//                    imageBytes?.let {
+//                        val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), it)
+//                        val body =
+//                            MultipartBody.Part.createFormData("image", "image.jpg", requestFile)
+//                        Rest.getInstance(requireActivity()).create(AutenticationUser::class.java)
+//                            .uploadImage(body).enqueue(object : Callback<Unit> {
+//                                override fun onResponse(
+//                                    call: Call<Unit>,
+//                                    response: Response<Unit>
+//                                ) {
+//                                    if (response.isSuccessful) {
+//                                        getPhotoUser()
+//                                    }
+//                                }
+//
+//                                override fun onFailure(call: Call<Unit>, t: Throwable) {
+//                                    Log.i("GET", "Falha ao fazer upload")
+//                                }
+//                            })
+//                    }
+                }
+            }
         }
+
+    fun getImageBytesFromUri(uri: Uri): ByteArray? {
+        val file = File(uri.toString())
+        val inputStream: InputStream = FileInputStream(file)
+        inputStream.let {
+            val imageBitmap: Bitmap = BitmapFactory.decodeStream(it)
+            val outputStream = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            return outputStream.toByteArray()
+        }
+        return null
+    }
+
     private fun updatePhotoUser() {
         openGallery()
-        getPhotoUser()
     }
+
     private fun showBottomSheet() {
         val dialog = BottomSheetDialog(binding.root.context)
         val sheetBinding: ActivityBsEditProfileBinding =
