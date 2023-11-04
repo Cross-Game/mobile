@@ -3,7 +3,6 @@ package crossgame.android.application.menu
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -14,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -30,13 +30,13 @@ import crossgame.android.domain.models.user.UserList
 import crossgame.android.service.AutenticationUser
 import crossgame.android.service.FeedbackService
 import crossgame.android.service.UserFriendService
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
 import java.io.InputStream
 
 class ProfileFragment : Fragment() {
@@ -63,22 +63,6 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            requestCode -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    //falar o pq temos que acessar a galeria do usuario
-                }
-            }
-        }
-    }
-
     private fun openGallery() {
         launcher.launch(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
     }
@@ -88,37 +72,39 @@ class ProfileFragment : Fragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val selectedImageUri: Uri? = result.data?.data
                 selectedImageUri?.let { uri ->
+                    val imageBytes: ByteArray? = getImageBytesFromUri(uri)
+                    imageBytes?.let {
+                        val sharedPreferences =
+                            requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+                        val idUser = sharedPreferences.getInt("id", 0)
+                        val requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), it)
+                        Rest.getInstance(requireActivity()).create(AutenticationUser::class.java)
+                            .uploadImage(idUser.toLong(), requestBody).enqueue(object : Callback<Unit> {
+                                override fun onResponse(
+                                    call: Call<Unit>,
+                                    response: Response<Unit>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        getPhotoUser()
+                                        Toast.makeText(context, "Imagem de perfil atualizada!",
+                                            Toast.LENGTH_LONG).show()
+                                    } else {
+                                        Toast.makeText(context, response.code().toString(),
+                                            Toast.LENGTH_LONG).show()
+                                    }
+                                }
 
-                    binding.imageJogador.setImageURI(uri)
-                    //Ajeitar para salvar no banco como binario
-//                    val imageBytes: ByteArray? = getImageBytesFromUri(uri)
-//                    imageBytes?.let {
-//                        val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), it)
-//                        val body =
-//                            MultipartBody.Part.createFormData("image", "image.jpg", requestFile)
-//                        Rest.getInstance(requireActivity()).create(AutenticationUser::class.java)
-//                            .uploadImage(body).enqueue(object : Callback<Unit> {
-//                                override fun onResponse(
-//                                    call: Call<Unit>,
-//                                    response: Response<Unit>
-//                                ) {
-//                                    if (response.isSuccessful) {
-//                                        getPhotoUser()
-//                                    }
-//                                }
-//
-//                                override fun onFailure(call: Call<Unit>, t: Throwable) {
-//                                    Log.i("GET", "Falha ao fazer upload")
-//                                }
-//                            })
-//                    }
+                                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                                    Log.i("GET", t.message.toString())
+                                }
+                            })
+                    }
                 }
             }
         }
 
     fun getImageBytesFromUri(uri: Uri): ByteArray? {
-        val file = File(uri.toString())
-        val inputStream: InputStream = FileInputStream(file)
+        val inputStream: InputStream? = requireActivity().contentResolver.openInputStream(uri)
         inputStream.let {
             val imageBitmap: Bitmap = BitmapFactory.decodeStream(it)
             val outputStream = ByteArrayOutputStream()
@@ -172,13 +158,12 @@ class ProfileFragment : Fragment() {
             requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         val idUser = sharedPreferences.getInt("id", 0)
         Rest.getInstance(requireActivity()).create(AutenticationUser::class.java)
-            .getPhoto(7L).enqueue(object : Callback<ResponseBody> {
+            .getPhoto(idUser.toLong()).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
                     if (response.isSuccessful) {
-                        Log.i("GET", "Sucesso ao buscar Imagem")
                         val inputStream: InputStream = response.body()!!.byteStream()
                         val bitmap = BitmapFactory.decodeStream(inputStream)
                         val byteArrayOutputStream = ByteArrayOutputStream()
@@ -190,11 +175,13 @@ class ProfileFragment : Fragment() {
                         val decodedByte =
                             BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
                         binding.imageJogador.setImageBitmap(decodedByte)
+                    } else {
+                        Log.i("GET", "Ops, imagem incompatível !")
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Log.i("GET", "Falha ao listar Feedbacks")
+                    Log.i("GET", "Falha ao atualizar a foto de perfil")
                 }
             })
     }
