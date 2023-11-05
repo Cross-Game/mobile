@@ -3,10 +3,12 @@ package crossgame.android.application
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import crossgame.android.application.databinding.ActivityRoomsBinding
 import crossgame.android.domain.httpClient.Rest
@@ -35,32 +37,51 @@ class RoomsActivity : AppCompatActivity() {
         adapterRooms = RoomAdapter(listRoom, this)
         recyclerViewRoom.adapter = adapterRooms
 
-        retrieveRooms()
+        retrieveRooms(true)
     }
 
-    private fun retrieveRooms() {
 
-        val api = Rest.getInstance().create(RoomService::class.java)
+    private fun retrieveRooms(isTeste: Boolean) {
+        if (!isTeste) {
+            val api = Rest.getInstance().create(RoomService::class.java)
 
-        api.retrieveAll().enqueue(object : Callback<List<Room>> {
-            override fun onResponse(call: Call<List<Room>>, response: Response<List<Room>>) {
+            api.retrieveAll().enqueue(object : Callback<List<Room>> {
+                override fun onResponse(call: Call<List<Room>>, response: Response<List<Room>>) {
 
-                if (response.isSuccessful) {
-                    response.body()?.let { listRoom.addAll(it) }
-                    adapterRooms.notifyDataSetChanged()
-                } else {
+                    if (response.isSuccessful) {
+                        response.body()?.let { listRoom.addAll(it) }
+                        adapterRooms.notifyDataSetChanged()
+                        layoutWithoutRooms()
+                    } else {
+                        layoutWithoutRooms()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Room>>, t: Throwable) {
                     layoutWithoutRooms()
                 }
-            }
+            })
 
-            override fun onFailure(call: Call<List<Room>>, t: Throwable) {
-                layoutWithoutRooms()
-            }
-        })
+        } else {
+            listRoom.addAll(
+                mutableListOf(
+                    Room("teste", "testeDescrição")
+                )
+            )
+            layoutWithoutRooms()
+        }
     }
 
     private fun layoutWithoutRooms() {
-        binding.listOfRooms.removeAllViews()
-        layoutInflater.inflate(R.layout.empty_list_component, binding.listOfRooms)
+        val recyclerView = findViewById<RecyclerView>(R.id.listOfRooms)
+        val emptyLayout = findViewById<View>(R.id.empty_list)
+
+        if (listRoom.isEmpty()) {
+            recyclerView.visibility = View.GONE
+            emptyLayout.visibility = View.VISIBLE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            emptyLayout.visibility = View.GONE
+        }
     }
 }

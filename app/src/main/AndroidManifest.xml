@@ -18,6 +18,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ChatRoomActivity"
+            android:exported="false"
+            />
+        <activity
             android:name=".FeedbacksActivity"
             android:exported="false" />
         <activity
@@ -59,6 +63,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".RoomsActivity"
+            android:exported="false">
         </activity>
 
         <meta-data
