@@ -66,10 +66,10 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".RoomsActivity"
-            android:exported="false">
-        </activity>
+<!--        <activity-->
+<!--            android:name=".RoomsActivity"-->
+<!--            android:exported="false">-->
+<!--        </activity>-->
 
         <meta-data
             android:name="preloaded_fonts"
