@@ -29,7 +29,7 @@ class HomeScreenActivity: AppCompatActivity() {
     }
 
     private fun redirectToMatch() {
-        startActivity(Intent(baseContext, NotificationsActivity::class.java))
+        startActivity(Intent(baseContext, ProfileActivity::class.java))
     }
 
     private fun telaCadastro(){

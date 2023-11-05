@@ -76,7 +76,7 @@
         />
 
     <TextView
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="34dp"
         android:id="@+id/text_editar_foto"
         android:layout_width="match_parent"
@@ -110,7 +110,7 @@
         />
 
     <TextView
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="34dp"
         android:id="@+id/text_editar_interesse"
         android:layout_width="match_parent"
@@ -144,7 +144,7 @@
         />
 
     <TextView
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="34dp"
         android:id="@+id/text_editar_jogo"
         android:layout_width="match_parent"
@@ -178,7 +178,7 @@
         />
 
     <TextView
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="34dp"
         android:id="@+id/text_editar_plataforma"
         android:layout_width="match_parent"
