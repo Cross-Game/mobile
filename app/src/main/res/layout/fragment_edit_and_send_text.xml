@@ -13,6 +13,7 @@
     tools:showIn="@layout/activity_chat_friend">
 
     <EditText
+        android:id="@+id/textMessage"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginEnd="20dp"
