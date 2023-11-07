@@ -35,77 +35,20 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="370dp"
-        android:layout_marginTop="1dp"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listofmessagesinroom"
+        android:layout_width="320dp"
+        android:layout_height="380dp"
         android:orientation="vertical"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+        tools:itemCount="4"
+        tools:listitem="@layout/message_for_others_layout" />
 
-<!--        <ScrollView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent">-->
-<!--            -->
-<!--        </ScrollView>-->
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/background_my_message"
-            android:minWidth="350dp"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:text="teste"
-                android:textAlignment="textStart"
-                android:textSize="21sp"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:text="teste"
-                android:textAlignment="textEnd"
-
-                app:layout_constraintEnd_toEndOf="parent" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:background="@drawable/background_your_message"
-            android:minWidth="350dp"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:text="teste"
-                android:textAlignment="textStart"
-                android:textSize="21sp"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:text="teste"
-                android:textAlignment="textStart"
-
-                app:layout_constraintEnd_toEndOf="parent" />
-        </LinearLayout>
-
-    </LinearLayout>
-    <include layout="@layout/fragment_edit_and_send_text" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/fragment_edit_and_send_text"
+        tools:layout_editor_absoluteY="661dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
