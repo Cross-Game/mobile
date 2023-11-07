@@ -27,7 +27,8 @@
             android:exported="false" />
         <activity
             android:name=".ListFriendActivity"
-            android:exported="false" />
+            android:exported="false"/>
+
         <activity
             android:name=".PlatformsActivity"
             android:exported="false">

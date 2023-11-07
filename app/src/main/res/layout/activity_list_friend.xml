@@ -1,120 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/black"
+    android:padding="5dp">
 
-<!--    <TextView-->
-<!--        android:id="@+id/meusAmigosTextView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/meus_amigos"-->
-<!--        android:textAlignment="center"-->
-<!--        android:textColor="@color/seed"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textStyle="bold"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/searchIconTextView"-->
-<!--        app:layout_constraintVertical_chainStyle="packed" />-->
+    <TextView
+        android:id="@+id/meusAmigosTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:text="@string/meus_amigos"
+        android:textAlignment="center"
+        android:textColor="@color/seed"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/searchIconTextView"-->
-<!--        android:layout_width="40dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:layout_marginStart="368dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:background="@drawable/baseline_search_24"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="150dp"
+        android:layout_marginTop="3dp"
+        android:background="@color/seed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/meusAmigosTextView" />
+
+    <ImageView
+        android:id="@+id/searchIconTextView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="344dp"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/set_backgroud_button_options"
+        android:padding="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_search_24" />
 
 
-<!--    <ImageView-->
-<!--        android:id="@+id/profileImageImageView1"-->
-<!--        android:layout_width="50dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginStart="20dp"-->
-<!--        android:layout_marginTop="64dp"-->
-<!--        android:background="@drawable/group_997"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/meusAmigosTextView" />-->
 
-<!--    <TextView-->
-<!--        android:id="@+id/profileNameTextView1"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="4dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:text="Junior Patricio"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintMarginStart="10dp"-->
-<!--        app:layout_constraintMarginTop="-55dp"-->
-<!--        app:layout_constraintStart_toEndOf="@id/profileImageImageView1"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/searchIconTextView" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/meusAmigosTextView"
+        tools:itemCount="5"
+        tools:listitem="@layout/user_item_card"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
 
-<!--    <TextView-->
-<!--        android:id="@+id/profileMessageTextView1"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="4dp"-->
-<!--        android:text="Valeu amigo jogou muito!"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="16sp"-->
-<!--        app:layout_constraintMarginStart="10dp"-->
-<!--        app:layout_constraintMarginTop="2dp"-->
-<!--        app:layout_constraintStart_toEndOf="@id/profileImageImageView1"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/profileNameTextView1" />-->
 
-<!--    <ImageView-->
-<!--        android:id="@+id/profileImageImageView2"-->
-<!--        android:layout_width="50dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginStart="20dp"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:background="@drawable/group_997"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/profileImageImageView1" />-->
 
-<!--    <TextView-->
-<!--        android:id="@+id/profileNameTextView2"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="4dp"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:text="Mike Mello"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="20sp"-->
-<!--        app:layout_constraintMarginStart="10dp"-->
-<!--        app:layout_constraintMarginTop="2dp"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/profileImageImageView2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/profileImageImageView1" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/profileMessageTextView2"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="4dp"-->
-<!--        android:text="Salve mano bora jogar?"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="16sp"-->
-<!--        app:layout_constraintMarginStart="10dp"-->
-<!--        app:layout_constraintMarginTop="2dp"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/profileImageImageView2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/profileNameTextView2" />-->
-
-<!--    <include-->
-<!--        android:id="@+id/bottomMenuInclude"-->
-<!--        layout="@layout/bottom_menu"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
