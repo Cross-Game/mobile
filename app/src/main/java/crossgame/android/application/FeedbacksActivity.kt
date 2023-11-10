@@ -19,12 +19,13 @@ import retrofit2.Response
 class FeedbacksActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFeedbacksBinding
 
+    private lateinit var feedbacksService: FeedbackService
+
     var userFeedbacks = mutableListOf<Feedback>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeedbacksBinding.inflate(layoutInflater)
-        buildingServices()
         getAllUserFeedbacksInDatabase()
         setContentView(binding.root)
 
@@ -35,17 +36,14 @@ class FeedbacksActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun buildingServices() {
-        var feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
-        feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
-    }
+
 
     fun getAllUserFeedbacksInDatabase() {
         Log.i("GET", "Listando Feedbacks")
         val sharedPreferences =
             this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         val idUser = sharedPreferences.getInt("id", 0)
-        var feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
+        feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
         feedbacksService.listar(idUser.toLong()).enqueue(object : Callback<List<Feedback>> {
             override fun onResponse(
                 call: Call<List<Feedback>>,
