@@ -1,8 +1,13 @@
 package crossgame.android.domain.models.friends
 
+import android.graphics.Bitmap
+
 data class Friends(
-    val userName: String,
-    val userMessage: String,
-    val userProfileImageUrl: String
-)
+    val friendUserId: Long,
+    val username: String,
+    //val userMessage: String,
+    //val friendPhoto: Bitmap?
+) {
+
+}
 

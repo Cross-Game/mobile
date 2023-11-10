@@ -1,5 +1,6 @@
 package crossgame.android.application.menu
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,27 +13,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import crossgame.android.application.databinding.FragmentChatBinding
 import crossgame.android.domain.models.friends.Friends
 import crossgame.android.ui.adapters.friends.FriendsAdapter
+import crossgame.android.domain.httpClient.Rest
+import crossgame.android.domain.models.user.UserList
+import crossgame.android.service.UserFriendService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ChatFragment : Fragment() {
 
     private lateinit var binding: FragmentChatBinding
     private var friendList: List<Friends> = mutableListOf()
-
     private lateinit var searchEditText: EditText
     private lateinit var searchIcon: ImageView
+    private lateinit var friendsAdapter: FriendsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentChatBinding.inflate(
-            inflater,
-            container,
-            false
-        )
-
-        initializeFriendList()
+        binding = FragmentChatBinding.inflate(inflater, container, false)
 
         searchIcon = binding.searchIconTextView
         searchEditText = binding.searchEditText
@@ -47,80 +48,44 @@ class ChatFragment : Fragment() {
             }
         }
 
-        if (friendList.isNotEmpty()) {
-            val recyclerView = binding.recyclerView
-            val friendsAdapter = FriendsAdapter(requireContext(), friendList)
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = friendsAdapter
-        } else {
-            Log.e("ListFriendActivity", "A lista de amigos está vazia.")
-        }
+        val recyclerView = binding.recyclerView
+        friendsAdapter = FriendsAdapter(requireContext(), friendList)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = friendsAdapter
+
+        // Chame o método para atualizar a lista de amigos
+        updateFriendsList()
 
         return binding.root
     }
 
-    private fun initializeFriendList() {
-        friendList = mutableListOf(
-            Friends(
-                "Junior Patricio",
-                "Bora jogatina",
-                "https://w7.pngwing.com/pngs/227/283/png-transparent-call-break-card-game-android-banduk-game-youtube-android-game-mobile-phones-profile.png"
-            ),
-            Friends(
-                "China",
-                "Partiu Sekiro",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwudakIrwTEVtZMpYd8zO6NWzaIdpg6hkcJA&usqp=CAU"
-            ),
-            Friends(
-                "Mello",
-                "Hoje tem UFC",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlVjfrsqiO8XxWB_iLOsB9mu81mCOjWh-moQ&usqp=CAU"
-            ), Friends(
-                "Junior Patricio",
-                "Bora jogatina",
-                "https://w7.pngwing.com/pngs/227/283/png-transparent-call-break-card-game-android-banduk-game-youtube-android-game-mobile-phones-profile.png"
-            ),
-            Friends(
-                "China",
-                "Partiu Sekiro",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwudakIrwTEVtZMpYd8zO6NWzaIdpg6hkcJA&usqp=CAU"
-            ),
-            Friends(
-                "Mello",
-                "Hoje tem UFC",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlVjfrsqiO8XxWB_iLOsB9mu81mCOjWh-moQ&usqp=CAU"
-            ),
-            Friends(
-                "Junior Patricio",
-                "Bora jogatina",
-                "https://w7.pngwing.com/pngs/227/283/png-transparent-call-break-card-game-android-banduk-game-youtube-android-game-mobile-phones-profile.png"
-            ),
-            Friends(
-                "China",
-                "Partiu Sekiro",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwudakIrwTEVtZMpYd8zO6NWzaIdpg6hkcJA&usqp=CAU"
-            ),
-            Friends(
-                "Mello",
-                "Hoje tem UFC",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlVjfrsqiO8XxWB_iLOsB9mu81mCOjWh-moQ&usqp=CAU"
-            ), Friends(
-                "Junior Patricio",
-                "Bora jogatina",
-                "https://w7.pngwing.com/pngs/227/283/png-transparent-call-break-card-game-android-banduk-game-youtube-android-game-mobile-phones-profile.png"
-            ),
-            Friends(
-                "China",
-                "Partiu Sekiro",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwudakIrwTEVtZMpYd8zO6NWzaIdpg6hkcJA&usqp=CAU"
-            ),
-            Friends(
-                "Mello",
-                "Hoje tem UFC",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlVjfrsqiO8XxWB_iLOsB9mu81mCOjWh-moQ&usqp=CAU"
-            )
-        )
-        // Log para verificar a lista
-        Log.d("ListFriendActivity", "Amigos: $friendList")
+    private fun updateFriendsList() {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", 0).toLong()
+
+        val rest = Rest.getInstance(requireActivity())
+        val service = rest.create(UserFriendService::class.java)
+
+        service.listarFriend(userId).enqueue(object : Callback<List<UserList>> {
+            override fun onResponse(call: Call<List<UserList>>, response: Response<List<UserList>>) {
+                if (response.isSuccessful) {
+                    Log.i("GET", "Listagem de amigos realizada com sucesso")
+                    val apiResponse = response.body()
+
+                    // Limpa a lista existente e adiciona novos amigos
+                    friendList = apiResponse?.map {
+                        Friends(it.friendUserId, it.username)
+                    } ?: emptyList()
+
+                    // Notifica o adaptador sobre a mudança nos dados
+                    friendsAdapter.updateData(friendList)
+                }
+            }
+
+            override fun onFailure(call: Call<List<UserList>>, t: Throwable) {
+                Log.e("GET", "Falha ao listar amigos", t)
+            }
+        })
     }
 }
