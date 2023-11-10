@@ -3,6 +3,7 @@ package crossgame.android.application
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class FeedbacksActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityFeedbacksBinding
+    private lateinit var binding: ActivityFeedbacksBinding
 
     var userFeedbacks = mutableListOf<Feedback>()
 
@@ -33,6 +34,7 @@ class FeedbacksActivity : AppCompatActivity() {
     private fun backProfile() {
         finish()
     }
+
     private fun buildingServices() {
         var feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
         feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
@@ -52,11 +54,15 @@ class FeedbacksActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Log.i("GET", "Sucesso ao listar Feedbacks")
                     val apiResponse = response.body()
-                    apiResponse?.forEach { feedback ->
-                        userFeedbacks.add(feedback)
-                        criarCardsFeedbacks(feedback)
+                    if (apiResponse?.isEmpty() == null) {
+                        createCardEmpty()
+                    } else {
+                        apiResponse?.forEach { feedback ->
+                            userFeedbacks.add(feedback)
+                            criarCardsFeedbacks(feedback)
+                        }
+                        atualizarQuantidadeDeFeedbacks()
                     }
-                    atualizarQuantidadeDeFeedbacks()
                 }
             }
 
@@ -66,11 +72,14 @@ class FeedbacksActivity : AppCompatActivity() {
         })
     }
 
-    fun countFeedbacksInDatabase() : Int {return userFeedbacks.size}
+    fun countFeedbacksInDatabase(): Int {
+        return userFeedbacks.size
+    }
 
     fun atualizarQuantidadeDeFeedbacks() {
         binding.textTotal.text = countFeedbacksInDatabase().toString();
     }
+
     fun criarCardsFeedbacks(feedback: Feedback) {
         val cardView = layoutInflater.inflate(R.layout.card_feedback, null) as CardView
         val userNameTextView = cardView.findViewById<TextView>(R.id.text_nameUser)
@@ -85,5 +94,16 @@ class FeedbacksActivity : AppCompatActivity() {
 
         // Adicione o cardView à sua exibição principal ou layout, por exemplo:
         binding.body.addView(cardView)
+    }
+
+    fun createCardEmpty() {
+        val messageOfEmpty = "Você ainda não possui Feedbacks !"
+
+        val textView = TextView(this)
+        textView.text = messageOfEmpty
+        textView.setTextColor(resources.getColor(R.color.seed))
+        textView.setTextSize(18.0F)
+        textView.gravity = Gravity.CENTER
+        binding.body.addView(textView)
     }
 }

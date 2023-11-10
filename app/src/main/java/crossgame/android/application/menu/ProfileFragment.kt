@@ -127,7 +127,6 @@ class ProfileFragment : Fragment() {
         dialog.show()
 
         sheetBinding.textVerFeedbacks.setOnClickListener { navigation("Feedback") }
-        sheetBinding.textEditarFoto.setOnClickListener { navigation("Foto") }
         sheetBinding.textEditarInteresse.setOnClickListener { navigation("Interesse") }
         sheetBinding.textEditarJogo.setOnClickListener { navigation("Jogo") }
         sheetBinding.textEditarPlataforma.setOnClickListener { navigation("Plataforma") }
@@ -136,7 +135,6 @@ class ProfileFragment : Fragment() {
     private fun navigation(navigate: String) {
         when (navigate) {
             "Feedback" -> startActivity(Intent(binding.root.context, FeedbacksActivity::class.java))
-            "Foto" -> startActivity(Intent(binding.root.context, FeedbacksActivity::class.java))
             "Interesse" -> startActivity(
                 Intent(
                     binding.root.context,
