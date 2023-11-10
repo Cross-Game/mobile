@@ -1,13 +1,13 @@
 package crossgame.android.ui.adapters.friends
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import crossgame.android.application.databinding.UserItemCardBinding
 import crossgame.android.domain.models.friends.Friends
+import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 class FriendsAdapter(
@@ -31,15 +31,15 @@ class FriendsAdapter(
         val currentFriend = friendList[position]
 
         // Verifica se friendPhoto não é nulo antes de tentar carregar com Glide
-//        currentFriend.friendPhoto?.let { photo ->
-//            Glide.with(context)
-//                .load(BitmapDrawable(context.resources, photo)) // Converte o Bitmap para um Drawable
-//                .apply(RequestOptions.circleCropTransform())
-//                .into(holder.userProfileImageView)
-//        }
+        currentFriend.friendPhoto?.let { photo ->
+            // Carrega a foto do amigo usando Glide na ImageView
+            Glide.with(context)
+                .load(photo)
+                .apply(RequestOptions.circleCropTransform())
+                .into(holder.userProfileImageView)
+        }
 
         holder.userNameTextView.text = currentFriend.username
-
         // holder.userMessageTextView.text = currentFriend.userMessage
     }
 
@@ -50,5 +50,14 @@ class FriendsAdapter(
     fun updateData(newFriendList: List<Friends>) {
         friendList = newFriendList
         notifyDataSetChanged()
+    }
+
+    fun updateFriendPhoto(friendUserId: Long, photo: Bitmap) {
+        // Encontrar o amigo na lista e atualizar a foto
+        val friendToUpdate = friendList.find { it.friendUserId == friendUserId }
+        friendToUpdate?.let {
+            it.friendPhoto = photo
+            notifyDataSetChanged()
+        }
     }
 }

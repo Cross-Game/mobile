@@ -6,7 +6,7 @@ data class Friends(
     val friendUserId: Long,
     val username: String,
     //val userMessage: String,
-    //val friendPhoto: Bitmap?
+    var friendPhoto: Bitmap?
 ) {
 
 }
