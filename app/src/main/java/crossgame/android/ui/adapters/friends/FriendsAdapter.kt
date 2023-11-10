@@ -60,4 +60,8 @@ class FriendsAdapter(
             notifyDataSetChanged()
         }
     }
+
+    fun getData(): List<Friends> {
+        return friendList
+    }
 }

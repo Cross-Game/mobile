@@ -15,7 +15,7 @@
 
         <EditText
             android:id="@+id/searchEditText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/set_backgroud_button_options"
@@ -24,7 +24,22 @@
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:imeOptions="actionSearch"/>
+
+        <ImageView
+            android:id="@+id/closeSearchButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/set_backgroud_button_options"
+            android:padding="5dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/searchEditText"
+            app:layout_constraintTop_toTopOf="@id/searchEditText"
+            app:srcCompat="@drawable/baseline_close_24"
+            app:tint="@android:color/white" />
 
 
         <TextView

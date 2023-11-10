@@ -4,11 +4,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
@@ -30,10 +33,11 @@ import java.io.InputStream
 class ChatFragment : Fragment() {
 
     private lateinit var binding: FragmentChatBinding
-    private var friendList: List<Friends> = mutableListOf()
+    private var originalFriendList: List<Friends> = mutableListOf()
     private lateinit var searchEditText: EditText
     private lateinit var searchIcon: ImageView
     private lateinit var friendsAdapter: FriendsAdapter
+    private lateinit var closeSearchButton: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,24 +50,59 @@ class ChatFragment : Fragment() {
         searchEditText = binding.searchEditText
 
         searchIcon.setOnClickListener {
-            if (searchIcon.visibility == View.VISIBLE) {
-                searchIcon.visibility = View.GONE
-                searchEditText.visibility = View.VISIBLE
-            } else {
-                searchIcon.visibility = View.VISIBLE
-                searchEditText.visibility = View.GONE
-            }
+            toggleSearchBar()
+        }
+
+        closeSearchButton = binding.closeSearchButton
+        closeSearchButton.setOnClickListener {
+            closeSearchBar()
         }
 
         val recyclerView = binding.recyclerView
-        friendsAdapter = FriendsAdapter(requireContext(), friendList)
+        friendsAdapter = FriendsAdapter(requireContext(), mutableListOf())
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = friendsAdapter
+
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Filtra a lista com base no texto digitado
+                val filteredList = originalFriendList.filter { friend ->
+                    friend.username.contains(s.toString(), ignoreCase = true)
+                }
+                // Atualiza o adaptador com a nova lista filtrada
+                friendsAdapter.updateData(filteredList)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         // Chame o método para atualizar a lista de amigos
         updateFriendsList()
 
         return binding.root
+    }
+
+    private fun toggleSearchBar() {
+        if (searchIcon.visibility == View.VISIBLE) {
+            searchIcon.visibility = View.GONE
+            searchEditText.visibility = View.VISIBLE
+            closeSearchButton.visibility = View.VISIBLE
+            // Salva a lista original antes de aplicar o filtro
+            originalFriendList = friendsAdapter.getData()
+        } else {
+            closeSearchBar()
+        }
+    }
+
+    private fun closeSearchBar() {
+        searchIcon.visibility = View.VISIBLE
+        searchEditText.visibility = View.GONE
+        closeSearchButton.visibility = View.GONE
+        // Restaura a lista para o estado original ao fechar a barra de pesquisa
+        friendsAdapter.updateData(originalFriendList)
+        searchEditText.text = null
     }
 
     private fun updateFriendsList() {
@@ -84,15 +123,15 @@ class ChatFragment : Fragment() {
                     val apiResponse = response.body()
 
                     // Limpa a lista existente e adiciona novos amigos
-                    friendList = apiResponse?.map {
+                    originalFriendList = apiResponse?.map {
                         Friends(it.friendUserId, it.username, null)
                     } ?: emptyList()
 
                     // Notifica o adaptador sobre a mudança nos dados
-                    friendsAdapter.updateData(friendList)
+                    friendsAdapter.updateData(originalFriendList)
 
                     // Chama a função para obter a foto de cada amigo
-                    friendList.forEach { friend ->
+                    originalFriendList.forEach { friend ->
                         getPhotoUser(friend.friendUserId)
                     }
                 }
@@ -103,6 +142,7 @@ class ChatFragment : Fragment() {
             }
         })
     }
+
 
     private fun getPhotoUser(friendUserId: Long) {
         val rest = Rest.getInstance(requireActivity())
