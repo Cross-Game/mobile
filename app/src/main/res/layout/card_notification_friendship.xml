@@ -15,7 +15,7 @@
         android:padding="2dp">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/message"
             android:layout_width="161dp"
             android:layout_height="38dp"
             android:layout_marginStart="40dp"
@@ -27,6 +27,16 @@
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:text="11:29"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/message"
+            app:layout_constraintTop_toTopOf="@+id/message"></TextView>
 
         <ImageView
             android:id="@+id/imageView4"
@@ -46,12 +56,12 @@
             android:rotationY="180"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.727"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/message"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_reply_24" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/accept_invite"
             android:layout_width="24dp"
             android:layout_height="27dp"
             android:layout_marginBottom="2dp"
@@ -59,7 +69,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.712"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/message"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/baseline_favorite_24" />
