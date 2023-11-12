@@ -57,6 +57,7 @@ class ProfileFragment : Fragment() {
         binding.imageJogador.setImageResource(R.drawable.carbon_user_avatar_empty)
         binding.btnSettingProfile.setOnClickListener { showBottomSheet() }
         binding.btnAddPhoto.setOnClickListener { updatePhotoUser() }
+        getPhotoUser()
         updateNameUser()
         updateFeedbacksUser()
         updateFriendsUser()
@@ -164,17 +165,19 @@ class ProfileFragment : Fragment() {
                     response: Response<ResponseBody>
                 ) {
                     if (response.isSuccessful) {
-                        val inputStream: InputStream = response.body()!!.byteStream()
-                        val bitmap = BitmapFactory.decodeStream(inputStream)
-                        val byteArrayOutputStream = ByteArrayOutputStream()
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-                        val byteArray = byteArrayOutputStream.toByteArray()
-                        val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                        if (response.body()?.contentLength()?.toInt() != 0) {
+                            val inputStream: InputStream = response.body()!!.byteStream()
+                            val bitmap = BitmapFactory.decodeStream(inputStream)
+                            val byteArrayOutputStream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+                            val byteArray = byteArrayOutputStream.toByteArray()
+                            val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
 
-                        val decodedString = Base64.decode(base64String, Base64.DEFAULT)
-                        val decodedByte =
-                            BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-                        binding.imageJogador.setImageBitmap(decodedByte)
+                            val decodedString = Base64.decode(base64String, Base64.DEFAULT)
+                            val decodedByte =
+                                BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                            binding.imageJogador.setImageBitmap(decodedByte)
+                        }
                     } else {
                         Log.i("GET", "Ops, imagem incompatível !")
                     }

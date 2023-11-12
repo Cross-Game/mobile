@@ -1,5 +1,6 @@
 package crossgame.android.application
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.RatingBar
@@ -17,10 +18,6 @@ import retrofit2.Response
 class FeedbacksActivity : AppCompatActivity() {
     private lateinit var binding : ActivityFeedbacksBinding
 
-    var feedbacksService = Rest.getInstance().create(FeedbackService::class.java)
-
-    var id = 1L
-
     var userFeedbacks = mutableListOf<Feedback>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +25,6 @@ class FeedbacksActivity : AppCompatActivity() {
         binding = ActivityFeedbacksBinding.inflate(layoutInflater)
         buildingServices()
         getAllUserFeedbacksInDatabase()
-        atualizarQuantidadeDeFeedbacks()
         setContentView(binding.root)
 
         binding.buttonBack.setOnClickListener { backProfile() }
@@ -38,12 +34,17 @@ class FeedbacksActivity : AppCompatActivity() {
         finish()
     }
     private fun buildingServices() {
-        feedbacksService = Rest.getInstance().create(FeedbackService::class.java)
+        var feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
+        feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
     }
 
     fun getAllUserFeedbacksInDatabase() {
         Log.i("GET", "Listando Feedbacks")
-        feedbacksService.listar(id).enqueue(object : Callback<List<Feedback>> {
+        val sharedPreferences =
+            this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val idUser = sharedPreferences.getInt("id", 0)
+        var feedbacksService = Rest.getInstance(this).create(FeedbackService::class.java)
+        feedbacksService.listar(idUser.toLong()).enqueue(object : Callback<List<Feedback>> {
             override fun onResponse(
                 call: Call<List<Feedback>>,
                 response: Response<List<Feedback>>
@@ -55,6 +56,7 @@ class FeedbacksActivity : AppCompatActivity() {
                         userFeedbacks.add(feedback)
                         criarCardsFeedbacks(feedback)
                     }
+                    atualizarQuantidadeDeFeedbacks()
                 }
             }
 
