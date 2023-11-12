@@ -13,6 +13,8 @@ import crossgame.android.domain.models.messages.MessageInGroup
 class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, private val context: Context) :
     Adapter<MessageAdapter.ViewHolder>() {
 
+    // todo ajusta referencia do user id
+
     inner class ViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindCurrentUserMessage(messageInGroup: MessageInGroup) {
             if (binding is MyMessageLayoutBinding) {
@@ -33,7 +35,7 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val message = messageInGroups[viewType]
-        val view = if (message.id == 1L) {
+        val view = if (message.uid == 1L) {
             MyMessageLayoutBinding.inflate(
                 LayoutInflater.from(context), parent, false
             )
@@ -51,7 +53,7 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val message = messageInGroups[position]
-        if (message.id == 1L) {
+        if (message.uid == 1L) {
             holder.bindCurrentUserMessage(message)
         } else {
             holder.bindOtherUserMessage(message)
@@ -60,7 +62,7 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
 
     override fun getItemViewType(position: Int): Int {
         val message = messageInGroups[position]
-        return if (message.id == 1L) {
+        return if (message.uid == 1L) {
             0
         } else {
             1

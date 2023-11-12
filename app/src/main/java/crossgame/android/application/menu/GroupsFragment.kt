@@ -7,7 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import crossgame.android.application.R
+import crossgame.android.application.databinding.ActivityBsEditProfileBinding
+import crossgame.android.application.databinding.BsCreatinRoomBinding
+import crossgame.android.application.databinding.EmptyListComponentBinding
 import crossgame.android.application.databinding.FragmentGroupsBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.rooms.Room
@@ -38,6 +43,7 @@ class GroupsFragment : Fragment() {
         val recyclerViewRoom = binding.listOfRooms
         recyclerViewRoom.layoutManager = LinearLayoutManager(binding.root.context)
 
+        binding.addingRoom.setOnClickListener { showBottomSheet() }
 
         adapterRooms = RoomAdapter(listRoom, binding.root.context)
         recyclerViewRoom.adapter = adapterRooms
@@ -92,13 +98,30 @@ class GroupsFragment : Fragment() {
         }
     }
 
+    private fun showBottomSheet() {
+        val dialog = BottomSheetDialog(binding.root.context)
+        val sheetBinding: BsCreatinRoomBinding =
+            BsCreatinRoomBinding.inflate(layoutInflater, null, false)
+        dialog.setContentView(sheetBinding.root)
+
+        with(dialog.behavior) {
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        dialog.show()
+    }
+
+
     private fun layoutWithoutRooms() {
         val recyclerView = view?.findViewById<RecyclerView>(R.id.listOfRooms)
         val emptyLayout = view?.findViewById<View>(R.id.empty_list)
+        val buttomCreateRoom = view?.findViewById<View>(R.id.createRoomIdComponent)
 
         if (listRoom.isEmpty()) {
             recyclerView?.visibility = View.GONE
             emptyLayout?.visibility = View.VISIBLE
+            buttomCreateRoom?.setOnClickListener {
+                showBottomSheet()
+            }
         } else {
             recyclerView?.visibility = View.VISIBLE
             emptyLayout?.visibility = View.GONE
