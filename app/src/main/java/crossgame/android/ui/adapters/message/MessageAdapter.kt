@@ -3,34 +3,36 @@ package crossgame.android.ui.adapters.message
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.SimpleAdapter.ViewBinder
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.viewbinding.ViewBinding
-import crossgame.android.application.R
 import crossgame.android.application.databinding.MessageForOthersLayoutBinding
 import crossgame.android.application.databinding.MyMessageLayoutBinding
-import crossgame.android.domain.models.Message
+import crossgame.android.domain.models.messages.MessageInGroup
 
-class MessageAdapter(private val messages: MutableList<Message>, private val context: Context) :
+class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, private val context: Context) :
     Adapter<MessageAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bindCurrentUserMessage(message: Message) {
+        fun bindCurrentUserMessage(messageInGroup: MessageInGroup) {
             if (binding is MyMessageLayoutBinding) {
-                binding.messageText.text = message.text
+                binding.messageText.text = messageInGroup.text
+            } else if(binding is MessageForOthersLayoutBinding){
+                binding.messageText.text = messageInGroup.text
             }
         }
 
-        fun bindOtherUserMessage(message: Message) {
+        fun bindOtherUserMessage(messageInGroup: MessageInGroup) {
             if (binding is MessageForOthersLayoutBinding) {
-                binding.messageText.text = message.text
+                binding.messageText.text = messageInGroup.text
+            }else if(binding is MyMessageLayoutBinding){
+                binding.messageText.text = messageInGroup.text
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val message = messages[viewType]
+        val message = messageInGroups[viewType]
         val view = if (message.id == 1L) {
             MyMessageLayoutBinding.inflate(
                 LayoutInflater.from(context), parent, false
@@ -44,11 +46,11 @@ class MessageAdapter(private val messages: MutableList<Message>, private val con
     }
 
     override fun getItemCount(): Int {
-        return messages.size
+        return messageInGroups.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val message = messages[position]
+        val message = messageInGroups[position]
         if (message.id == 1L) {
             holder.bindCurrentUserMessage(message)
         } else {
@@ -57,11 +59,11 @@ class MessageAdapter(private val messages: MutableList<Message>, private val con
     }
 
     override fun getItemViewType(position: Int): Int {
-        val message = messages[position]
+        val message = messageInGroups[position]
         return if (message.id == 1L) {
-            1
-        } else {
             0
+        } else {
+            1
         }
     }
 }

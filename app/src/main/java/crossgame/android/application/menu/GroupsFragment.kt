@@ -11,6 +11,7 @@ import crossgame.android.application.R
 import crossgame.android.application.databinding.FragmentGroupsBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.rooms.Room
+import crossgame.android.domain.models.user.User
 import crossgame.android.service.RoomService
 import crossgame.android.ui.adapters.room.RoomAdapter
 import retrofit2.Call
@@ -73,7 +74,18 @@ class GroupsFragment : Fragment() {
         } else {
             listRoom.addAll(
                 mutableListOf(
-                    Room("teste", "testeDescrição")
+                    Room(
+                        1L,
+                        "teste",
+                        mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
+                        "testeDescrição"
+                    ),
+                    Room(
+                        2L,
+                        "abuda",
+                        mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
+                        "ajksdhkhsg"
+                    )
                 )
             )
             layoutWithoutRooms()
