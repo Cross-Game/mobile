@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import crossgame.android.application.databinding.ActivityProfileBinding
+import crossgame.android.application.databinding.BsGameListBinding
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -26,5 +28,4 @@ class ProfileActivity : AppCompatActivity() {
             setupWithNavController(navController)
         }
     }
-
 }

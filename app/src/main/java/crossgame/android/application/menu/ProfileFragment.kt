@@ -11,7 +11,7 @@ import crossgame.android.application.AddGamesActivity
 import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
 import crossgame.android.application.PlatformsActivity
-import crossgame.android.application.databinding.ActivityBsEditProfileBinding
+//import crossgame.android.application.databinding.ActivityBsEditProfileBinding
 import crossgame.android.application.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
@@ -35,16 +35,16 @@ class ProfileFragment : Fragment() {
     private fun showBottomSheet() {
         val dialog = BottomSheetDialog(binding.root.context)
 
-        val sheetBinding: ActivityBsEditProfileBinding =
-            ActivityBsEditProfileBinding.inflate(layoutInflater, null, false)
+//        val sheetBinding: ActivityBsEditProfileBinding =
+//            ActivityBsEditProfileBinding.inflate(layoutInflater, null, false)
 
-        dialog.setContentView(sheetBinding.root)
-        dialog.show()
-        sheetBinding.textVerFeedbacks.setOnClickListener { navigateToFeedbacks() }
-        sheetBinding.textEditarFoto.setOnClickListener { navigateToEditPhoto() }
-        sheetBinding.textEditarInteresse.setOnClickListener { navigateToEditInterests() }
-        sheetBinding.textEditarJogo.setOnClickListener { navigateToEditGame() }
-        sheetBinding.textEditarPlataforma.setOnClickListener { navigateToEditPlatforms() }
+//        dialog.setContentView(sheetBinding.root)
+//        dialog.show()
+//        sheetBinding.textVerFeedbacks.setOnClickListener { navigateToFeedbacks() }
+//        sheetBinding.textEditarFoto.setOnClickListener { navigateToEditPhoto() }
+//        sheetBinding.textEditarInteresse.setOnClickListener { navigateToEditInterests() }
+//        sheetBinding.textEditarJogo.setOnClickListener { navigateToEditGame() }
+//        sheetBinding.textEditarPlataforma.setOnClickListener { navigateToEditPlatforms() }
     }
 
     private fun navigateToFeedbacks() {
