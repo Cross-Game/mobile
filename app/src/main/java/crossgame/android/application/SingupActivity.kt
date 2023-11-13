@@ -13,12 +13,10 @@ import androidx.core.view.isGone
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.GsonBuilder
 import crossgame.android.application.databinding.ActivitySingupBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.user.UserRegisterRequest
-import crossgame.android.domain.models.user.UserRequest
 import crossgame.android.service.AutenticationUser
 import retrofit2.Call
 import retrofit2.Callback

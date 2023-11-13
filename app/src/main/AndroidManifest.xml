@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -18,11 +19,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ChatRoomActivity"
+            android:exported="false"
+            />
+        <activity
             android:name=".FeedbacksActivity"
             android:exported="false" />
         <activity
             android:name=".ListFriendActivity"
-            android:exported="false" />
+            android:exported="false"/>
+
         <activity
             android:name=".PlatformsActivity"
             android:exported="false">
@@ -46,13 +52,13 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeScreenActivity"
+            android:name=".ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".AddGamesActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".HomeScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,6 +66,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+<!--        <activity-->
+<!--            android:name=".RoomsActivity"-->
+<!--            android:exported="false">-->
+<!--        </activity>-->
 
         <meta-data
             android:name="preloaded_fonts"

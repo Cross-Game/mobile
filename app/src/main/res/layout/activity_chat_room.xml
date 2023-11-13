@@ -1,111 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:fillViewport="true">
 
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@color/md_theme_dark_errorContainer"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:background="@color/black">
 
-        <ImageView
-            android:id="@+id/imageView13"
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/valorant" />
-    </LinearLayout>
+            android:layout_height="150dp"
+            android:background="@color/md_theme_dark_errorContainer"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+            <Button
+                android:id="@+id/button_back_rooms"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/button_icon"
+                android:drawableTop="@drawable/baseline_arrow_back_ios_24"
+                android:paddingLeft="33dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="370dp"
-        android:layout_marginTop="1dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
-
-<!--        <ScrollView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent">-->
-<!--            -->
-<!--        </ScrollView>-->
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/background_my_message"
-            android:minWidth="350dp"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="10dp">
-
-            <TextView
+            <ImageView
+                android:id="@+id/imageView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:text="teste"
-                android:textAlignment="textStart"
-                android:textSize="21sp"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:text="teste"
-                android:textAlignment="textEnd"
-
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_marginLeft="80dp"
+                app:srcCompat="@drawable/valorant" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listOfUsersOnRoom"
+            android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@drawable/background_your_message"
-            android:minWidth="350dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+            tools:listitem="@layout/user_portrait_room_layout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listofmessagesinroom"
+            android:layout_width="320dp"
+            android:layout_height="380dp"
             android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="10dp">
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listOfUsersOnRoom"
+            tools:itemCount="4"
+            tools:listitem="@layout/message_for_others_layout" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:text="teste"
-                android:textAlignment="textStart"
-                android:textSize="21sp"
-                app:layout_constraintEnd_toEndOf="parent" />
+        <include
+            android:id="@+id/include"
+            layout="@layout/fragment_edit_and_send_text" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:text="teste"
-                android:textAlignment="textStart"
+        <include
+            android:id="@+id/includeSelectOptions"
+            layout="@layout/user_selected_options_room_layout"
+            android:visibility="gone"
+            />
 
-                app:layout_constraintEnd_toEndOf="parent" />
-        </LinearLayout>
-
-    </LinearLayout>
-    <include layout="@layout/fragment_edit_and_send_text" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

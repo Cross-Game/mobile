@@ -1,10 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".menu.GroupsFragment">
+    android:background="@color/black">
+        <LinearLayout
+            android:id="@+id/layoutId1"
+            android:layout_width="325dp"
+            android:layout_height="50dp"
 
-    <include layout="@layout/activity_rooms" />
+            android:layout_marginTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="110dp"
+                android:background="@drawable/set_backgroud_button_options"
+                android:padding="10dp"
+                app:srcCompat="@drawable/drawable_filter" />
+
+            <ImageView
+                android:id="@+id/addingRoom"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="110dp"
+                android:background="@drawable/set_backgroud_button_options"
+                android:padding="10dp"
+                app:srcCompat="@drawable/drawable_more" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/border_set_drawable"
+            app:layout_constraintTop_toBottomOf="@+id/layoutId1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="20dp"
+                android:text="@string/salas_publicas"
+                android:textAlignment="center"
+                android:textColor="@color/seed"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="20dp"
+                android:text="@string/minhas_salas"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listOfRooms"
+                android:layout_width="match_parent"
+                android:layout_height="450dp"
+                android:orientation="vertical"
+                android:padding="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+            <include
+                layout="@layout/empty_list_component"
+                android:visibility="gone" />
+        </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
