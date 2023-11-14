@@ -22,7 +22,7 @@ import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
 import crossgame.android.application.PlatformsActivity
 import crossgame.android.application.R
-import crossgame.android.application.databinding.ActivityBsEditProfileBinding
+import crossgame.android.application.databinding.BsEditProfileBinding
 import crossgame.android.application.databinding.FragmentProfileBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.feedbacks.Feedback
@@ -121,8 +121,8 @@ class ProfileFragment : Fragment() {
 
     private fun showBottomSheet() {
         val dialog = BottomSheetDialog(binding.root.context)
-        val sheetBinding: ActivityBsEditProfileBinding =
-            ActivityBsEditProfileBinding.inflate(layoutInflater, null, false)
+        val sheetBinding: BsEditProfileBinding  =
+            BsEditProfileBinding.inflate(layoutInflater, null, false)
         dialog.setContentView(sheetBinding.root)
         dialog.show()
 
