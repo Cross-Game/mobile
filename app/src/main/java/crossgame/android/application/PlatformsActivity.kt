@@ -42,6 +42,12 @@ class PlatformsActivity : AppCompatActivity() {
 
         val cadastrarButton = binding.btnCadastrarPlataforma
         cadastrarButton.setOnClickListener { onCadastrarButtonClick() }
+        binding.btnVoltar.setOnClickListener {
+            toGoBack() }
+    }
+
+    private fun toGoBack() {
+        finish()
     }
 
 

@@ -1,5 +1,6 @@
 package crossgame.android.application
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
@@ -16,34 +17,31 @@ import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.CountDownLatch
-import kotlin.math.log
 
 class AddInterestsActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityAddInterestsBinding
+    private lateinit var binding: ActivityAddInterestsBinding
 
-    var preferencesService = Rest.getInstance().create(PreferencesService::class.java)
+    private lateinit var preferencesService: PreferencesService
 
     var userInterests = mutableListOf<String>()
     var userInterestsDynamic = mutableListOf<String>()
 
-    var id = 1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddInterestsBinding.inflate(layoutInflater)
-        buildingServices()
-        binding.buttonBack.setOnClickListener { onExit(it) }
         setContentView(binding.root)
+        binding.buttonBack.setOnClickListener { onExit(it) }
         getAllUserInterestsInDatabase()
     }
 
-    private fun buildingServices() {
-        preferencesService = Rest.getInstance().create(PreferencesService::class.java)
-    }
 
     fun getAllUserInterestsInDatabase() {
         Log.i("GET", "Listando Preferencias")
+        val sharedPreferences =
+            this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        var id = sharedPreferences.getInt("id", 0).toLong()
+        preferencesService = Rest.getInstance(this).create(PreferencesService::class.java)
         preferencesService.listar(id).enqueue(object : Callback<UserPreference> {
             override fun onResponse(
                 call: Call<UserPreference>,
@@ -54,27 +52,34 @@ class AddInterestsActivity : AppCompatActivity() {
                     val preferences = response.body()?.preferences
                     preferences?.forEach { preferences ->
                         userInterests.add(preferences.preferences)
-                        val chipId = resources.getIdentifier(preferences.preferences, "id", packageName)
+                        val chipId =
+                            resources.getIdentifier(preferences.preferences, "id", packageName)
                         enableOrDisableChip(findViewById<Chip>(chipId))
                         Log.i("CHIP", "Chips Habilitado: " + preferences.preferences)
                     }
+                } else {
+                    Log.i("ERRO", "Response falhou !")
                 }
             }
 
             override fun onFailure(call: Call<UserPreference>, t: Throwable) {
-                Log.e("ERROR", "ERRO AO OBTER PREFERENCIAS: "+ t.message.toString()) // TODO
+                Log.e("ERROR", "ERRO AO OBTER PREFERENCIAS: " + t.message.toString()) // TODO
             }
         })
     }
-    fun getAllUserInterests() : List<String> {
+
+    fun getAllUserInterests(): List<String> {
         return userInterests
     }
 
     fun insertInterestForUser(preferences: Set<String>, onResult: (Boolean) -> Unit) {
         Log.i("Sucesso", "Inserindo as preferências: $preferences")
+        val sharedPreferences =
+            this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        var id = sharedPreferences.getInt("id", 0).toLong()
+        preferencesService = Rest.getInstance(this).create(PreferencesService::class.java)
         val call = preferencesService.adicionar(id, preferences)
         call.enqueue(object : Callback<Void> {
-
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.i("Sucesso", "Sucesso ao adicionar preferências: $preferences")
@@ -96,6 +101,10 @@ class AddInterestsActivity : AppCompatActivity() {
         Log.i("Information", "Deletando preferência: $namePreference")
 
         try {
+            val sharedPreferences =
+                this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+            var id = sharedPreferences.getInt("id", 0).toLong()
+            preferencesService = Rest.getInstance(this).create(PreferencesService::class.java)
             val response = preferencesService.deletar(id, namePreference).execute()
 
             if (response.isSuccessful) {
@@ -166,7 +175,8 @@ class AddInterestsActivity : AppCompatActivity() {
             }
         }
     }
-    fun onExit(v : View) {
+
+    fun onExit(v: View) {
         Log.i("EXIT", "Saindo da tela")
         insertOrDeleteInterestForUser()
         finish()

@@ -22,7 +22,7 @@ import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
 import crossgame.android.application.PlatformsActivity
 import crossgame.android.application.R
-import crossgame.android.application.databinding.ActivityBsEditProfileBinding
+import crossgame.android.application.databinding.BsEditProfileBinding
 import crossgame.android.application.databinding.FragmentProfileBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.feedbacks.Feedback
@@ -121,13 +121,12 @@ class ProfileFragment : Fragment() {
 
     private fun showBottomSheet() {
         val dialog = BottomSheetDialog(binding.root.context)
-        val sheetBinding: ActivityBsEditProfileBinding =
-            ActivityBsEditProfileBinding.inflate(layoutInflater, null, false)
+        val sheetBinding: BsEditProfileBinding  =
+            BsEditProfileBinding.inflate(layoutInflater, null, false)
         dialog.setContentView(sheetBinding.root)
         dialog.show()
 
         sheetBinding.textVerFeedbacks.setOnClickListener { navigation("Feedback") }
-        sheetBinding.textEditarFoto.setOnClickListener { navigation("Foto") }
         sheetBinding.textEditarInteresse.setOnClickListener { navigation("Interesse") }
         sheetBinding.textEditarJogo.setOnClickListener { navigation("Jogo") }
         sheetBinding.textEditarPlataforma.setOnClickListener { navigation("Plataforma") }
@@ -136,7 +135,6 @@ class ProfileFragment : Fragment() {
     private fun navigation(navigate: String) {
         when (navigate) {
             "Feedback" -> startActivity(Intent(binding.root.context, FeedbacksActivity::class.java))
-            "Foto" -> startActivity(Intent(binding.root.context, FeedbacksActivity::class.java))
             "Interesse" -> startActivity(
                 Intent(
                     binding.root.context,

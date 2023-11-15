@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import crossgame.android.application.R
-import crossgame.android.application.databinding.ActivityBsEditProfileBinding
+import crossgame.android.application.databinding.BsEditProfileBinding
 import crossgame.android.application.databinding.BsCreatinRoomBinding
 import crossgame.android.application.databinding.EmptyListComponentBinding
 import crossgame.android.application.databinding.FragmentGroupsBinding

@@ -1,7 +1,7 @@
 package crossgame.android.domain.models.users
 
 data class BaseUser(
-    val id : Int,
+    val id : Long,
     val username : String,
     val email : String,
     val role : String,
