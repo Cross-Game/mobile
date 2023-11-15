@@ -25,7 +25,7 @@
                 app:srcCompat="@drawable/drawable_filter" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/addingRoom"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="110dp"

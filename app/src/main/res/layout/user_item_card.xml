@@ -39,4 +39,12 @@
         android:textColor="@color/white"
         android:textSize="15sp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/userMessageTextView"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/darker_gray" />
+
+
 </RelativeLayout>
