@@ -7,7 +7,7 @@ data class Notification(
     val message : String,
     val description : String,
     val date : LocalDateTime,
-    val  notificationState : NotificationState,
-    val notificatioType: NotificationType
+    val  state : NotificationState,
+    val type: NotificationType
 
 )
