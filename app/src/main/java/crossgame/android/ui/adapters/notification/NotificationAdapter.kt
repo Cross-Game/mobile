@@ -59,6 +59,6 @@ class NotificationAdapter(private val context: Context, private val notification
     }
 
     override fun getItemViewType(position: Int): Int {
-        return notificationList[position].notificatioType.ordinal
+        return notificationList[position].type.ordinal
     }
 }
