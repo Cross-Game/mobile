@@ -137,27 +137,17 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <GridLayout
-                    android:id="@+id/list_of_games"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/listGames"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:breakStrategy="balanced"
-                    android:orientation="horizontal"
-                    android:useDefaultMargins="true"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/title_session_jogos">
-
-                    <include layout="@layout/card_title_game_medium" />
-
-                    <include layout="@layout/card_title_game_medium" />
-
-                    <include layout="@layout/card_title_game_medium" />
-
-                    <include layout="@layout/card_title_game_medium" />
-
-                    <include layout="@layout/card_title_game_medium" />
-
-                </GridLayout>
+                    android:layout_height="150dp"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_session_jogos"
+                    app:spanCount="3"
+                    tools:listitem="@layout/card_title_game_medium" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

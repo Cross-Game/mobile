@@ -1,5 +1,6 @@
 package crossgame.android.application.menu
 
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -16,20 +17,27 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import crossgame.android.application.AddGamesActivity
 import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
 import crossgame.android.application.PlatformsActivity
 import crossgame.android.application.R
+import crossgame.android.application.databinding.ActivityLoadingBinding
 import crossgame.android.application.databinding.BsEditProfileBinding
 import crossgame.android.application.databinding.FragmentProfileBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.feedbacks.Feedback
+import crossgame.android.domain.models.games.GameResponse
+import crossgame.android.domain.models.games.ImageGame
 import crossgame.android.domain.models.user.UserList
 import crossgame.android.service.AutenticationUser
 import crossgame.android.service.FeedbackService
+import crossgame.android.service.GamesService
 import crossgame.android.service.UserFriendService
+import crossgame.android.ui.adapters.games.GamesAdapter
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -42,6 +50,9 @@ import java.io.InputStream
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
+    private var originalGamesList: List<GameResponse> = mutableListOf()
+    private lateinit var gamesAdapter: GamesAdapter
+    private lateinit var bindingLoadingBinding: ActivityLoadingBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,10 +67,20 @@ class ProfileFragment : Fragment() {
         binding.imageJogador.setImageResource(R.drawable.carbon_user_avatar_empty)
         binding.btnSettingProfile.setOnClickListener { showBottomSheet() }
         binding.btnAddPhoto.setOnClickListener { updatePhotoUser() }
+
+        val recyclerView = binding.listGames
+        gamesAdapter = GamesAdapter(requireContext(), mutableListOf()) {
+                nomeItem, idItem ->
+            Toast.makeText(requireContext(), nomeItem, Toast.LENGTH_SHORT).show()
+        }
+        recyclerView.layoutManager = GridLayoutManager(requireContext(),1, RecyclerView.HORIZONTAL, false)
+        recyclerView.adapter = gamesAdapter
+
         getPhotoUser()
         updateNameUser()
         updateFeedbacksUser()
         updateFriendsUser()
+        updateGamesUser()
         return binding.root
     }
 
@@ -246,7 +267,35 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateGamesUser() {
+        val rest = Rest.getInstance(requireContext())
+        val service = rest.create(GamesService::class.java)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val idUser = sharedPreferences.getInt("id", 0).toLong()
+        service.listar(idUser).enqueue(object : Callback<List<GameResponse>> {
+            override fun onResponse(
+                call: Call<List<GameResponse>>,
+                response: Response<List<GameResponse>>
+            ) {
+                if (response.isSuccessful) {
+                    Log.i("GET", "Listagem de amigos realizada com sucesso")
+                    val apiResponse = response.body()
 
+                    originalGamesList = apiResponse?.map {
+                        val imageGame = ImageGame(it.imageGame.id, it.imageGame.typeImage,
+                            it.imageGame.link, it.imageGame.image_id)
+                        GameResponse(it.id, it.platformsType, imageGame, it.gameGenres, it.name,
+                            it.platforms, it.cover, it.genres)
+                    } ?: emptyList()
+
+                    gamesAdapter.updateData(originalGamesList)
+                }
+            }
+
+            override fun onFailure(call: Call<List<GameResponse>>, t: Throwable) {
+                Log.e("GET", "Falha ao listar os Jogos", t)
+            }
+        })
     }
 
     private fun updatePlatformsUser() {
