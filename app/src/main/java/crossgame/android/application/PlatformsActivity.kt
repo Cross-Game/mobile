@@ -24,8 +24,6 @@ class PlatformsActivity : AppCompatActivity() {
     private val selectedPlatforms = mutableSetOf<ImageView>()
     var platformsService = Rest.getInstance().create(PlatformsService::class.java)
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlatformsBinding.inflate(layoutInflater)
@@ -34,7 +32,6 @@ class PlatformsActivity : AppCompatActivity() {
         val xboxImage = binding.xboxImage
         val mobileImage = binding.mobileImage
         val playstationImage = binding.playstationImage
-
         val images = listOf(computerImage, xboxImage, mobileImage, playstationImage)
 
         images.forEach { image ->
@@ -45,6 +42,12 @@ class PlatformsActivity : AppCompatActivity() {
 
         val cadastrarButton = binding.btnCadastrarPlataforma
         cadastrarButton.setOnClickListener { onCadastrarButtonClick() }
+        binding.btnVoltar.setOnClickListener {
+            toGoBack() }
+    }
+
+    private fun toGoBack() {
+        finish()
     }
 
 
@@ -106,14 +109,4 @@ class PlatformsActivity : AppCompatActivity() {
         }
     }
 
-    private fun showSelectedPlatformsDialog(platformNames: List<String>) {
-        val platforms = platformNames.joinToString(", ")
-        val dialog = AlertDialog.Builder(this)
-            .setTitle("Plataformas Selecionadas")
-            .setMessage("Você selecionou as seguintes plataformas: $platforms")
-            .setPositiveButton("OK", null)
-            .create()
-
-        dialog.show()
-    }
 }

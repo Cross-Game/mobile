@@ -15,7 +15,6 @@ class NotificationsActivity : AppCompatActivity() {
         binding = ActivityNotificationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.imageView2.setOnClickListener { testTranferDataFromSharedPreference() }
     }
 
     private fun testTranferDataFromSharedPreference() {
