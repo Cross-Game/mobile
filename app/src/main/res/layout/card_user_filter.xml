@@ -30,12 +30,12 @@
 
 
         <com.google.android.material.chip.ChipGroup
-            app:layout_constraintTop_toBottomOf="@id/text_nomepessoa"
+            app:layout_constraintTop_toBottomOf="@+id/text_nomepessoa"
             app:layout_constraintStart_toEndOf="@id/imagePessoa"
             app:chipSpacingVertical="-5dp"
             app:chipSpacingHorizontal="-12dp"
             android:id="@+id/listOfGames"
-            android:layout_width="248dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             app:singleLine="false"
 
@@ -60,7 +60,6 @@
 
 
         <LinearLayout
-            android:layout_marginRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -70,16 +69,25 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/button_link"
                 android:layout_marginBottom="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/baseline_reply_24"
                 android:rotationY="180" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/baseline_favorite_24" />
+            <ToggleButton
+                android:id="@+id/button_add_friend"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/selector_button_heart"
+                android:button="@android:color/transparent"
+                android:layout_gravity="center"
+                android:checked="false"
+                android:textOff=""
+                android:textOn=""
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                />
 
 
         </LinearLayout>
@@ -87,3 +95,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
+
