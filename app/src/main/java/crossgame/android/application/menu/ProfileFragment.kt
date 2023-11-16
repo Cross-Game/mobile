@@ -42,7 +42,6 @@ import java.io.InputStream
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
-    private val PICK_IMAGE_REQUEST = 10
 
     override fun onCreateView(
         inflater: LayoutInflater,
