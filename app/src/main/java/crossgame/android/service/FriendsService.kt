@@ -16,10 +16,5 @@ interface FriendsService {
     fun retrieveFriendsForUserById(@Path("userId") userId: Long): Call<List<UserFriend>>
 
     @POST("friends/{userId}")
-    fun sendFriendInvite(@Path("userId") userId: Long, @Body friend: Friends): Call<UserFriend>
-
-    @PATCH("friends/confirming-friend-request/{userId}/{friendUsername}")
-    fun confirmFriendRequest(@Path("userId") userId: Long,@Path("friendUsername") friendUsername: String):Call<UserFriend>
-    @DELETE("friends/declining-friend-request/{userId}/{friendUsername}")
-    fun decliningFriendRequest(@Path("userId") userId: Long,@Path("friendUsername") friendUsername: String):Call<Void>
+    fun addFriendToAnUser(@Path("userId") userId: Long, @Body friendAdd : FriendAdd): Call<Unit>
 }
