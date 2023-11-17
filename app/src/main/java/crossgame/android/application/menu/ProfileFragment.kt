@@ -1,13 +1,14 @@
 package crossgame.android.application.menu
 
-import android.animation.ValueAnimator
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -25,7 +26,6 @@ import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
 import crossgame.android.application.PlatformsActivity
 import crossgame.android.application.R
-import crossgame.android.application.databinding.ActivityLoadingBinding
 import crossgame.android.application.databinding.BsEditProfileBinding
 import crossgame.android.application.databinding.FragmentProfileBinding
 import crossgame.android.domain.httpClient.Rest
@@ -52,18 +52,23 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private var originalGamesList: List<GameResponse> = mutableListOf()
     private lateinit var gamesAdapter: GamesAdapter
-    private lateinit var bindingLoadingBinding: ActivityLoadingBinding
+    private lateinit var progressDialog: ProgressDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        progressDialog = ProgressDialog(requireActivity())
+        progressDialog.setInverseBackgroundForced(true)
+        progressDialog.setTitle("Carregando...")
+        progressDialog.show()
         binding = FragmentProfileBinding.inflate(
             inflater,
             container,
             false
         )
+
         binding.imageJogador.setImageResource(R.drawable.carbon_user_avatar_empty)
         binding.btnSettingProfile.setOnClickListener { showBottomSheet() }
         binding.btnAddPhoto.setOnClickListener { updatePhotoUser() }
@@ -81,6 +86,16 @@ class ProfileFragment : Fragment() {
         updateFeedbacksUser()
         updateFriendsUser()
         updateGamesUser()
+
+        val timer = object : CountDownTimer(2500, 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+                progressDialog.dismiss()
+            }
+        }
+        timer.start()
         return binding.root
     }
 

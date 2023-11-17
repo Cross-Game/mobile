@@ -18,7 +18,6 @@ class GamesAdapter(
     private val onItemClick: (String, Long) -> Unit
 ) : RecyclerView.Adapter<GamesAdapter.GamesViewHolder>() {
 
-    private lateinit var binding: ActivityLoadingBinding
 
     class GamesViewHolder(private val binding: CardTitleGameMediumBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -52,7 +51,7 @@ class GamesAdapter(
         notifyDataSetChanged()
     }
     private fun animateItemHeight(view: View) {
-        val animator = ValueAnimator.ofInt(0, 300) // Defina a altura final desejada
+        val animator = ValueAnimator.ofInt(0, 300)
         animator.addUpdateListener { animation ->
             val animatedValue = animation.animatedValue as Int
             val layoutParams = view.layoutParams
