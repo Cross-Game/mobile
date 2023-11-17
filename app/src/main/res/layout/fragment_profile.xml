@@ -193,108 +193,25 @@
                     android:textColor="@color/white" />
 
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/listInteresses"
+                <ScrollView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:chipSpacingVertical="-5dp"
-                    app:singleLine="true">
+                    android:layout_height="wrap_content">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/BRASILEIRA"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
+                    <LinearLayout
+                        android:id="@+id/listOfPreferences"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="BRASILEIRA"
-                        android:text="Brasileira"
-                        android:textColor="@color/white" />
+                        android:background="@color/black"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Brasileira"
+                            android:textColor="@color/seed"/>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/CAFES"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="CAFES"
-                        android:text="Cafés"
-                        android:textColor="@color/white"
-                        app:closeIconTint="@color/white" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/CHINESA"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="CHINESA"
-                        android:text="Chinesa"
-                        android:textColor="@color/white" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/COREANA"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="COREANA"
-                        android:text="Coreana"
-                        android:textColor="@color/white"
-
-                        />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/FAST_FOOD"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="FAST_FOOD"
-                        android:text="Fast Food"
-                        android:textColor="@color/white" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/INDIANA"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="INDIANA"
-                        android:text="Indiana"
-                        android:textColor="@color/white" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/ITALIANA"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="ITALIANA"
-                        android:text="Italiana"
-                        android:textColor="@color/white" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/JAPONESA"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="JAPONESA"
-                        android:text="Japonesa"
-                        android:textColor="@color/white" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/MEXICANA"
-                        style="@style/Widget.Material3.Chip.Assist.Elevated"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:tag="MEXICANA"
-                        android:text="Mexicana"
-                        android:textColor="@color/white" />
-
-
-                </com.google.android.material.chip.ChipGroup>
+                    </LinearLayout>
+                </ScrollView>
 
             </LinearLayout>
 

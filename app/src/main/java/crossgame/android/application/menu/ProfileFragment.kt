@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -15,12 +16,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
 import crossgame.android.application.AddGamesActivity
 import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
@@ -33,9 +39,11 @@ import crossgame.android.domain.models.feedbacks.Feedback
 import crossgame.android.domain.models.games.GameResponse
 import crossgame.android.domain.models.games.ImageGame
 import crossgame.android.domain.models.user.UserList
+import crossgame.android.domain.models.users.UserPreference
 import crossgame.android.service.AutenticationUser
 import crossgame.android.service.FeedbackService
 import crossgame.android.service.GamesService
+import crossgame.android.service.PreferencesService
 import crossgame.android.service.UserFriendService
 import crossgame.android.ui.adapters.games.GamesAdapter
 import okhttp3.MediaType
@@ -53,6 +61,7 @@ class ProfileFragment : Fragment() {
     private var originalGamesList: List<GameResponse> = mutableListOf()
     private lateinit var gamesAdapter: GamesAdapter
     private lateinit var progressDialog: ProgressDialog
+    private lateinit var preferencesService: PreferencesService
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,6 +95,7 @@ class ProfileFragment : Fragment() {
         updateFeedbacksUser()
         updateFriendsUser()
         updateGamesUser()
+        updateInterestsUser()
 
         val timer = object : CountDownTimer(2500, 1000) {
 
@@ -302,7 +312,6 @@ class ProfileFragment : Fragment() {
                         GameResponse(it.id, it.platformsType, imageGame, it.gameGenres, it.name,
                             it.platforms, it.cover, it.genres)
                     } ?: emptyList()
-
                     gamesAdapter.updateData(originalGamesList)
                 }
             }
@@ -318,6 +327,39 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateInterestsUser() {
+        Log.i("GET", "Listando Preferencias")
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        var id = sharedPreferences.getInt("id", 0).toLong()
+        preferencesService = Rest.getInstance(requireContext()).create(PreferencesService::class.java)
+        preferencesService.listar(id).enqueue(object : Callback<UserPreference> {
+            override fun onResponse(
+                call: Call<UserPreference>,
+                response: Response<UserPreference>
+            ) {
+                if (response.isSuccessful) {
+                    Log.i("GET", "Sucesso ao listar Preferencias")
+                    val preferences = response.body()?.preferences
+                    preferences?.forEach { preferences ->
+                        createChipView(binding.listOfPreferences, preferences.preferences)
+                        Log.i("CHIP", "Chips Habilitado: " + preferences.preferences)
+                    }
+                } else {
+                    Log.i("ERRO", "Response falhou !")
+                }
+            }
 
+            override fun onFailure(call: Call<UserPreference>, t: Throwable) {
+                Log.e("ERROR", "ERRO AO OBTER PREFERENCIAS: " + t.message.toString())
+            }
+        })
+    }
+    fun createChipView(scrollView: LinearLayout, name: String) {
+        val textView = TextView(context)
+
+        textView.text = name
+        textView.setTextColor(Color.parseColor("#00ff33"))
+        textView.setPadding(20, 10, 20, 10)
+        scrollView.addView(textView)
     }
 }
