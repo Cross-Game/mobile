@@ -60,7 +60,7 @@ class NotificationFragment : Fragment(), SnackbarNotifier {
         val rest = Rest.getInstance()
         val service = rest.create(NotificationService::class.java)
 
-        service.retrieveNotifications(7).enqueue(object : Callback<List<NotificationResponse>> {
+        service.retrieveNotifications(userId).enqueue(object : Callback<List<NotificationResponse>> {
             override fun onResponse(
                 call: Call<List<NotificationResponse>>,
                 response: Response<List<NotificationResponse>>

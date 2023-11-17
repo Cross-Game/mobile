@@ -1,4 +1,5 @@
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -7,9 +8,11 @@ import crossgame.android.application.databinding.CardNotificationGroupBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.friends.Friends
 import crossgame.android.domain.models.notifications.NotificationResponse
+import crossgame.android.domain.models.notifications.NotificationState
 import crossgame.android.domain.models.notifications.NotificationType
 import crossgame.android.domain.models.users.UserFriend
 import crossgame.android.service.FriendsService
+import crossgame.android.service.NotificationService
 import crossgame.android.ui.adapters.notification.SnackbarNotifier
 import retrofit2.Call
 import retrofit2.Callback
@@ -97,7 +100,7 @@ class NotificationAdapter(
     }
 
     fun updateData(notifications: List<NotificationResponse>) {
-        notificationList = notifications
+        notificationList = notifications.filter { !it.state.ordinal.equals(NotificationState.CANCELLED) }
         notifyDataSetChanged()
     }
 
@@ -113,30 +116,28 @@ class NotificationAdapter(
             context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("id", 0).toLong()
 
-        val rest = Rest.getInstance()
+        val rest = Rest.getInstance(context)
         when (notification.type) {
             NotificationType.FRIEND_REQUEST -> {
-                  var friends = Friends(null,notification.description,null)
                   val service = rest.create(FriendsService::class.java)
 
-                  service.sendFriendInvite(userId, friends).enqueue(object :
+                  service.confirmFriendRequest(userId,notification.description ).enqueue(object :
                       Callback<UserFriend> {
-                      override fun onResponse(
-                          call: Call<UserFriend>,
-                          response: Response<UserFriend>
-                      ) {
-                        if(response.isSuccessful){
-                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification accepted")
+                      override fun onResponse(call: Call<UserFriend>, response: Response<UserFriend>) {
+                          if (response.isSuccessful){
+                              (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Amizade aceita!")
 
-                        }
-                      }
+                              removeNotification(notification.id,notificationList)
+
+                          }                      }
 
                       override fun onFailure(call: Call<UserFriend>, t: Throwable) {
-                          TODO("Not yet implemented")
+                          Log.i("PATCH",t.message.toString())
                       }
 
+                  }
+                  )
 
-                  })
             }
             NotificationType.GROUP_INVITE -> {
                 (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification accepted")
@@ -149,13 +150,30 @@ class NotificationAdapter(
     }
 
     override fun onReject(notification: NotificationResponse) {
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", 0).toLong()
+
+        val rest = Rest.getInstance(context)
         when (notification.type) {
             NotificationType.FRIEND_REQUEST -> {
-                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Friend Notification Rejected")
+                val service = rest.create(FriendsService::class.java)
 
-                // Lógica para recusar uma solicitação de amizade
-                // Chame a API relevante para recusar essa solicitação
-                // Exemplo: apiService.rejectFriendRequest(notification.id)
+                service.decliningFriendRequest(userId,notification.description ).enqueue(object :
+                    Callback<Void> {
+                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                        if (response.isSuccessful){
+                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Pedido removido!")
+                            removeNotification(notification.id,notificationList)
+
+                        }           }
+
+                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                        Log.i("PATCH",t.message.toString())
+                    }
+
+                }
+                )
             }
             NotificationType.GROUP_INVITE -> {
                 (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification Rejected")
@@ -165,5 +183,30 @@ class NotificationAdapter(
                 // Exemplo: apiService.rejectGroupInvite(notification.id)
             }
         }
+    }
+
+    private fun removeNotification(notificationId:Long,notificationList: List<NotificationResponse>){
+
+        val rest = Rest.getInstance(context)
+        val service = rest.create(NotificationService::class.java)
+
+        service.removeNotification(notificationId).enqueue(object :
+            Callback<NotificationResponse> {
+            override fun onResponse(
+                call: Call<NotificationResponse>,
+                response: Response<NotificationResponse>
+            ) {
+               if (response.isSuccessful){
+                   val updatedList = notificationList.filter { it.id != notificationId }
+
+                   updateData(updatedList)
+                   Log.i("PATCH","Notification removed")
+               }
+            }
+
+            override fun onFailure(call: Call<NotificationResponse>, t: Throwable) {
+                Log.i("PATCH",t.message.toString())
+            }
+        })
     }
 }

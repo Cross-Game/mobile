@@ -16,7 +16,7 @@ interface NotificationService {
     fun createNotification(@Path("userId") userId : Long): Call<NotificationResponse>
 
     @PATCH("/notifies/{userId}")
-    fun negateNotification(@Path("userId") userId : Long): Call<NotificationResponse>
+    fun removeNotification(@Path("userId") userId : Long): Call<NotificationResponse>
 
 
 }
