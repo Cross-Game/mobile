@@ -69,7 +69,6 @@
             android:name=".AddGamesActivity"
             android:exported="false" />
 
-
 <!--        <activity-->
 <!--            android:name=".RoomsActivity"-->
 <!--            android:exported="false">-->
