@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -16,17 +15,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.chip.Chip
 import crossgame.android.application.AddGamesActivity
 import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
@@ -38,14 +32,18 @@ import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.feedbacks.Feedback
 import crossgame.android.domain.models.games.GameResponse
 import crossgame.android.domain.models.games.ImageGame
+import crossgame.android.domain.models.platforms.GameplayPlatformType
+import crossgame.android.domain.models.preferences.Preference
 import crossgame.android.domain.models.user.UserList
 import crossgame.android.domain.models.users.UserPreference
 import crossgame.android.service.AutenticationUser
 import crossgame.android.service.FeedbackService
 import crossgame.android.service.GamesService
+import crossgame.android.service.PlatformsService
 import crossgame.android.service.PreferencesService
 import crossgame.android.service.UserFriendService
 import crossgame.android.ui.adapters.games.GamesAdapter
+import crossgame.android.ui.adapters.interesses.PreferenceAdapter
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -59,7 +57,9 @@ class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
     private var originalGamesList: List<GameResponse> = mutableListOf()
+    private var preferenceList: List<Preference> = mutableListOf()
     private lateinit var gamesAdapter: GamesAdapter
+    private lateinit var preferenceAdapter: PreferenceAdapter
     private lateinit var progressDialog: ProgressDialog
     private lateinit var preferencesService: PreferencesService
 
@@ -77,7 +77,6 @@ class ProfileFragment : Fragment() {
             container,
             false
         )
-
         binding.imageJogador.setImageResource(R.drawable.carbon_user_avatar_empty)
         binding.btnSettingProfile.setOnClickListener { showBottomSheet() }
         binding.btnAddPhoto.setOnClickListener { updatePhotoUser() }
@@ -90,12 +89,18 @@ class ProfileFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(),1, RecyclerView.HORIZONTAL, false)
         recyclerView.adapter = gamesAdapter
 
+        val recyclerViewInterest = binding.listInteresse
+        preferenceAdapter = PreferenceAdapter(requireContext(), mutableListOf())
+        recyclerViewInterest.layoutManager = GridLayoutManager(requireContext(), 1, RecyclerView.HORIZONTAL, false)
+        recyclerViewInterest.adapter = preferenceAdapter
+
         getPhotoUser()
         updateNameUser()
         updateFeedbacksUser()
         updateFriendsUser()
         updateGamesUser()
         updateInterestsUser()
+        updatePlatformsUser()
 
         val timer = object : CountDownTimer(2500, 1000) {
 
@@ -323,7 +328,24 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updatePlatformsUser() {
+        val sharedPreferences = requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val id = sharedPreferences.getInt("id", 0)
+        var platformsService = Rest.getInstance(requireActivity()).create(PlatformsService::class.java)
+        platformsService.retrieveGamePlatformsForUserById(id.toLong()).enqueue(object : Callback<List<GameplayPlatformType>>{
+            override fun onResponse(
+                call: Call<List<GameplayPlatformType>>,
+                response: Response<List<GameplayPlatformType>>
+            ) {
+                    if (response.isSuccessful){
+                    showPlatformas(response.body())
+                }
+            }
 
+            override fun onFailure(call: Call<List<GameplayPlatformType>>, t: Throwable) {
+                Log.e("ERROR", "ERRO AO OBTER PLATAFORMAS: " + t.message.toString())
+            }
+
+        })
     }
 
     private fun updateInterestsUser() {
@@ -340,10 +362,10 @@ class ProfileFragment : Fragment() {
                 if (response.isSuccessful) {
                     Log.i("GET", "Sucesso ao listar Preferencias")
                     val preferences = response.body()?.preferences
-                    preferences?.forEach { preferences ->
-                        createChipView(binding.listOfPreferences, preferences.preferences)
-                        Log.i("CHIP", "Chips Habilitado: " + preferences.preferences)
-                    }
+                    preferenceList = preferences?.map {
+                        Preference(it.id, it.preferences)
+                    } ?: emptyList()
+                    preferenceAdapter.updateData(preferenceList)
                 } else {
                     Log.i("ERRO", "Response falhou !")
                 }
@@ -354,12 +376,16 @@ class ProfileFragment : Fragment() {
             }
         })
     }
-    fun createChipView(scrollView: LinearLayout, name: String) {
-        val textView = TextView(context)
 
-        textView.text = name
-        textView.setTextColor(Color.parseColor("#00ff33"))
-        textView.setPadding(20, 10, 20, 10)
-        scrollView.addView(textView)
+    private fun showPlatformas(body: List<GameplayPlatformType>?) {
+        body?.map {
+            when (it.name) {
+                "PC" -> binding.computerImage.visibility = View.VISIBLE
+                "XBOX" -> binding.xboxImage.visibility = View.VISIBLE
+                "PLAYSTATION" -> binding.playstationImage.visibility = View.VISIBLE
+                else -> binding.mobileImage.visibility = View.VISIBLE
+            }
+
+        }
     }
 }
