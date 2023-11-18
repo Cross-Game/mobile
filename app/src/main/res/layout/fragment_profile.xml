@@ -113,7 +113,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
 
@@ -137,17 +137,27 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/listGames"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_margin="10dp"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title_session_jogos"
-                    app:spanCount="3"
-                    tools:listitem="@layout/card_title_game_medium" />
+                <RelativeLayout
+                    android:id="@+id/listGamesUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title_session_jogos">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listGames"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:spanCount="1"
+                        tools:listitem="@layout/card_title_game_medium" />
+                </RelativeLayout>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -162,58 +172,84 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="10dp"
+                    android:layout_height="50dp"
                     android:text="Plataformas"
+                    android:gravity="center"
                     android:textColor="@color/white" />
 
                 <LinearLayout
                     android:id="@+id/list_of_platforms"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/computer_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:src="@drawable/pc_image"
+                        android:background="@drawable/selected_background_pc" />
 
+                    <ImageView
+                        android:id="@+id/xbox_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:src="@drawable/xbox_platform"
+                        android:background="@drawable/selected_background_xbox" />
+
+                    <ImageView
+                        android:id="@+id/mobile_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:src="@drawable/mobile_image"
+                        android:background="@drawable/selected_backbackground_mobile" />
+
+                    <ImageView
+                        android:id="@+id/playstation_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:src="@drawable/playstation_image"
+                        android:background="@drawable/selected_background_playstation" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/session_plataformas">
+
 
                 <TextView
+                    android:id="@+id/txtInteresse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
                     android:text="Interesses"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/session_plataformas"/>
 
 
-                <ScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/listOfPreferences"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/black"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Brasileira"
-                            android:textColor="@color/seed"/>
-
-                    </LinearLayout>
-                </ScrollView>
-
-            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listInteresse"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/txtInteresse"
+                app:spanCount="1"
+                tools:listitem="@layout/card_interesse" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
