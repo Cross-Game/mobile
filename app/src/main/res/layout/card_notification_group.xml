@@ -68,7 +68,7 @@
             android:rotationY="180"
             app:layout_constraintEnd_toEndOf="@+id/refuse_invite"
             app:layout_constraintTop_toBottomOf="@+id/refuse_invite"
-            app:srcCompat="@drawable/baseline_favorite_24" />
+            app:srcCompat="@drawable/accept_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
