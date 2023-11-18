@@ -1,21 +1,11 @@
-import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
-import crossgame.android.application.R
 import crossgame.android.application.databinding.CardNotificationFriendshipBinding
 import crossgame.android.application.databinding.CardNotificationGroupBinding
 import crossgame.android.domain.httpClient.Rest
-import crossgame.android.domain.models.friends.Friends
 import crossgame.android.domain.models.notifications.NotificationResponse
 import crossgame.android.domain.models.notifications.NotificationState
 import crossgame.android.domain.models.notifications.NotificationType
@@ -26,8 +16,6 @@ import crossgame.android.ui.adapters.notification.SnackbarNotifier
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 interface NotificationActionListener {
     fun onAccept(notification: NotificationResponse)
@@ -79,7 +67,6 @@ class NotificationAdapter(
                 val friendHolder = holder as NotificationFriendViewHolder
                 friendHolder.notificationMessage.text = currentNotification.message
                 friendHolder.notificationDate.text = currentNotification.date.substring(11, 16)
-                showNotification("Nova Notificação", currentNotification.message)
 
                 friendHolder.acceptButton.setOnClickListener {
                     onAccept(currentNotification)
@@ -115,11 +102,6 @@ class NotificationAdapter(
         notifyDataSetChanged()
     }
 
-    fun formatTimestampToHourMinute(timestamp: String): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS")
-        val dateTime = LocalDateTime.parse(timestamp, formatter)
-        return dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-    }
 
     override fun onAccept(notification: NotificationResponse) {
 
@@ -222,46 +204,4 @@ class NotificationAdapter(
     }
 
 
-    companion object {
-        private const val CHANNEL_ID = "notification_channel_id"
-        private const val NOTIFICATION_ID = 123
-    }
-
-    init {
-        createNotificationChannel(context)
-    }
-
-    private fun createNotificationChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Channel Name"
-            val descriptionText = "Channel Description"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    private fun showNotification(title: String, message: String) {
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.accept_button)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        with(NotificationManagerCompat.from(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-
-                return
-            }
-            notify(NOTIFICATION_ID, builder.build())
-        }
-    }
 }
