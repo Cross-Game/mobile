@@ -96,5 +96,14 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/emptyFriendsListTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Você ainda não adicionou amigos."
+        android:textSize="18sp"
+        android:textColor="@color/seed"
+        android:visibility="gone" />
 
 </FrameLayout>

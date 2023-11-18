@@ -122,26 +122,44 @@ class ChatFragment : Fragment() {
                     Log.i("GET", "Listagem de amigos realizada com sucesso")
                     val apiResponse = response.body()
 
-                    // Limpa a lista existente e adiciona novos amigos
                     originalFriendList = apiResponse?.map {
                         Friends(it.friendUserId, it.username, null)
                     } ?: emptyList()
 
-                    // Notifica o adaptador sobre a mudança nos dados
+                    // Atualiza o adaptador com a nova lista
                     friendsAdapter.updateData(originalFriendList)
 
                     // Chama a função para obter a foto de cada amigo
                     originalFriendList.forEach { friend ->
                         getPhotoUser(friend.friendUserId)
                     }
+                } else {
+                    Log.e("GET", "Falha ao listar amigos")
+                }
+
+                // Atualiza a visibilidade do TextView após a resposta da API, esteja ou não vazia
+                val emptyFriendsListTextView = binding.emptyFriendsListTextView
+                if (originalFriendList.isEmpty()) {
+                    emptyFriendsListTextView.visibility = View.VISIBLE
+                } else {
+                    emptyFriendsListTextView.visibility = View.GONE
                 }
             }
 
             override fun onFailure(call: Call<List<UserList>>, t: Throwable) {
                 Log.e("GET", "Falha ao listar amigos", t)
+
+                // Atualiza a visibilidade do TextView caso ocorra falha ao listar amigos
+                val emptyFriendsListTextView = binding.emptyFriendsListTextView
+                if (originalFriendList.isEmpty()) {
+                    emptyFriendsListTextView.visibility = View.VISIBLE
+                } else {
+                    emptyFriendsListTextView.visibility = View.GONE
+                }
             }
         })
     }
+
 
 
     private fun getPhotoUser(friendUserId: Long) {
