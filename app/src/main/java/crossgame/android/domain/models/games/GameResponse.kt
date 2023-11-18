@@ -10,10 +10,3 @@ data class GameResponse(
     val cover: Long,
     val genres: List<Int>
 )
-
-data class ImageGame(
-    val id: Long?,
-    val typeImage: String,
-    val link: String,
-    val image_id: String
-)

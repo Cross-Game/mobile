@@ -14,11 +14,11 @@
 
         <TextView
             android:id="@+id/message"
-            android:layout_width="161dp"
+            android:layout_width="150dp"
             android:layout_height="38dp"
             android:layout_marginStart="40dp"
             android:breakStrategy="balanced"
-            android:text="Marcos te enviou uma solicitação de amizade"
+            android:text="Marcos  enviou um pedido de amizade"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:textStyle="bold"
@@ -47,7 +47,7 @@
             app:srcCompat="@drawable/baseline_person_24" />
 
         <ImageButton
-            android:id="@+id/recuse_invite"
+            android:id="@+id/refuse_invite"
             android:layout_width="42dp"
             android:layout_height="45dp"
             android:layout_marginRight="20dp"
@@ -64,8 +64,8 @@
             android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
             android:onClick="onButtonClick"
             android:rotationY="180"
-            app:layout_constraintEnd_toEndOf="@+id/recuse_invite"
-            app:layout_constraintTop_toBottomOf="@+id/recuse_invite"
+            app:layout_constraintEnd_toEndOf="@+id/refuse_invite"
+            app:layout_constraintTop_toBottomOf="@+id/refuse_invite"
             app:srcCompat="@drawable/baseline_favorite_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

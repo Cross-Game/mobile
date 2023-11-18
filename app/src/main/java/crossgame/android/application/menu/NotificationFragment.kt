@@ -1,25 +1,35 @@
 package crossgame.android.application.menu
 
 import NotificationAdapter
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.databinding.FragmentNotificationBinding
-import crossgame.android.domain.models.notifications.Notification
-import crossgame.android.domain.models.notifications.NotificationState
-import crossgame.android.domain.models.notifications.NotificationType
-
+import crossgame.android.domain.httpClient.Rest
+import crossgame.android.domain.models.notifications.NotificationResponse
+import crossgame.android.service.NotificationService
+import crossgame.android.ui.adapters.notification.SnackbarNotifier
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-class NotificationFragment : Fragment() {
+class NotificationFragment : Fragment(), SnackbarNotifier {
 
     private lateinit var binding: FragmentNotificationBinding
     private lateinit var recyclerView: RecyclerView
-    private var notificationList: List<Notification> = mutableListOf()
+    private var notificationList: List<NotificationResponse> = mutableListOf()
+    private lateinit var notificationAdapter: NotificationAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,52 +41,49 @@ class NotificationFragment : Fragment() {
             container,
             false
         )
-
-        notificationList = listOf(
-            Notification(
-                id = 1,
-                message = "New friend request from John Doe",
-                description = "John Doe has sent you a friend request.",
-                type = NotificationType.FRIEND_REQUEST,
-                state = NotificationState.AWAITING,
-                date = LocalDateTime.of(2023, 11, 11, 18, 45)
-            ),
-            Notification(
-                id = 2,
-                message = "Você recebeu o convite para entrar no grupo VAVAZINHO",
-                description = "Jane Smith has invited you to play a game.",
-                type = NotificationType.GROUP_INVITE,
-                state = NotificationState.AWAITING,
-                date = LocalDateTime.of(2023, 11, 11, 18, 30)
-            ),
-            Notification(
-                id = 3,
-                message = "Tournament reminder: Weekly Clash",
-                description = "The Weekly Clash tournament is about to start. Don't miss out on the chance to win prizes!",
-                type = NotificationType.FRIEND_REQUEST,
-                state = NotificationState.AWAITING,
-                date = LocalDateTime.of(2023, 11, 11, 17, 45)
-            ),  Notification(
-                id = 3,
-                message = "Você recebeu o convite para entrar no grupo OASIS DO LOL",
-                description = "The Weekly Clash tournament is about to start. Don't miss out on the chance to win prizes!",
-                type = NotificationType.GROUP_INVITE,
-                state = NotificationState.AWAITING,
-                date = LocalDateTime.of(2023, 11, 11, 17, 45)
-            ),  Notification(
-                id = 3,
-                message = "Tournament reminder: Weekly Clash",
-                description = "The Weekly Clash tournament is about to start. Don't miss out on the chance to win prizes!",
-                type = NotificationType.FRIEND_REQUEST,
-                state = NotificationState.AWAITING,
-                date = LocalDateTime.of(2023, 11, 11, 17, 45)
-            ))
-
-        val notificationAdapter = NotificationAdapter(requireContext(), notificationList)
         recyclerView = binding.recyclerView
+        notificationAdapter = NotificationAdapter(this,requireContext(), notificationList)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = notificationAdapter
+         retrieveNotifications()
 
         return binding.root
     }
+
+
+    private fun retrieveNotifications() {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("id", 0).toLong()
+
+        val rest = Rest.getInstance()
+        val service = rest.create(NotificationService::class.java)
+
+        service.retrieveNotifications(userId).enqueue(object : Callback<List<NotificationResponse>> {
+            override fun onResponse(
+                call: Call<List<NotificationResponse>>,
+                response: Response<List<NotificationResponse>>
+            ) {
+                if (response.isSuccessful){
+                    notificationList = response.body()!!
+                    notificationAdapter.updateData(notificationList)
+
+                    }
+            }
+
+            override fun onFailure(call: Call<List<NotificationResponse>>, t: Throwable) {
+                Log.e("GET", "Falha ao listar notificações", t)
+                t.printStackTrace()
+  }
+
+        })
+    }
+
+    override fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+
+    }
+
+
 }
