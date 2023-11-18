@@ -68,10 +68,6 @@
         <activity
             android:name=".AddGamesActivity"
             android:exported="false" />
-        <activity
-            android:name=".MatchActivity"
-            android:exported="false">
-        </activity>
 
 <!--        <activity-->
 <!--            android:name=".RoomsActivity"-->
