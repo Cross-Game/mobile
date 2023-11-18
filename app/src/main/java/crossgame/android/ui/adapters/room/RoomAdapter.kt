@@ -8,11 +8,22 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import crossgame.android.application.ChatRoomActivity
 import crossgame.android.application.databinding.CardRoomLayoutBinding
+import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.rooms.Room
-import crossgame.android.domain.models.user.User
+import crossgame.android.service.RoomService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class RoomAdapter(private val rooms: MutableList<Room>, private val context: Context) :
+class RoomAdapter(
+    private val rooms: MutableList<Room>,
+    private val context: Context,
+    private val idUser: Long,
+    private val userName: String
+) :
     Adapter<RoomAdapter.ViewHolder>() {
+
+    private val isTeste: Boolean = true
 
     class ViewHolder(binding: CardRoomLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.buttonEnterRoom
@@ -34,11 +45,36 @@ class RoomAdapter(private val rooms: MutableList<Room>, private val context: Con
 
         holder.nameRoom.text = room.name
         holder.description.text = room.description
+        val adminId: Long = room.idUserAdmin
+        val roomId: Long = room.id
 
         holder.button.setOnClickListener {
+            enterRoom(adminId, roomId, holder)
+        }
+    }
+
+    private fun enterRoom(managerUserId: Long, roomId: Long, holder: ViewHolder) {
+        if (!isTeste) {
+            Rest.getInstance()
+                .create(RoomService::class.java)
+                .addCommonUser(idUser, roomId)
+                .enqueue(object : Callback<Unit> {
+                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                        if (response.isSuccessful) {
+                            val intent = Intent(context, ChatRoomActivity::class.java)
+                            intent.putExtra("idGroup", roomId)
+                            context.startActivity(intent)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Unit>, t: Throwable) {
+                        TODO("Not yet implemented")
+                    }
+                })
+        } else {
             val context = holder.button.context
             val intent = Intent(context, ChatRoomActivity::class.java)
-            intent.putExtra("idGroup", room.id)
+            intent.putExtra("idGroup", roomId)
             context.startActivity(intent)
         }
     }
