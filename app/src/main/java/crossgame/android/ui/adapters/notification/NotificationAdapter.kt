@@ -98,7 +98,7 @@ class NotificationAdapter(
     }
 
     fun updateData(notifications: List<NotificationResponse>) {
-        notificationList = notifications.filter { !it.state.ordinal.equals(NotificationState.CANCELLED) }
+        notificationList = notifications.filter { it.state != NotificationState.CANCELLED }
         notifyDataSetChanged()
     }
 

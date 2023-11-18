@@ -67,9 +67,8 @@ class NotificationFragment : Fragment(), SnackbarNotifier {
                 response: Response<List<NotificationResponse>>
             ) {
                 if (response.isSuccessful){
-                    notificationList = response.body()!!
-                    notificationAdapter.updateData(notificationList.filter { !it.state.ordinal.equals(
-                        NotificationState.CANCELLED) })
+                    notificationList = response.body()!!.filter { it.state != NotificationState.CANCELLED }
+                    notificationAdapter.updateData(notificationList)
 
                     }
             }
