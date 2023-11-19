@@ -29,12 +29,10 @@ import crossgame.android.domain.models.games.GameResponse
 import crossgame.android.domain.models.games.ImageGame
 import crossgame.android.domain.models.rooms.CreateRoom
 import crossgame.android.domain.models.rooms.Room
-import crossgame.android.domain.models.user.User
 import crossgame.android.service.GamesService
 import crossgame.android.service.RoomService
 import crossgame.android.ui.adapters.games.GamesAdapter
 import crossgame.android.ui.adapters.room.RoomAdapter
-import crossgame.android.ui.adapters.room.UsersInRoomAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,7 +42,6 @@ class GroupsFragment : Fragment() {
 
     private lateinit var binding: FragmentGroupsBinding
     private lateinit var adapterRooms: RoomAdapter
-    private lateinit var usersInRoomAdapter: UsersInRoomAdapter
     private var listRoom: MutableList<Room> = mutableListOf()
     private var isShowingMyRooms = false
     private lateinit var gamesAdapter: GamesAdapter

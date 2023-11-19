@@ -2,9 +2,6 @@ package crossgame.android.ui.adapters.room
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,24 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import crossgame.android.application.ChatRoomActivity
 import crossgame.android.application.R
 import crossgame.android.application.databinding.CardRoomLayoutBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.games.GameResponse
-import crossgame.android.domain.models.games.ImageGame
 import crossgame.android.domain.models.rooms.Room
-import crossgame.android.service.AutenticationUser
 import crossgame.android.service.GamesService
 import crossgame.android.service.RoomService
-import crossgame.android.ui.adapters.usersRoom.UsersRoomAdapter
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
 
 class RoomAdapter(
     private val rooms: MutableList<Room>,
@@ -39,8 +29,6 @@ class RoomAdapter(
     private val userName: String
 ) :
     Adapter<RoomAdapter.ViewHolder>() {
-
-    private val isTeste: Boolean = true
     private lateinit var usersInRoomAdapter: UsersInRoomAdapter
 
     class ViewHolder(binding: CardRoomLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -127,36 +115,29 @@ class RoomAdapter(
         holder: ViewHolder,
         roomGameName: String
     ) {
-        if (true) {
-            Rest.getInstance()
-                .create(RoomService::class.java)
-                .addCommonUser(idUser, roomId)
-                .enqueue(object : Callback<Unit> {
-                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                        if (response.isSuccessful) {
-                            val intent = Intent(context, ChatRoomActivity::class.java)
-                            intent.putExtra("idGroup", roomId)
-                            intent.putExtra("gameName", roomGameName)
-                            context.startActivity(intent)
-                        }
+        Rest.getInstance()
+            .create(RoomService::class.java)
+            .addCommonUser(idUser, roomId)
+            .enqueue(object : Callback<Unit> {
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if (response.isSuccessful) {
+                        val intent = Intent(context, ChatRoomActivity::class.java)
+                        intent.putExtra("idGroup", roomId)
+                        intent.putExtra("gameName", roomGameName)
+                        context.startActivity(intent)
                     }
+                }
 
-                    override fun onFailure(call: Call<Unit>, t: Throwable) {
-                        Log.e("Room", "Erro ao entrar na sala!")
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Log.e("Room", "Erro ao entrar na sala!")
 
-                        Toast.makeText(
-                            holder.itemView.context,
-                            "Erro ao entrar na sala!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                })
-        } else {
-            val context = holder.button.context
-            val intent = Intent(context, ChatRoomActivity::class.java)
-            intent.putExtra("idGroup", roomId)
-            context.startActivity(intent)
-        }
+                    Toast.makeText(
+                        holder.itemView.context,
+                        "Erro ao entrar na sala!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
     }
 }
 

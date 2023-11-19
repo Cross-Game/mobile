@@ -23,7 +23,6 @@ import crossgame.android.application.databinding.ActivityChatRoomBinding
 import crossgame.android.application.databinding.BsGivinFeedbackBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.enums.FriendshipState
-import crossgame.android.domain.models.feedbacks.Feedback
 import crossgame.android.domain.models.feedbacks.SendFeedBack
 import crossgame.android.domain.models.feedbacks.UserAndFeedback
 import crossgame.android.domain.models.friends.FriendAdd
@@ -45,9 +44,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
-import java.time.Instant
-import java.time.LocalDate
-import java.util.Date
 
 class ChatRoomActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatRoomBinding
@@ -63,8 +59,6 @@ class ChatRoomActivity : AppCompatActivity() {
     private var isSelected: Boolean = false
 
     private var positionUser: Int = -1
-
-    private var isTeste = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -253,38 +247,34 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun sendFriendRequestInRooom(userInRoom: UserInRoom) {
-        if (true) {
-            val api = Rest.getInstance().create(UserFriendService::class.java)
-            api.addFriendToAnUser(
-                this.getIdUserSigned(),
-                FriendAdd
-                    (
-                    userInRoom.name,
-                    userInRoom.id,
-                    FriendshipState.SENDED
-                )
+        val api = Rest.getInstance().create(UserFriendService::class.java)
+        api.addFriendToAnUser(
+            this.getIdUserSigned(),
+            FriendAdd
+                (
+                userInRoom.name,
+                userInRoom.id,
+                FriendshipState.SENDED
             )
-                .enqueue(
-                    object : Callback<Unit> {
-                        override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+        )
+            .enqueue(
+                object : Callback<Unit> {
+                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
 
-                            if (response.isSuccessful) {
-                                Toast.makeText(baseContext, "pedido enviado", Toast.LENGTH_SHORT)
-                                    .show()
-                            } else {
-                                Toast.makeText(baseContext, response.message(), Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<Unit>, t: Throwable) {
-                            Toast.makeText(baseContext, t.message, Toast.LENGTH_SHORT).show()
+                        if (response.isSuccessful) {
+                            Toast.makeText(baseContext, "pedido enviado", Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            Toast.makeText(baseContext, response.message(), Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
-                )
-        } else {
-            Toast.makeText(baseContext, "Enviado id: ${userInRoom.id}", Toast.LENGTH_SHORT).show()
-        }
+
+                    override fun onFailure(call: Call<Unit>, t: Throwable) {
+                        Toast.makeText(baseContext, t.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
     }
 
     private fun sendMessage(idGroup: Long, text: String) {
@@ -349,60 +339,44 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun retriveUsersInRooms(idGroup: Long) {
-        if (true) {
-            Rest.getInstance()
-                .create(RoomService::class.java)
-                .retrieveRoomById(idGroup)
-                .enqueue(object : Callback<Room> {
-                    override fun onResponse(call: Call<Room>, response: Response<Room>) {
+        Rest.getInstance()
+            .create(RoomService::class.java)
+            .retrieveRoomById(idGroup)
+            .enqueue(object : Callback<Room> {
+                override fun onResponse(call: Call<Room>, response: Response<Room>) {
 
-                        if (response.isSuccessful) {
-                            var body = response.body()
+                    if (response.isSuccessful) {
+                        var body = response.body()
 
-                            body?.user?.forEach {
-                                listUsersOnRoom.add(
-                                    UserInRoom(
-                                        it.id, it.username, UserPhoto("teste")
-                                    )
+                        body?.user?.forEach {
+                            listUsersOnRoom.add(
+                                UserInRoom(
+                                    it.id, it.username, UserPhoto("teste")
                                 )
-                            }
-
-                            adapterUsersRoom.notifyDataSetChanged()
-                        } else {
-                            Log.e("Error", "Houve um erro ao buscar os usuários")
-                            Toast.makeText(
-                                baseContext,
-                                "Houve um erro ao buscar os usuários",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            )
                         }
-                    }
-
-                    override fun onFailure(call: Call<Room>, t: Throwable) {
-                        Log.e("Error", "Houve um erro ao buscar os usuários", t)
+                        adapterUsersRoom.notifyDataSetChanged()
+                    } else {
+                        Log.e("Error", "Houve um erro ao buscar os usuários")
                         Toast.makeText(
                             baseContext,
                             "Houve um erro ao buscar os usuários",
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                })
+                }
 
-        } else {
-            listUsersOnRoom.addAll(
-                mutableListOf(
-                    UserInRoom(1L, "teste", UserPhoto("teste")),
-                    UserInRoom(2L, "teste2", UserPhoto("teste")),
-                    UserInRoom(3L, "teste3", UserPhoto("teste")),
-                    UserInRoom(4L, "teste4", UserPhoto("teste")),
-                    UserInRoom(5L, "teste5", UserPhoto("teste")),
-                    UserInRoom(6L, "teste6", UserPhoto("teste")),
-                    UserInRoom(7L, "teste7", UserPhoto("teste")),
-                    UserInRoom(8L, "teste8", UserPhoto("teste")),
-                    UserInRoom(9L, "teste9", UserPhoto("teste"))
-                )
-            )
-        }
+                override fun onFailure(call: Call<Room>, t: Throwable) {
+                    Log.e("Error", "Houve um erro ao buscar os usuários", t)
+                    Toast.makeText(
+                        baseContext,
+                        "Houve um erro ao buscar os usuários",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
+
+
     }
 
     private fun showBottomSheetFeedback(userInRoom: UserInRoom) {
@@ -439,47 +413,41 @@ class ChatRoomActivity : AppCompatActivity() {
         comportamento: Int
     ) {
 
-        if (true) {
-            Rest.getInstance()
-                .create(FeedbackService::class.java)
-                .sendFeedBackToUser(
-                    userInRoom.id, SendFeedBack(
-                        this.getUserSignedName(),
-                        comportamento,
-                        habilidade,
-                        descricao
-                    )
-                ).enqueue(object : Callback<UserAndFeedback> {
-                    override fun onResponse(
-                        call: Call<UserAndFeedback>,
-                        response: Response<UserAndFeedback>
-                    ) {
-                        if (response.isSuccessful) {
-                            Log.i("Room", "Feedback Enviado!")
-                            Toast.makeText(baseContext, "Enviado FeedBack", Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            Log.i("Error", "Erro ao Enviar feedback")
-                            Toast.makeText(
-                                baseContext,
-                                "Erro ao Enviar feedback",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<UserAndFeedback>, t: Throwable) {
+        Rest.getInstance()
+            .create(FeedbackService::class.java)
+            .sendFeedBackToUser(
+                userInRoom.id, SendFeedBack(
+                    this.getUserSignedName(),
+                    comportamento,
+                    habilidade,
+                    descricao
+                )
+            ).enqueue(object : Callback<UserAndFeedback> {
+                override fun onResponse(
+                    call: Call<UserAndFeedback>,
+                    response: Response<UserAndFeedback>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.i("Room", "Feedback Enviado!")
+                        Toast.makeText(baseContext, "Enviado FeedBack", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
                         Log.i("Error", "Erro ao Enviar feedback")
-                        Toast.makeText(baseContext, "Erro ao Enviar feedback", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            baseContext,
+                            "Erro ao Enviar feedback",
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     }
-                })
+                }
 
-        } else {
-            Log.i(null, "teste")
-            Toast.makeText(baseContext, "Enviado FeedBack(teste)", Toast.LENGTH_SHORT).show()
-        }
+                override fun onFailure(call: Call<UserAndFeedback>, t: Throwable) {
+                    Log.i("Error", "Erro ao Enviar feedback")
+                    Toast.makeText(baseContext, "Erro ao Enviar feedback", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
     }
 
     private fun getUserSignedName(): String {
