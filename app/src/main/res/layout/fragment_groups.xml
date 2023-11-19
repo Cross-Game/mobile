@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/black"
+    android:id="@+id/mainLayoutGroup"
+    >
         <LinearLayout
             android:id="@+id/layoutId1"
             android:layout_width="325dp"
@@ -43,6 +45,7 @@
             app:layout_constraintTop_toBottomOf="@+id/layoutId1">
 
             <TextView
+                android:id="@+id/idPublicRoomsButtom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -54,6 +57,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/idMyRoomsButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -66,6 +70,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/layoutFragmentGesture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"

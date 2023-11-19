@@ -12,7 +12,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object Rest {
-    val baseUrl = "https://192.168.1.13:8080/"
+    val baseUrl = "http://10.0.2.2:8081/"
 
     fun getInstance(): Retrofit {
         return Retrofit

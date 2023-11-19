@@ -16,7 +16,13 @@ interface GamesService {
     @GET("/games-api/")
     fun listarJogos() : Call<List<GameResponse>>
 
+    @GET("/games-api/internal/{gameName}")
+    fun retrieveGameIgdbByName(@Path("gameName") gameName: String): Call<GameResponse>
+
     @POST("/user-games/{gameId}/{userId}")
     fun saveGameIntoUser(@Path("gameId") gameId: Long, @Path("userId") userId: Long,
                          @Body gameRequestPost: GameRequestPost) : Call<GsonConverterFactory>
+
+    @GET("/games-api/internal/{gameName}")
+    fun retrieveGameByName(@Path("gameName") gameName : String) : Call<GameResponse>
 }

@@ -2,12 +2,9 @@ package crossgame.android.domain.models.feedbacks
 
 import java.time.LocalDate
 
-data class Feedback (
-    val id: Int,
+data class SendFeedBack(
     val userGivenFeedback: String,
     val behavior: Int,
     val skill: Int,
-    val feedbackText: String,
-    val feedbackGivenDate: String // todo revisar aqui
+    val feedbackText: String
 )
-
