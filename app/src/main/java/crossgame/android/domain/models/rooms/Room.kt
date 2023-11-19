@@ -6,7 +6,7 @@ data class Room(
     val id: Long?,
     val name: String,
 //    val capacity: Int,
-//    val gameName: String,
+    val gameName: String,
 //    val rankName: String,
 //    val levelGame: String,
     val user: MutableList<User>,

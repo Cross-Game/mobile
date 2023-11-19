@@ -4,37 +4,64 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
+import android.util.LayoutDirection
+import android.util.Log
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import crossgame.android.application.ChatRoomActivity
 import crossgame.android.application.R
 import crossgame.android.application.databinding.BsCreatinRoomBinding
 import crossgame.android.application.databinding.FragmentGroupsBinding
 import crossgame.android.domain.httpClient.Rest
+import crossgame.android.domain.models.games.GameResponse
+import crossgame.android.domain.models.games.ImageGame
+import crossgame.android.domain.models.rooms.CreateRoom
 import crossgame.android.domain.models.rooms.Room
 import crossgame.android.domain.models.user.User
+import crossgame.android.service.AutenticationUser
+import crossgame.android.service.GamesService
 import crossgame.android.service.RoomService
+import crossgame.android.ui.adapters.games.GamesAdapter
 import crossgame.android.ui.adapters.room.RoomAdapter
+import crossgame.android.ui.adapters.room.UsersInRoomAdapter
+import crossgame.android.ui.adapters.usersRoom.UsersRoomAdapter
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 
 class GroupsFragment : Fragment() {
 
     private lateinit var binding: FragmentGroupsBinding
     private lateinit var adapterRooms: RoomAdapter
+    private lateinit var usersInRoomAdapter: UsersInRoomAdapter
     private var listRoom: MutableList<Room> = mutableListOf()
     private var isShowingMyRooms = false
+    private lateinit var gamesAdapter: GamesAdapter
+    private var originalGamesList: List<GameResponse> = mutableListOf()
+
+    private var isTeste: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,13 +75,17 @@ class GroupsFragment : Fragment() {
         )
 
         val recyclerViewRoom = binding.listOfRooms
-        recyclerViewRoom.layoutManager = LinearLayoutManager(binding.root.context)
+        recyclerViewRoom.layoutManager =
+            LinearLayoutManager(
+                binding.root.context,
+            )
 
         binding.addingRoom.setOnClickListener { showBottomSheetCreateRoom() }
 
         adapterRooms =
             RoomAdapter(listRoom, binding.root.context, getIdUserSigned(), getUserSignedName())
         recyclerViewRoom.adapter = adapterRooms
+
 
         val gestureDetector =
             GestureDetectorCompat(binding.root.context, object : SimpleOnGestureListener() {
@@ -69,7 +100,7 @@ class GroupsFragment : Fragment() {
                         val updateRoomsViewWithTransition = updateRoomsViewWithTransition(true)
 
                         if (updateRoomsViewWithTransition) {
-                            retrieveMyRooms(true)
+                            retrieveMyRooms()
                             binding.idMyRoomsButton.setTextColor(resources.getColor(R.color.seed))
                             binding.idPublicRoomsButtom.setTextColor(resources.getColor(R.color.white))
                             return true
@@ -80,7 +111,7 @@ class GroupsFragment : Fragment() {
                         val updateRoomsViewWithTransition = updateRoomsViewWithTransition(false)
 
                         if (updateRoomsViewWithTransition) {
-                            retrievePublicRooms(true)
+                            retrievePublicRooms()
                             binding.idPublicRoomsButtom.setTextColor(resources.getColor(R.color.seed))
                             binding.idMyRoomsButton.setTextColor(resources.getColor(R.color.white))
                             return true
@@ -131,17 +162,17 @@ class GroupsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        retrievePublicRooms(true)
+        retrievePublicRooms()
 
         binding.idMyRoomsButton.setOnClickListener {
-            retrieveMyRooms(true)
+            retrieveMyRooms()
             isShowingMyRooms = true
             binding.idMyRoomsButton.setTextColor(resources.getColor(R.color.seed))
             binding.idPublicRoomsButtom.setTextColor(resources.getColor(R.color.white))
         }
 
         binding.idPublicRoomsButtom.setOnClickListener {
-            retrievePublicRooms(true)
+            retrievePublicRooms()
             isShowingMyRooms = false
             binding.idPublicRoomsButtom.setTextColor(resources.getColor(R.color.seed))
             binding.idMyRoomsButton.setTextColor(resources.getColor(R.color.white))
@@ -149,8 +180,8 @@ class GroupsFragment : Fragment() {
     }
 
 
-    private fun retrievePublicRooms(isTeste: Boolean) {
-        listRoom.clear()
+    private fun retrievePublicRooms() {
+        listRoom.clear() // todo rever
         if (!isTeste) {
             val api = Rest.getInstance().create(RoomService::class.java)
 
@@ -176,6 +207,7 @@ class GroupsFragment : Fragment() {
                     Room(
                         1L,
                         "teste",
+                        "Sonic",
                         mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
                         "testeDescrição",
                         2L
@@ -183,6 +215,7 @@ class GroupsFragment : Fragment() {
                     Room(
                         2L,
                         "abuda",
+                        "Sonic",
                         mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
                         "ajksdhkhsg",
                         3L
@@ -194,7 +227,7 @@ class GroupsFragment : Fragment() {
         }
     }
 
-    private fun retrieveMyRooms(isTeste: Boolean) {
+    private fun retrieveMyRooms() {
         listRoom.clear()
         if (!isTeste) {
             val api = Rest.getInstance().create(RoomService::class.java)
@@ -222,6 +255,7 @@ class GroupsFragment : Fragment() {
                     Room(
                         1L,
                         "teste",
+                        "Sonic",
                         mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
                         "testeDescrição",
                         1L
@@ -233,24 +267,138 @@ class GroupsFragment : Fragment() {
         }
     }
 
+
     private fun showBottomSheetCreateRoom() {
         val dialog = BottomSheetDialog(binding.root.context)
         val sheetBinding: BsCreatinRoomBinding =
             BsCreatinRoomBinding.inflate(layoutInflater, null, false)
         dialog.setContentView(sheetBinding.root)
 
-        createRoom(sheetBinding)
+        val recyclerView = sheetBinding.listOfGame
+
+        var gameName: String = ""
+
+        gamesAdapter = GamesAdapter(requireContext(), mutableListOf()) { nomeItem, idItem ->
+            Toast.makeText(requireContext(), nomeItem, Toast.LENGTH_SHORT).show()
+            gameName = nomeItem
+        }
+        recyclerView.layoutManager =
+            GridLayoutManager(requireContext(), 1, RecyclerView.HORIZONTAL, false)
+        recyclerView.adapter = gamesAdapter
+
+        sheetBinding.createRoomidButtom.setOnClickListener {
+            createRoom(sheetBinding, gameName)
+        }
 
         with(dialog.behavior) {
             state = BottomSheetBehavior.STATE_EXPANDED
         }
         dialog.show()
+
+        this.listGames()
     }
 
-    private fun createRoom(sheetBinding: BsCreatinRoomBinding) {
-//        Rest.getInstance()
-//            .create(RoomService::class.java)
-//            .createRoom()
+
+    private fun createRoom(sheetBinding: BsCreatinRoomBinding, gameGame: String) {
+        if (validateCreateData(sheetBinding, gameGame)) {
+            val roomToCreate = CreateRoom(
+                sheetBinding.editTextNome.text.toString(),
+                gameGame,
+                mutableListOf(),
+                sheetBinding.editTextDescricao.text.toString(),
+                getIdUserSigned(),
+                mutableListOf(),
+                10
+            )
+
+            Rest.getInstance()
+                .create(RoomService::class.java)
+                .createRoom(getIdUserSigned(), roomToCreate)
+                .enqueue(object : Callback<Room> {
+                    override fun onResponse(call: Call<Room>, response: Response<Room>) {
+                        if (response.isSuccessful) {
+                            if (response.body() != null) {
+                                val intent = Intent(context, ChatRoomActivity::class.java)
+                                intent.putExtra("idGroup", response.body()!!.id)
+                                intent.putExtra("gameName", response.body()!!.gameName)
+                                context!!.startActivity(intent)
+                            }
+                        } else {
+                            Log.e("Error", "Houve um erro ao cria uma sala!")
+                            Toast.makeText(
+                                view?.context,
+                                "Houve um erro ao cria uma sala!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Room>, t: Throwable) {
+                        Log.e("Error", "Houve um erro ao cria uma sala!", t)
+                        Toast.makeText(
+                            view?.context,
+                            "Houve um erro ao cria uma sala!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+        } else {
+            Toast.makeText(
+                view?.context,
+                "Houve um erro ao cria uma sala!, algumas informações não validas",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+    }
+
+    private fun validateCreateData(sheetBinding: BsCreatinRoomBinding, gameGame: String): Boolean {
+        if (sheetBinding.editTextNome.text.toString().isEmpty() ||
+            gameGame.isEmpty()
+        ) {
+            return false
+        }
+        return true
+    }
+
+
+    private fun listGames() {
+        val rest = Rest.getInstance()
+        val service = rest.create(GamesService::class.java)
+
+        service.listarJogos().enqueue(object : Callback<List<GameResponse>> {
+            override fun onResponse(
+                call: Call<List<GameResponse>>,
+                response: Response<List<GameResponse>>
+            ) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+
+                    originalGamesList = apiResponse?.map {
+                        val imageGame = ImageGame(
+                            it.imageGame.id, it.imageGame.typeImage,
+                            it.imageGame.link, it.imageGame.image_id
+                        )
+                        GameResponse(
+                            it.id, it.platformsType, imageGame, it.gameGenres, it.name,
+                            it.platforms, it.cover, it.genres
+                        )
+                    } ?: emptyList()
+                    gamesAdapter.updateData(originalGamesList)
+                } else {
+                    Log.e("Error", "Houve um erro ao listar os jogos")
+                    Toast.makeText(
+                        view?.context,
+                        "Houve um erro ao listar os jogos",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<GameResponse>>, t: Throwable) {
+                Log.e("GET", "Falha ao listar os Jogos", t)
+            }
+        })
     }
 
 
@@ -280,7 +428,7 @@ class GroupsFragment : Fragment() {
     private fun getIdUserSigned(): Long {
         val sharedPreferences =
             requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-        return sharedPreferences.getInt("id", 0).toLong()
+        return sharedPreferences.getInt("id", 4).toLong()
     }
 
 }

@@ -1,8 +1,10 @@
 package crossgame.android.service
 
+import crossgame.android.domain.models.rooms.CreateRoom
 import crossgame.android.domain.models.rooms.Room
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -20,5 +22,8 @@ interface RoomService {
     fun addCommonUser(@Path("userId") userId: Long, @Path("roomId") roomId: Long): Call<Unit>
 
     @POST("team-rooms/{userId}")
-    fun createRoom(@Path("UserId") userId: Long, @Body room: Room)
+    fun createRoom(@Path("userId") userId: Long, @Body room: CreateRoom): Call<Room>
+
+    @DELETE("team-rooms/exit-room/{userId}/{roomId}")
+    fun exitFromRoom(@Path("userId") userId: Long, @Path("roomId") roomId: Long) : Call<Unit>
 }

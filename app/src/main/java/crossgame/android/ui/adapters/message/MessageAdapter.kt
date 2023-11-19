@@ -13,8 +13,6 @@ import crossgame.android.domain.models.messages.MessageInGroup
 class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, private val context: Context) :
     Adapter<MessageAdapter.ViewHolder>() {
 
-    // todo ajusta referencia do user id
-
     inner class ViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindCurrentUserMessage(messageInGroup: MessageInGroup) {
             if (binding is MyMessageLayoutBinding) {
@@ -35,7 +33,7 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val message = messageInGroups[viewType]
-        val view = if (message.uid == 1L) {
+        val view = if (message.uid == getIdUserSigned()) {
             MyMessageLayoutBinding.inflate(
                 LayoutInflater.from(context), parent, false
             )
@@ -53,7 +51,7 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val message = messageInGroups[position]
-        if (message.uid == 1L) {
+        if (message.uid == getIdUserSigned()) {
             holder.bindCurrentUserMessage(message)
         } else {
             holder.bindOtherUserMessage(message)
@@ -62,10 +60,23 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
 
     override fun getItemViewType(position: Int): Int {
         val message = messageInGroups[position]
-        return if (message.uid == 1L) {
-            0
-        } else {
+        return if (message.uid == getIdUserSigned()) {
             1
+        } else {
+            0
         }
+    }
+
+    private fun getUserSignedName(): String {
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+
+        return sharedPreferences.getString("username", "MyName").toString()
+    }
+
+    private fun getIdUserSigned(): Long {
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        return sharedPreferences.getInt("id", 4).toLong()
     }
 }

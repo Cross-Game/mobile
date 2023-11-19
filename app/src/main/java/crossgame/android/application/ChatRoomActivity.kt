@@ -1,7 +1,10 @@
 package crossgame.android.application
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -9,6 +12,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,20 +23,28 @@ import crossgame.android.application.databinding.ActivityChatRoomBinding
 import crossgame.android.application.databinding.BsGivinFeedbackBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.enums.FriendshipState
+import crossgame.android.domain.models.feedbacks.Feedback
 import crossgame.android.domain.models.feedbacks.SendFeedBack
 import crossgame.android.domain.models.friends.FriendAdd
+import crossgame.android.domain.models.games.GameResponse
 import crossgame.android.domain.models.messages.MessageInGroup
 import crossgame.android.domain.models.rooms.Room
 import crossgame.android.domain.models.user.UserInRoom
 import crossgame.android.domain.models.user.UserPhoto
+import crossgame.android.service.AutenticationUser
 import crossgame.android.service.FeedbackService
+import crossgame.android.service.GamesService
 import crossgame.android.service.RoomService
 import crossgame.android.service.UserFriendService
 import crossgame.android.ui.adapters.message.MessageAdapter
+import crossgame.android.ui.adapters.room.RoomAdapter
 import crossgame.android.ui.adapters.usersRoom.UsersRoomAdapter
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.time.Instant
 import java.util.Date
 
@@ -40,6 +53,7 @@ class ChatRoomActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var adapterMessages: MessageAdapter
     private var listMessageInGroup = mutableListOf<MessageInGroup>()
+    private var gameName : String = ""
 
     private lateinit var adapterUsersRoom: UsersRoomAdapter
     private var listUsersOnRoom = mutableListOf<UserInRoom>()
@@ -78,6 +92,7 @@ class ChatRoomActivity : AppCompatActivity() {
         recyclerViewUsers.adapter = adapterUsersRoom
 
         idGroup = intent.getLongExtra("idGroup", -1L)
+        gameName = intent.getStringExtra("gameName")!!
 
         retrieveMessages(idGroup)
 
@@ -88,13 +103,79 @@ class ChatRoomActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.button_back_rooms).setOnClickListener {
-            finish() // todo sair da sala
+            exitFromRoom()
+        }
+    }
+
+    private fun exitFromRoom() {
+        if (true) {
+            Rest.getInstance()
+                .create(RoomService::class.java)
+                .exitFromRoom(getIdUserSigned(), idGroup)
+                .enqueue(object : Callback<Unit> {
+                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                        if (response.isSuccessful) {
+                            finish()
+                        } else {
+                            Log.e("Error", "Erro ao sair da sala")
+                            Toast.makeText(
+                                baseContext,
+                                "Não foi possível sair da sala",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Unit>, t: Throwable) {
+                        Log.e("Error", "Erro ao sair da sala", t)
+                        Toast.makeText(
+                            baseContext,
+                            "Não foi possível sair da sala",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
         }
     }
 
     override fun onStart() {
         super.onStart()
         retriveUsersInRooms(idGroup)
+        retrieveImageGame(gameName)
+    }
+
+    private fun retrieveImageGame(gameName: String) {
+        val rest = Rest.getInstance()
+        val service = rest.create(GamesService::class.java)
+        var link: String? = ""
+
+        service.retrieveGameByName(gameName).enqueue(object : Callback<GameResponse> {
+            override fun onResponse(
+                call: Call<GameResponse>,
+                response: Response<GameResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    link = apiResponse?.imageGame?.link
+
+                    Glide.with(baseContext)
+                        .load(link)
+                        .placeholder(R.drawable.game_example_2)
+                        .into(findViewById(R.id.imageView13))
+                } else {
+                    Log.e("Error", "Houve um erro ao buscar a imagem da sala")
+                    Toast.makeText(
+                        baseContext,
+                        "Houve um erro ao buscar a imagem da sala",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<GameResponse>, t: Throwable) {
+                Log.e("GET", "Falha ao listar os Jogos", t)
+            }
+        })
     }
 
     private fun showOptionsUsers() {
@@ -110,6 +191,9 @@ class ChatRoomActivity : AppCompatActivity() {
                     binding.includeSelectOptions.root.visibility = View.VISIBLE
                     binding.include.root.visibility = View.GONE
                     binding.includeSelectOptions.textView7.text = userInRoom.name
+                    binding.includeSelectOptions.imageView7.setImageResource(R.drawable.carbon_user_avatar_empty)
+
+                    getPhotoUser(userInRoom.id,binding)
 
                     positionUser = position
                     isSelected = true
@@ -117,6 +201,44 @@ class ChatRoomActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun getPhotoUser(userId: Long, binding: ActivityChatRoomBinding) {
+//        val rest = Rest.getInstance(requireActivity()) // todo alterar para autenticado
+        val rest = Rest.getInstance()
+        rest.create(AutenticationUser::class.java).getPhoto(userId)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        if (response.body()?.contentLength()?.toInt() != 0) {
+                            val inputStream: InputStream = response.body()!!.byteStream()
+                            val bitmap = BitmapFactory.decodeStream(inputStream)
+                            val byteArrayOutputStream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+                            val byteArray = byteArrayOutputStream.toByteArray()
+                            val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+
+                            val decodedString = Base64.decode(base64String, Base64.DEFAULT)
+                            val decodedByte =
+                                BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+
+                            Glide.with(baseContext)
+                                .load(bitmap)
+                                .apply(RequestOptions.circleCropTransform())
+                                .into(binding.includeSelectOptions.imageView7)
+                        }
+                    } else {
+                        Log.i("GET", "Ops, imagem incompatível !")
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.i("GET", "Falha ao obter a foto de perfil")
+                }
+            })
     }
 
     private fun configureOptionsOfUsers(userInRoom: UserInRoom) {
@@ -226,7 +348,7 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun retriveUsersInRooms(idGroup: Long) {
-        if (!isTeste) {
+        if (true) {
             Rest.getInstance()
                 .create(RoomService::class.java)
                 .retrieveRoomById(idGroup)
@@ -243,13 +365,28 @@ class ChatRoomActivity : AppCompatActivity() {
                                     )
                                 )
                             }
+
+                            adapterUsersRoom.notifyDataSetChanged()
+                        } else {
+                            Log.e("Error", "Houve um erro ao buscar os usuários")
+                            Toast.makeText(
+                                baseContext,
+                                "Houve um erro ao buscar os usuários",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
 
                     override fun onFailure(call: Call<Room>, t: Throwable) {
-                        TODO("Not yet implemented")
+                        Log.e("Error", "Houve um erro ao buscar os usuários", t)
+                        Toast.makeText(
+                            baseContext,
+                            "Houve um erro ao buscar os usuários",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 })
+
         } else {
             listUsersOnRoom.addAll(
                 mutableListOf(
@@ -311,10 +448,33 @@ class ChatRoomActivity : AppCompatActivity() {
                         descricao,
                         Date.from(Instant.now())
                     )
-                )
+                ).enqueue(object : Callback<Feedback> {
+                    override fun onResponse(call: Call<Feedback>, response: Response<Feedback>) {
+                        if (response.isSuccessful) {
+                            Log.i("Room", "Feedback Enviado!")
+                            Toast.makeText(baseContext, "Enviado FeedBack", Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            Log.i("Error", "Erro ao Enviar feedback")
+                            Toast.makeText(
+                                baseContext,
+                                "Erro ao Enviar feedback",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Feedback>, t: Throwable) {
+                        Log.i("Error", "Erro ao Enviar feedback")
+                        Toast.makeText(baseContext, "Erro ao Enviar feedback", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                })
+
         } else {
-            Log.i(null, "$habilidade")
-            Toast.makeText(baseContext, "Enviado FeedBack", Toast.LENGTH_SHORT).show()
+            Log.i(null, "teste")
+            Toast.makeText(baseContext, "Enviado FeedBack(teste)", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -322,12 +482,12 @@ class ChatRoomActivity : AppCompatActivity() {
         val sharedPreferences =
             this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
 
-        return sharedPreferences.getString("username", "").toString()
+        return sharedPreferences.getString("username", "MyName").toString()
     }
 
     private fun getIdUserSigned(): Long {
         val sharedPreferences =
             this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-        return sharedPreferences.getInt("id", -1).toLong()
+        return sharedPreferences.getInt("id", 4).toLong()
     }
 }
