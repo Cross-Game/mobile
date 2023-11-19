@@ -5,7 +5,15 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     tools:context=".menu.NotificationFragment">
-
+    <TextView
+        android:id="@+id/emptyFriendsListTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Você ainda não tem notificações"
+        android:textSize="18sp"
+        android:textColor="@color/seed"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="20dp"

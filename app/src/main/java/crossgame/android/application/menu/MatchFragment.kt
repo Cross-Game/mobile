@@ -20,7 +20,7 @@ import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import crossgame.android.application.databinding.ActivityMatchBinding
+import com.google.gson.Gson
 import crossgame.android.application.databinding.BsGameListBinding
 import crossgame.android.application.databinding.FragmentMatchBinding
 import crossgame.android.domain.models.users.UserMatch
@@ -56,7 +56,7 @@ class MatchFragment : Fragment() {
         userId = sharedPreferences.getInt("id", 1).toLong()
 
         recyclerView = binding.listPlayers
-        matchHelper = MatchHelper()
+        matchHelper = MatchHelper(requireContext())
 
         CoroutineScope(Dispatchers.IO).launch {
             listUsers = matchHelper.getUsersForMatch(userId)
@@ -264,6 +264,21 @@ class MatchFragment : Fragment() {
 
     private fun updateRecyclerView(users: List<UserMatch>) {
         (recyclerView.adapter as MatchAdapter).updateData(users)
+        saveUsersToSharedPreferences(users)
+
+
+        when(users.size){
+            0 -> {
+                binding.listPlayers.visibility = View.GONE
+                binding.emptyList.visibility = View.VISIBLE
+            }
+            else -> {
+                binding.listPlayers.visibility = View.VISIBLE
+                binding.emptyList.visibility = View.GONE
+            }
+        }
+
+
     }
 
 
@@ -378,5 +393,21 @@ class MatchFragment : Fragment() {
         val searchEditText: EditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text)
         searchEditText.setTextColor(resources.getColor(crossgame.android.application.R.color.white))
         searchEditText.setHintTextColor(resources.getColor(crossgame.android.application.R.color.white))
+    }
+
+    private fun saveUsersToSharedPreferences(users: List<UserMatch>) {
+        val jsonUsers = convertListToJson(users)
+
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+
+        val editor = sharedPreferences.edit()
+        editor.putString("MATCH_USERS", jsonUsers)
+        editor.apply()
+    }
+
+    fun convertListToJson(users: List<UserMatch>): String {
+        val gson = Gson()
+        return gson.toJson(users)
     }
 }

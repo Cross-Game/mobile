@@ -1,6 +1,7 @@
 package crossgame.android.ui.adapters.match
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 
 import android.util.Log
@@ -14,13 +15,19 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import crossgame.android.application.R
+import crossgame.android.application.SuggestionPlayerActivity
 import crossgame.android.application.databinding.CardUserFilterBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.enums.FriendshipState
 import crossgame.android.domain.models.friends.FriendAdd
+import crossgame.android.domain.models.notifications.NotificationRequest
+import crossgame.android.domain.models.notifications.NotificationState
+import crossgame.android.domain.models.notifications.NotificationType
 import crossgame.android.domain.models.users.UserMatch
 import crossgame.android.service.FriendsService
+import crossgame.android.service.NotificationService
 import crossgame.android.service.UserFriendService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,19 +62,33 @@ class MatchAdapter(private val context: Context) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = users[position]
 
-        Log.i("SUcess", "Criei o card")
         holder.nameUser.text = user.baseUser.username
         holder.chipGroup.removeAllViews()
 
 
         Glide.with(context)
-            .load(if (user.img == "default_image") R.drawable.image_usuario_kakashi else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
+            .load(if (user.img == "default_image") R.drawable.user_2  else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
 //            .placeholder()
 //            .error()
             .into(holder.imageUser)
 
         val maxGamesToShow = 3
         val games = user.games
+
+        if (games.size.equals(0)){
+            val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+            newChip.isSelected = false
+            newChip.setChipBackgroundColorResource(
+                if (newChip.isSelected) R.color.md_theme_dark_onPrimary
+                else R.color.md_theme_dark_inverseOnSurface
+            )
+            newChip.isCloseIconVisible = false
+            newChip.text = "Sem jogos"
+            newChip.tag = "Sem jogos"
+            newChip.setTextColor(ContextCompat.getColor(context, R.color.white))
+            holder.chipGroup.addView(newChip)
+        }
+
         for (i in 0 until minOf(maxGamesToShow, games.size)) {
             val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
             newChip.isSelected = false
@@ -107,6 +128,7 @@ class MatchAdapter(private val context: Context) :
                 if (sendRequestFriend(getUserId(), user.baseUser.username, user.baseUser.id)) {
                     Toast.makeText(context, "Solicitação de amizade enviada!", Toast.LENGTH_LONG).show()
 
+                    sendNotificationFriend(user.baseUser.username,user.baseUser.id,)
                     holder.buttonAddFriend.isChecked = true
                     holder.buttonAddFriend.setTextColor(ContextCompat.getColor(context, R.color.button_heart))
                     holder.buttonAddFriend.setBackgroundResource(R.drawable.baseline_favorite_pressed)
@@ -118,7 +140,9 @@ class MatchAdapter(private val context: Context) :
         }
 
         holder.buttonLink.setOnClickListener {
-
+            saveUserPositionToSharedPreferences(position)
+            val intent = Intent(context, SuggestionPlayerActivity::class.java)
+            context.startActivity(intent)
         }
 
         holder.buttonAddFriend.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -157,6 +181,29 @@ class MatchAdapter(private val context: Context) :
         }
     }
 
+    private suspend fun sendNotificationFriend(friendUsername: String, friendUserId : Long) : Boolean{
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = Rest.getInstance().create(NotificationService::class.java)
+                    .createNotification(friendUserId, notification = NotificationRequest(message = friendUsername + " enviou um pedido de amizade", description = friendUsername.toString(), NotificationType.FRIEND_REQUEST, NotificationState.AWAITING )).execute()
+
+                if (response.isSuccessful) {
+                    return@withContext true
+                }
+
+                if (response.code() == 429){
+                    Toast.makeText(context, "Notificação de amizade já enviada!", Toast.LENGTH_LONG).show()
+                }
+
+                Log.e("ERRO", response.toString())
+                Log.e("ERRO", "Corpo da resposta: ${response.errorBody()?.string()}")
+            } catch (e: Exception) {
+                Log.e("EXCEPTION", e.toString())
+            }
+            return@withContext false
+        }
+    }
+
     private fun getUserId(): Long {
         val sharedPreferences =
             context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
@@ -166,7 +213,33 @@ class MatchAdapter(private val context: Context) :
     fun updateData(newData: List<UserMatch>) {
         users.clear()
         users.addAll(newData)
+        saveUsersToSharedPreferences(newData)
         notifyDataSetChanged()
+    }
+
+    private fun saveUserPositionToSharedPreferences(userPosition : Int) {
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+
+        val editor = sharedPreferences.edit()
+        editor.putInt("MATCH_POSITION", userPosition)
+        editor.apply()
+    }
+
+    private fun saveUsersToSharedPreferences(users: List<UserMatch>) {
+        val jsonUsers = convertListToJson(users)
+
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+
+        val editor = sharedPreferences.edit()
+        editor.putString("MATCH_USERS", jsonUsers)
+        editor.apply()
+    }
+
+    private fun convertListToJson(users: List<UserMatch>): String {
+        val gson = Gson()
+        return gson.toJson(users)
     }
 
 }
