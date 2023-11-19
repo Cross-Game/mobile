@@ -64,6 +64,9 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".ChatFriendActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity

@@ -1,14 +1,16 @@
 package crossgame.android.ui.adapters.friends
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import crossgame.android.application.databinding.UserItemCardBinding
-import crossgame.android.domain.models.friends.Friends
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import crossgame.android.application.ChatFriendActivity
+import crossgame.android.application.databinding.UserItemCardBinding
+import crossgame.android.domain.models.friends.Friends
 
 class FriendsAdapter(
     private val context: Context,
@@ -37,6 +39,13 @@ class FriendsAdapter(
                 .load(photo)
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.userProfileImageView)
+        }
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, ChatFriendActivity::class.java)
+            intent.putExtra("friendId", currentFriend.friendUserId)
+            intent.putExtra("friendUserName", currentFriend.username)
+            context.startActivity(intent)
         }
 
         holder.userNameTextView.text = currentFriend.username
