@@ -15,6 +15,6 @@ interface UserFriendService {
     @GET("/friends/{userId}")
     fun listarFriend(@Path("userId") userId: Long): Call<List<UserList>>
 
-    @POST("/friends/userId")
+    @POST("/friends/{userId}")
     fun addFriendToAnUser(@Path("userId") userId: Long, @Body friendAdd : FriendAdd): Call<Unit>
 }
