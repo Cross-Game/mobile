@@ -132,7 +132,7 @@
         />
 
     <EditText
-        android:id="@+id/editText_descricao"
+        android:id="@+id/editTextDescricaoFeedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="2"
@@ -145,7 +145,7 @@
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/editText_descricao"
+        app:layout_constraintTop_toBottomOf="@id/editTextDescricaoFeedback"
         android:text="Enviar"
         android:drawableRight="@drawable/baseline_keyboard_arrow_right_24"
         style="@style/Widget.Material3.FloatingActionButton.Large.Tertiary"

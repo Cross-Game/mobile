@@ -25,6 +25,7 @@ import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.enums.FriendshipState
 import crossgame.android.domain.models.feedbacks.Feedback
 import crossgame.android.domain.models.feedbacks.SendFeedBack
+import crossgame.android.domain.models.feedbacks.UserAndFeedback
 import crossgame.android.domain.models.friends.FriendAdd
 import crossgame.android.domain.models.games.GameResponse
 import crossgame.android.domain.models.messages.MessageInGroup
@@ -37,7 +38,6 @@ import crossgame.android.service.GamesService
 import crossgame.android.service.RoomService
 import crossgame.android.service.UserFriendService
 import crossgame.android.ui.adapters.message.MessageAdapter
-import crossgame.android.ui.adapters.room.RoomAdapter
 import crossgame.android.ui.adapters.usersRoom.UsersRoomAdapter
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -46,6 +46,7 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.Instant
+import java.time.LocalDate
 import java.util.Date
 
 class ChatRoomActivity : AppCompatActivity() {
@@ -53,7 +54,7 @@ class ChatRoomActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var adapterMessages: MessageAdapter
     private var listMessageInGroup = mutableListOf<MessageInGroup>()
-    private var gameName : String = ""
+    private var gameName: String = ""
 
     private lateinit var adapterUsersRoom: UsersRoomAdapter
     private var listUsersOnRoom = mutableListOf<UserInRoom>()
@@ -193,7 +194,7 @@ class ChatRoomActivity : AppCompatActivity() {
                     binding.includeSelectOptions.textView7.text = userInRoom.name
                     binding.includeSelectOptions.imageView7.setImageResource(R.drawable.carbon_user_avatar_empty)
 
-                    getPhotoUser(userInRoom.id,binding)
+                    getPhotoUser(userInRoom.id, binding)
 
                     positionUser = position
                     isSelected = true
@@ -252,13 +253,13 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun sendFriendRequestInRooom(userInRoom: UserInRoom) {
-        if (!isTeste) {
+        if (true) {
             val api = Rest.getInstance().create(UserFriendService::class.java)
             api.addFriendToAnUser(
                 this.getIdUserSigned(),
                 FriendAdd
                     (
-                    this.getUserSignedName(),
+                    userInRoom.name,
                     userInRoom.id,
                     FriendshipState.SENDED
                 )
@@ -416,10 +417,11 @@ class ChatRoomActivity : AppCompatActivity() {
         dialog.show()
 
         with(sheetBinding) {
-            val comportamento = ratingBarComportamento.rating.toInt()
-            val habilidade = ratingBarHabilidade.rating.toInt()
-            val descricao = editTextDescricao.text.toString()
+
             sendFeedBackToUser.setOnClickListener {
+                val comportamento = ratingBarComportamento.rating.toInt()
+                val habilidade = ratingBarHabilidade.rating.toInt()
+                val descricao = editTextDescricaoFeedback.text.toString()
                 sendFeedback(
                     userInRoom,
                     descricao,
@@ -437,7 +439,7 @@ class ChatRoomActivity : AppCompatActivity() {
         comportamento: Int
     ) {
 
-        if (!isTeste) {
+        if (true) {
             Rest.getInstance()
                 .create(FeedbackService::class.java)
                 .sendFeedBackToUser(
@@ -445,11 +447,13 @@ class ChatRoomActivity : AppCompatActivity() {
                         this.getUserSignedName(),
                         comportamento,
                         habilidade,
-                        descricao,
-                        Date.from(Instant.now())
+                        descricao
                     )
-                ).enqueue(object : Callback<Feedback> {
-                    override fun onResponse(call: Call<Feedback>, response: Response<Feedback>) {
+                ).enqueue(object : Callback<UserAndFeedback> {
+                    override fun onResponse(
+                        call: Call<UserAndFeedback>,
+                        response: Response<UserAndFeedback>
+                    ) {
                         if (response.isSuccessful) {
                             Log.i("Room", "Feedback Enviado!")
                             Toast.makeText(baseContext, "Enviado FeedBack", Toast.LENGTH_SHORT)
@@ -465,7 +469,7 @@ class ChatRoomActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<Feedback>, t: Throwable) {
+                    override fun onFailure(call: Call<UserAndFeedback>, t: Throwable) {
                         Log.i("Error", "Erro ao Enviar feedback")
                         Toast.makeText(baseContext, "Erro ao Enviar feedback", Toast.LENGTH_SHORT)
                             .show()
@@ -482,7 +486,7 @@ class ChatRoomActivity : AppCompatActivity() {
         val sharedPreferences =
             this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
 
-        return sharedPreferences.getString("username", "MyName").toString()
+        return sharedPreferences.getString("username", "KakaLopz").toString()
     }
 
     private fun getIdUserSigned(): Long {

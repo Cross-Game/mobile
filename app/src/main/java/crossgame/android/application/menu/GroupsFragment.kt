@@ -5,11 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Base64
-import android.util.LayoutDirection
 import android.util.Log
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
@@ -22,8 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import crossgame.android.application.ChatRoomActivity
@@ -36,19 +30,14 @@ import crossgame.android.domain.models.games.ImageGame
 import crossgame.android.domain.models.rooms.CreateRoom
 import crossgame.android.domain.models.rooms.Room
 import crossgame.android.domain.models.user.User
-import crossgame.android.service.AutenticationUser
 import crossgame.android.service.GamesService
 import crossgame.android.service.RoomService
 import crossgame.android.ui.adapters.games.GamesAdapter
 import crossgame.android.ui.adapters.room.RoomAdapter
 import crossgame.android.ui.adapters.room.UsersInRoomAdapter
-import crossgame.android.ui.adapters.usersRoom.UsersRoomAdapter
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
 
 
 class GroupsFragment : Fragment() {
@@ -60,8 +49,6 @@ class GroupsFragment : Fragment() {
     private var isShowingMyRooms = false
     private lateinit var gamesAdapter: GamesAdapter
     private var originalGamesList: List<GameResponse> = mutableListOf()
-
-    private var isTeste: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,7 +72,6 @@ class GroupsFragment : Fragment() {
         adapterRooms =
             RoomAdapter(listRoom, binding.root.context, getIdUserSigned(), getUserSignedName())
         recyclerViewRoom.adapter = adapterRooms
-
 
         val gestureDetector =
             GestureDetectorCompat(binding.root.context, object : SimpleOnGestureListener() {
@@ -182,89 +168,37 @@ class GroupsFragment : Fragment() {
 
     private fun retrievePublicRooms() {
         listRoom.clear() // todo rever
-        if (!isTeste) {
-            val api = Rest.getInstance().create(RoomService::class.java)
+        val api = Rest.getInstance().create(RoomService::class.java)
 
-            api.retrieveAll().enqueue(object : Callback<List<Room>> {
-                override fun onResponse(call: Call<List<Room>>, response: Response<List<Room>>) {
+        api.retrieveAll().enqueue(object : Callback<List<Room>> {
+            override fun onResponse(call: Call<List<Room>>, response: Response<List<Room>>) {
 
-                    if (response.isSuccessful) {
-                        response.body()?.let { listRoom.addAll(it) }
-                        adapterRooms.notifyDataSetChanged()
-                        layoutWithoutRooms()
-                    } else {
-                        layoutWithoutRooms()
-                    }
-                }
-
-                override fun onFailure(call: Call<List<Room>>, t: Throwable) {
+                if (response.isSuccessful) {
+                    response.body()?.let { listRoom.addAll(it) }
+                    adapterRooms.notifyDataSetChanged()
+                    layoutWithoutRooms()
+                } else {
                     layoutWithoutRooms()
                 }
-            })
-        } else {
-            listRoom.addAll(
-                mutableListOf(
-                    Room(
-                        1L,
-                        "teste",
-                        "Sonic",
-                        mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
-                        "testeDescrição",
-                        2L
-                    ),
-                    Room(
-                        2L,
-                        "abuda",
-                        "Sonic",
-                        mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
-                        "ajksdhkhsg",
-                        3L
-                    )
-                )
-            )
-            adapterRooms.notifyDataSetChanged()
-            layoutWithoutRooms()
-        }
+            }
+
+            override fun onFailure(call: Call<List<Room>>, t: Throwable) {
+                layoutWithoutRooms()
+            }
+        })
+
     }
 
     private fun retrieveMyRooms() {
-        listRoom.clear()
-        if (!isTeste) {
-            val api = Rest.getInstance().create(RoomService::class.java)
-
-            api.retrieveAll().enqueue(object : Callback<List<Room>> {
-                override fun onResponse(call: Call<List<Room>>, response: Response<List<Room>>) {
-
-                    if (response.isSuccessful) {
-                        response.body()?.let { listRoom.addAll(it) }
-                        adapterRooms.notifyDataSetChanged()
-                        layoutWithoutRooms()
-                    } else {
-                        layoutWithoutRooms()
-                    }
-                }
-
-                override fun onFailure(call: Call<List<Room>>, t: Throwable) {
-                    layoutWithoutRooms()
-                }
-            })
-
-        } else {
-            listRoom.addAll(
-                mutableListOf(
-                    Room(
-                        1L,
-                        "teste",
-                        "Sonic",
-                        mutableListOf(User(1L, "Teste2", "Emails", "TEste", true)),
-                        "testeDescrição",
-                        1L
-                    ),
-                )
-            )
-            adapterRooms.notifyDataSetChanged()
-            layoutWithoutRooms()
+        val filter = listRoom.filter {
+            it.idUserAdmin == getIdUserSigned()
         }
+
+        listRoom.clear()
+        listRoom.addAll(filter)
+        adapterRooms.notifyDataSetChanged()
+
+        layoutWithoutRooms()
     }
 
 
