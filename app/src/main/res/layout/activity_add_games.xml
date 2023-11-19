@@ -17,7 +17,10 @@
         android:layout_gravity="fill_horizontal"
         android:columnCount="4"
         android:paddingHorizontal="16dp"
-        android:useDefaultMargins="true">
+        android:useDefaultMargins="true"
+        android:layout_marginTop="8dp"
+
+        >
 
         <!-- Adicione elementos da top bar aqui -->
         <Button
@@ -34,6 +37,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            android:id="@+id/buttonSearch"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_column="3"
@@ -43,6 +47,52 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/searchiconText"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_search_24"
+            android:drawablePadding="8dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/set_backgroud_button_options"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:hint="Digite o nome do jogo"
+            app:layout_constraintBottom_toBottomOf="@id/searchiconText"
+            app:layout_constraintEnd_toStartOf="@id/searchiconText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/searchiconText"
+            android:imeOptions="actionSearch"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/closeSearchButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/set_backgroud_button_options"
+            android:padding="5dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/searchEditText"
+            app:layout_constraintTop_toTopOf="@id/searchEditText"
+            app:srcCompat="@drawable/baseline_close_24"
+            app:tint="@android:color/white" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

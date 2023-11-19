@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import crossgame.android.application.databinding.CardNotificationFriendshipBinding
 import crossgame.android.application.databinding.CardNotificationGroupBinding
 import crossgame.android.domain.httpClient.Rest
-import crossgame.android.domain.models.friends.Friends
 import crossgame.android.domain.models.notifications.NotificationResponse
 import crossgame.android.domain.models.notifications.NotificationState
 import crossgame.android.domain.models.notifications.NotificationType
@@ -17,8 +16,6 @@ import crossgame.android.ui.adapters.notification.SnackbarNotifier
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 interface NotificationActionListener {
     fun onAccept(notification: NotificationResponse)
@@ -70,6 +67,7 @@ class NotificationAdapter(
                 val friendHolder = holder as NotificationFriendViewHolder
                 friendHolder.notificationMessage.text = currentNotification.message
                 friendHolder.notificationDate.text = currentNotification.date.substring(11, 16)
+
                 friendHolder.acceptButton.setOnClickListener {
                     onAccept(currentNotification)
                 }
@@ -100,15 +98,10 @@ class NotificationAdapter(
     }
 
     fun updateData(notifications: List<NotificationResponse>) {
-        notificationList = notifications.filter { !it.state.ordinal.equals(NotificationState.CANCELLED) }
+        notificationList = notifications.filter { it.state != NotificationState.CANCELLED }
         notifyDataSetChanged()
     }
 
-    fun formatTimestampToHourMinute(timestamp: String): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS")
-        val dateTime = LocalDateTime.parse(timestamp, formatter)
-        return dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-    }
 
     override fun onAccept(notification: NotificationResponse) {
 
@@ -209,4 +202,6 @@ class NotificationAdapter(
             }
         })
     }
+
+
 }

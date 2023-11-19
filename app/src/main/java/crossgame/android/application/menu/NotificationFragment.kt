@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.databinding.FragmentNotificationBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.notifications.NotificationResponse
+import crossgame.android.domain.models.notifications.NotificationState
 import crossgame.android.service.NotificationService
 import crossgame.android.ui.adapters.notification.SnackbarNotifier
 import retrofit2.Call
@@ -66,7 +67,7 @@ class NotificationFragment : Fragment(), SnackbarNotifier {
                 response: Response<List<NotificationResponse>>
             ) {
                 if (response.isSuccessful){
-                    notificationList = response.body()!!
+                    notificationList = response.body()!!.filter { it.state != NotificationState.CANCELLED }
                     notificationAdapter.updateData(notificationList)
 
                     }
