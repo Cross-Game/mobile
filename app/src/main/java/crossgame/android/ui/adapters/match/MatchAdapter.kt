@@ -67,7 +67,7 @@ class MatchAdapter(private val context: Context) :
 
 
         Glide.with(context)
-            .load(if (user.img == "default_image") R.drawable.image_usuario_kakashi else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
+            .load(if (user.img == "default_image") R.drawable.user_2  else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
 //            .placeholder()
 //            .error()
             .into(holder.imageUser)
