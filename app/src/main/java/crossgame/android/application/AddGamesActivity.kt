@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +27,7 @@ class AddGamesActivity : AppCompatActivity() {
     private var originalGamesList: List<GameResponse> = mutableListOf()
     private lateinit var gamesAdapter: GamesAdapter
     private lateinit var progressDialog: ProgressDialog
+    private var isSearchBarOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +37,24 @@ class AddGamesActivity : AppCompatActivity() {
         progressDialog.setInverseBackgroundForced(true)
         progressDialog.setTitle("Carregando...")
         progressDialog.show()
+
+        // Dentro do método `onCreate` após a configuração do botão de pesquisa:
+        binding.buttonSearch.setOnClickListener {
+            toggleSearchBar()
+        }
+
+        binding.closeSearchButton.setOnClickListener {
+            toggleSearchBar()
+        }
+        binding.searchiconText.setOnClickListener {
+            val gameName = binding.searchEditText.text.toString()
+            if (gameName.isNotEmpty()) {
+                searchGameByName(gameName)
+            }
+            binding.searchEditText.setText("") // Limpar o texto da barra de pesquisa
+
+        }
+
         val recyclerView = binding.listGames
         gamesAdapter = GamesAdapter(this, mutableListOf()) {
             nomeItem, idItem ->
@@ -53,6 +75,55 @@ class AddGamesActivity : AppCompatActivity() {
         }
         timer.start()
     }
+
+    private fun toggleSearchBar() {
+        if (!isSearchBarOpen) {
+            binding.searchEditText.visibility = View.VISIBLE
+            binding.closeSearchButton.visibility = View.VISIBLE
+            binding.buttonSearch.visibility = View.GONE
+            binding.buttonBack.visibility = View.GONE
+            binding.searchiconText.visibility = View.VISIBLE
+            isSearchBarOpen = true
+        } else {
+            binding.searchEditText.visibility = View.GONE
+            binding.closeSearchButton.visibility = View.GONE
+            binding.buttonSearch.visibility = View.VISIBLE
+            binding.buttonBack.visibility = View.VISIBLE
+            binding.searchiconText.visibility = View.GONE
+            binding.searchEditText.setText("")
+            isSearchBarOpen = false
+        }
+    }
+
+
+
+    private fun searchGameByName(gameName: String) {
+        val rest = Rest.getInstance(this)
+        val service = rest.create(GamesService::class.java)
+
+        service.retrieveGameIgdbByName(gameName).enqueue(object : Callback<GameResponse> {
+            override fun onResponse(call: Call<GameResponse>, response: Response<GameResponse>) {
+                if (response.isSuccessful) {
+                    val game = response.body()
+                    Toast.makeText(baseContext, "Jogo encontrado: ${game?.name}", Toast.LENGTH_SHORT).show()
+
+                    // Recarregar a lista de jogos após encontrar o jogo
+                    getAllGames()
+                } else {
+                    // Trate a falha na chamada da API
+                    Toast.makeText(baseContext, "Falha ao buscar o jogo", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<GameResponse>, t: Throwable) {
+                // Trate a falha na requisição
+                Log.e("GET", "Falha ao buscar o jogo", t)
+                Toast.makeText(baseContext, "Falha ao buscar o jogo", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
 
     private fun backScreen() {
         finish()
