@@ -1,17 +1,25 @@
 package crossgame.android.infra
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import crossgame.android.domain.httpClient.Rest
+import crossgame.android.domain.models.feedbacks.Feedback
+import crossgame.android.domain.models.feedbacks.MediaFeedback
 import crossgame.android.domain.models.games.GameResponse
+import crossgame.android.domain.models.platforms.GameplayPlatformType
 import crossgame.android.domain.models.users.BaseUser
 import crossgame.android.domain.models.users.UserFriend
 import crossgame.android.domain.models.users.UserMatch
 import crossgame.android.service.AutenticationUser
+import crossgame.android.service.FeedbackService
 import crossgame.android.service.FriendsService
 import crossgame.android.service.GamesService
+import crossgame.android.service.PlatformsService
+import crossgame.android.service.PreferencesService
 import crossgame.android.service.UserFriendService
 import crossgame.android.service.UsersService
 import kotlinx.coroutines.Dispatchers
@@ -19,16 +27,22 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
-class MatchHelper {
+class MatchHelper(private val context: Context) {
 
-    private val friendsService = Rest.getInstance().create(FriendsService::class.java)
-    private val friendsService2 = Rest.getInstance().create(UserFriendService::class.java)
-    private val usersService = Rest.getInstance().create(UsersService::class.java)
-    private val gamesService = Rest.getInstance().create(GamesService::class.java)
-    private val imageService = Rest.getInstance().create(AutenticationUser::class.java)
+    private val friendsService = Rest.getInstance(context).create(FriendsService::class.java)
+    private val friendsService2 = Rest.getInstance(context).create(UserFriendService::class.java)
+    private val usersService = Rest.getInstance(context).create(UsersService::class.java)
+    private val gamesService = Rest.getInstance(context).create(GamesService::class.java)
+    private val imageService = Rest.getInstance(context).create(AutenticationUser::class.java)
+    private val feedbackService = Rest.getInstance(context).create(FeedbackService::class.java)
+    private val platformsService = Rest.getInstance(context).create(PlatformsService::class.java)
+    private val interestingService = Rest.getInstance(context).create(PreferencesService::class.java)
 
     private suspend fun getFriends(id: Long): List<UserFriend> = withContext(Dispatchers.IO) {
         try {
@@ -111,6 +125,10 @@ class MatchHelper {
                 val gamesResponse = getGames(user.id)
                 val imageResponse = getImage(user.id)
                 val imageDefault = "10"
+                val feedbackRespone = getMediaFeedbacks(user.id)
+                val preferenceResponse = getInteresses(user.id)
+                val platformResponse = getPlatforms(user.id)
+                val friendsResponse = getFriends(user.id)
 
                 val userForMatch = UserMatch(
                     baseUser = BaseUser(
@@ -121,7 +139,15 @@ class MatchHelper {
                         isOnline = user.isOnline
                     ),
                     games = gamesResponse,
-                    img = imageResponse ?: imageDefault
+                    img = imageResponse ?: imageDefault,
+                    feedback = MediaFeedback(
+                        mediaComportamento = feedbackRespone.mediaComportamento,
+                        mediaHabilidade = feedbackRespone.mediaHabilidade,
+                        quantidadeFeedbacks = feedbackRespone.quantidadeFeedbacks,
+                    ),
+                    preference = preferenceResponse,
+                    platforms = platformResponse,
+                    qtdFriends = friendsResponse.size
                 )
                 Log.i("Info", "Pessoa Adicionada: " + userForMatch.toString())
                 userForMatch
@@ -175,7 +201,76 @@ class MatchHelper {
         }
     }
 
+    private fun getFeedbacks(id: Long) : List<Feedback> {
+        val response = feedbackService.listar(id).execute()
+        if (response.isSuccessful) {
+            logSucesso("getFeedbacks")
+            return response.body() ?: emptyList();
+        }
+        return emptyList();
+    }
 
+    private fun getPlatforms(id: Long) : List<String> {
+        val response = platformsService.retrieveGamePlatformsForUserById(id).execute()
+        if (response.isSuccessful) {
+            logSucesso("getFeedbacks")
+            return bindingPlatform(response.body())
+        }
+        return emptyList();
+    }
+
+    private fun getInteresses(id: Long) : List<String> {
+        val listOfPreferences = mutableListOf<String>();
+
+        val response = interestingService.listar(id).execute()
+        if (response.isSuccessful) {
+            logSucesso("getInteresses")
+
+            val preferences = response.body()?.preferences
+            preferences?.forEach { preferences ->
+                listOfPreferences.add(preferences.preferences)
+            }
+            return listOfPreferences;
+        }
+        return emptyList();
+    }
+
+    private fun getMediaFeedbacks(id: Long): MediaFeedback {
+        val feedbacks = getFeedbacks(id)
+
+        if (feedbacks.isNotEmpty()) {
+            var totalComportamento = 0
+            var totalHabilidade = 0
+
+            feedbacks.forEach {
+                totalComportamento += it.behavior
+                totalHabilidade += it.skill
+            }
+
+            val mediaComportamento = totalComportamento / feedbacks.size
+            val mediaHabilidade = totalHabilidade / feedbacks.size
+            val quantidadeFeedbacks = feedbacks.size
+
+            return MediaFeedback(mediaComportamento, mediaHabilidade, quantidadeFeedbacks)
+        } else {
+
+            return MediaFeedback(0, 0, 0)
+        }
+    }
+
+    private fun bindingPlatform(body : List<GameplayPlatformType>?) : List<String>{
+        var response = mutableListOf<String>()
+
+        body?.map {
+            when (it.name) {
+                "PC" -> response.add("PC")
+                "XBOX" ->  response.add("XBOX")
+                "PLAYSTATION" ->  response.add("PLAYSTATION")
+                else -> response.add("MOBILE")
+            }
+        }
+        return response;
+    }
     private fun logChamada(metodo : String) {
         Log.i("INFO", "chamei a função " + metodo.toUpperCase())
     }

@@ -1,112 +1,134 @@
 package crossgame.android.ui.adapters.match
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.PorterDuff
-
+import android.content.res.ColorStateList
 import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
-import com.google.gson.Gson
+import com.google.android.material.chip.ChipGroup
+
+
+import crossgame.android.domain.models.users.UserMatch
 import crossgame.android.application.R
-import crossgame.android.application.SuggestionPlayerActivity
-import crossgame.android.application.databinding.CardUserFilterBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.enums.FriendshipState
 import crossgame.android.domain.models.friends.FriendAdd
 import crossgame.android.domain.models.notifications.NotificationRequest
 import crossgame.android.domain.models.notifications.NotificationState
 import crossgame.android.domain.models.notifications.NotificationType
-import crossgame.android.domain.models.users.UserMatch
+import crossgame.android.domain.models.platforms.GameplayPlatformType
+import crossgame.android.infra.OnBackButtonClickListener
 import crossgame.android.service.FriendsService
 import crossgame.android.service.NotificationService
-import crossgame.android.service.UserFriendService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+class SuggestionPlayerAdapter(
+    private val context: Context,
+    private val userList: List<UserMatch>,
+    private val onBackButtonClickListener: OnBackButtonClickListener,
+) : RecyclerView.Adapter<SuggestionPlayerAdapter.ViewHolder>() {
 
-class MatchAdapter(private val context: Context) :
-    RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val username: TextView = itemView.findViewById(R.id.titleUsername)
+        val imageUser : ImageView = itemView.findViewById(R.id.imagemUser)
 
-    private val users = mutableListOf<UserMatch>()
+        val chipGroupJogos : ChipGroup = itemView.findViewById(R.id.listGames)
+        val chipGroupInteresses : ChipGroup = itemView.findViewById(R.id.listInteresses)
 
-    class ViewHolder(binding: CardUserFilterBinding) : RecyclerView.ViewHolder(binding.root) {
-        val nameUser = binding.textNomepessoa
-        val imageUser = binding.imagePessoa
-        val chipGroup = binding.listOfGames
+        val ratingBarHabilidade : RatingBar = itemView.findViewById(R.id.ratingBar_Habilidade)
+        val ratingBarComportamento: RatingBar = itemView.findViewById(R.id.ratingBar_Comportamento)
 
-        val buttonAddFriend = binding.buttonAddFriend
-        val buttonLink = binding.buttonLink
 
+        var imagePlaystation = itemView.findViewById<ImageView>(R.id.playstation_image);
+        var imageMobile = itemView.findViewById<ImageView>(R.id.mobile_image);
+        var imagePC = itemView.findViewById<ImageView>(R.id.computer_image);
+        var imageXbox = itemView.findViewById<ImageView>(R.id.xbox_image);
+
+        val imageMedal = itemView.findViewById<ImageView>(R.id.medal);
+
+        val buttonAddFriend = itemView.findViewById<ToggleButton>(R.id.button_add_friend)
+        val buttonBack = itemView.findViewById<Button>(R.id.button_voltar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = CardUserFilterBinding.inflate(LayoutInflater.from(context), parent, false)
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.card_suggestion_player, parent, false)
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return users.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val user = users[position]
+        val user = userList[position]
 
-        holder.nameUser.text = user.baseUser.username
-        holder.chipGroup.removeAllViews()
+        holder.username.text = user.baseUser.username
 
+        holder.ratingBarHabilidade.rating = user.feedback.mediaHabilidade.toFloat();
+        holder.ratingBarComportamento.rating = user.feedback.mediaComportamento.toFloat();
+
+        holder.itemView.setOnClickListener {
+
+        }
+
+
+        for (game in user.games) {
+            val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+            newChip.isSelected = false
+            newChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+            newChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
+            newChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+            newChip.text = game.name
+            newChip.tag = game.name
+
+            holder.chipGroupJogos.addView(newChip)
+        }
 
         Glide.with(context)
-            .load(if (user.img == "default_image") R.drawable.image_usuario_kakashi else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
+            .load(if (user.img == "default_image"  || user.img == null) R.drawable.image_usuario_kakashi else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
 //            .placeholder()
 //            .error()
             .into(holder.imageUser)
 
-        val maxGamesToShow = 3
-        val games = user.games
-        for (i in 0 until minOf(maxGamesToShow, games.size)) {
+
+        for (interesse in user.preference){
             val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
             newChip.isSelected = false
-            newChip.setChipBackgroundColorResource(
-                if (newChip.isSelected) R.color.md_theme_dark_onPrimary
-                else R.color.md_theme_dark_inverseOnSurface
-            )
-            newChip.isCloseIconVisible = false
-            newChip.text = games[i].name
-            newChip.tag = games[i].name
-            newChip.setTextColor(ContextCompat.getColor(context, R.color.white))
-            holder.chipGroup.addView(newChip)
+            newChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+            newChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
+            newChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+            newChip.text = interesse
+            newChip.tag = interesse
+            holder.chipGroupInteresses.addView(newChip)
         }
 
-        val remainingGames = games.size - maxGamesToShow
-        if (remainingGames > 0) {
-            val moreGamesChip = Chip(context)
-
-            val marginInPixels = 1000;
-            moreGamesChip.setPadding(marginInPixels, 0, 0, 0)
-
-            moreGamesChip.text = "+$remainingGames"
-            moreGamesChip.setTextColor(ContextCompat.getColor(context, R.color.white))
-
-            val space = TextView(context)
-            space.text = "spa"
-            space.setTextColor(ContextCompat.getColor(context, R.color.md_theme_dark_inverseOnSurface))
-
-            holder.chipGroup.addView(space)
-            holder.chipGroup.addView(moreGamesChip)
+        for (platform in user.platforms){
+            when (platform) {
+                "PC" -> holder.imagePC.visibility = View.VISIBLE
+                "XBOX"-> holder.imageXbox.visibility = View.VISIBLE
+                "MOBILE" -> holder.imageMobile.visibility = View.VISIBLE
+                "PLAYSTATION" -> holder.imagePlaystation.visibility = View.VISIBLE
+            }
         }
 
-        setAnimation(holder.itemView, position)
+        when (user.qtdFriends) {
+            in 0..5 -> holder.imageMedal.setImageResource(R.drawable.image_medalha_prata)
+            in 6..12 -> holder.imageMedal.setImageResource(R.drawable.image_medalha_ouro)
+            in 13..21 -> holder.imageMedal.setImageResource(R.drawable.image_medalha_diamante)
+            else -> holder.imageMedal.setImageResource(R.drawable.image_medalha_mestre)
+        }
 
         holder.buttonAddFriend.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
@@ -114,6 +136,7 @@ class MatchAdapter(private val context: Context) :
                     Toast.makeText(context, "Solicitação de amizade enviada!", Toast.LENGTH_LONG).show()
 
                     sendNotificationFriend(user.baseUser.username,user.baseUser.id,)
+
                     holder.buttonAddFriend.isChecked = true
                     holder.buttonAddFriend.setTextColor(ContextCompat.getColor(context, R.color.button_heart))
                     holder.buttonAddFriend.setBackgroundResource(R.drawable.baseline_favorite_pressed)
@@ -124,23 +147,14 @@ class MatchAdapter(private val context: Context) :
             }
         }
 
-        holder.buttonLink.setOnClickListener {
-            saveUserPositionToSharedPreferences(position)
-            val intent = Intent(context, SuggestionPlayerActivity::class.java)
-            context.startActivity(intent)
-        }
-
-        holder.buttonAddFriend.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                holder.buttonAddFriend.setBackgroundResource(R.drawable.baseline_favorite_pressed)
-                holder.buttonAddFriend.setTextColor(ContextCompat.getColor(context, R.color.button_heart))
-            }
+        holder.buttonBack.setOnClickListener {
+            exit()
+            resetUserPositionInSharedPrefereces()
         }
     }
 
-    private fun setAnimation(view: View, position: Int) {
-        val animation = AnimationUtils.loadAnimation(view.context, com.google.android.material.R.anim.abc_slide_in_bottom)
-        view.startAnimation(animation)
+    override fun getItemCount(): Int {
+        return userList.size
     }
 
     private suspend fun sendRequestFriend(userId: Long, friendUsername: String, friendUserId : Long): Boolean {
@@ -165,7 +179,6 @@ class MatchAdapter(private val context: Context) :
             return@withContext false
         }
     }
-
     private suspend fun sendNotificationFriend(friendUsername: String, friendUserId : Long) : Boolean{
         return withContext(Dispatchers.IO) {
             try {
@@ -188,43 +201,22 @@ class MatchAdapter(private val context: Context) :
             return@withContext false
         }
     }
-
     private fun getUserId(): Long {
         val sharedPreferences =
             context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("id", 1).toLong()
     }
 
-    fun updateData(newData: List<UserMatch>) {
-        users.clear()
-        users.addAll(newData)
-        saveUsersToSharedPreferences(newData)
-        notifyDataSetChanged()
+    private fun exit(){
+        onBackButtonClickListener.onBackButtonClick()
     }
 
-    private fun saveUserPositionToSharedPreferences(userPosition : Int) {
+    private fun resetUserPositionInSharedPrefereces(){
         val sharedPreferences =
             context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
 
         val editor = sharedPreferences.edit()
-        editor.putInt("MATCH_POSITION", userPosition)
+        editor.remove("MATCH_POSITION")
         editor.apply()
     }
-
-    private fun saveUsersToSharedPreferences(users: List<UserMatch>) {
-        val jsonUsers = convertListToJson(users)
-
-        val sharedPreferences =
-            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-
-        val editor = sharedPreferences.edit()
-        editor.putString("MATCH_USERS", jsonUsers)
-        editor.apply()
-    }
-
-    private fun convertListToJson(users: List<UserMatch>): String {
-        val gson = Gson()
-        return gson.toJson(users)
-    }
-
 }
