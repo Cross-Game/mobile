@@ -21,7 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
-import crossgame.android.application.databinding.ActivityMatchBinding
 import crossgame.android.application.databinding.BsGameListBinding
 import crossgame.android.application.databinding.FragmentMatchBinding
 import crossgame.android.domain.models.users.UserMatch
@@ -266,6 +265,20 @@ class MatchFragment : Fragment() {
     private fun updateRecyclerView(users: List<UserMatch>) {
         (recyclerView.adapter as MatchAdapter).updateData(users)
         saveUsersToSharedPreferences(users)
+
+
+        when(users.size){
+            0 -> {
+                binding.listPlayers.visibility = View.GONE
+                binding.emptyList.visibility = View.VISIBLE
+            }
+            else -> {
+                binding.listPlayers.visibility = View.VISIBLE
+                binding.emptyList.visibility = View.GONE
+            }
+        }
+
+
     }
 
 

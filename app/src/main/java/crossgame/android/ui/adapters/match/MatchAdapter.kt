@@ -74,6 +74,21 @@ class MatchAdapter(private val context: Context) :
 
         val maxGamesToShow = 3
         val games = user.games
+
+        if (games.size.equals(0)){
+            val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+            newChip.isSelected = false
+            newChip.setChipBackgroundColorResource(
+                if (newChip.isSelected) R.color.md_theme_dark_onPrimary
+                else R.color.md_theme_dark_inverseOnSurface
+            )
+            newChip.isCloseIconVisible = false
+            newChip.text = "Sem jogos"
+            newChip.tag = "Sem jogos"
+            newChip.setTextColor(ContextCompat.getColor(context, R.color.white))
+            holder.chipGroup.addView(newChip)
+        }
+
         for (i in 0 until minOf(maxGamesToShow, games.size)) {
             val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
             newChip.isSelected = false

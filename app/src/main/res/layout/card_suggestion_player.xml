@@ -109,13 +109,24 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
+
+        <HorizontalScrollView
+            android:id="@+id/scrool_listGames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleUsername"
+            >
+
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/listGames"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleUsername"
-            app:singleLine="true">
+            app:singleLine="true"
+            >
 
             <com.google.android.material.chip.Chip
                 style="@style/Widget.Material3.Chip.Assist.Elevated"
@@ -137,12 +148,17 @@
 
         </com.google.android.material.chip.ChipGroup>
 
+
+        </HorizontalScrollView>
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sessionAvaliation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/listGames">
+            app:layout_constraintTop_toBottomOf="@id/scrool_listGames">
+
 
             <TextView
                 android:id="@+id/titleHabilidade"
@@ -371,29 +387,30 @@
             />
 
 
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:layout_gravity="center"
-            android:background="@drawable/button_icon"
-            android:drawableTop="@drawable/baseline_chat_24"
-            android:paddingLeft="24dp"
-            android:paddingTop="9dp"
-            android:visibility="gone"
-            tools:layout_editor_absoluteX="16dp" />
+<!--        <Button-->
+<!--            android:id="@+id/button4"-->
+<!--            android:layout_width="46dp"-->
+<!--            android:layout_height="46dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:background="@drawable/button_icon"-->
+<!--            android:drawableTop="@drawable/baseline_chat_24"-->
+<!--            android:paddingLeft="24dp"-->
+<!--            android:paddingTop="9dp"-->
+<!--            android:visibility="gone"-->
+<!--            tools:layout_editor_absoluteX="16dp" />-->
 
-        <Button
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:layout_column="3"
-            android:layout_gravity="center"
-            android:background="@drawable/button_icon"
-            android:drawableTop="@drawable/baseline_reply_24"
-            android:paddingLeft="24dp"
-            android:scaleX="-1"
-            android:visibility="gone"
-            />
+<!--        <Button-->
+<!--            android:layout_width="46dp"-->
+<!--            android:layout_height="46dp"-->
+<!--            android:layout_column="3"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:background="@drawable/button_icon"-->
+<!--            android:drawableTop="@drawable/baseline_reply_24"-->
+<!--            android:paddingLeft="24dp"-->
+<!--            android:scaleX="-1"-->
+<!--            android:visibility="gone"-->
+<!--            />-->
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

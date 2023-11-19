@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+
+import android.widget.LinearLayout
+
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
@@ -63,6 +66,10 @@ class SuggestionPlayerAdapter(
 
         val buttonAddFriend = itemView.findViewById<ToggleButton>(R.id.button_add_friend)
         val buttonBack = itemView.findViewById<Button>(R.id.button_voltar)
+
+
+        val containerPlataforms = itemView.findViewById<LinearLayout>(R.id.listPlataforms)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -84,17 +91,29 @@ class SuggestionPlayerAdapter(
         }
 
 
-        for (game in user.games) {
-            val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
-            newChip.isSelected = false
-            newChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
-            newChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
-            newChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
-            newChip.text = game.name
-            newChip.tag = game.name
+        holder.chipGroupJogos.removeAllViews()
+        holder.containerPlataforms.removeAllViews()
+        holder.chipGroupInteresses.removeAllViews()
 
-            holder.chipGroupJogos.addView(newChip)
-        }
+        if (user.games.isEmpty()) {
+            val genericChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+            genericChip.isSelected = false
+            genericChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+            genericChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
+            genericChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+            genericChip.text = "Sem jogos"
+            genericChip.tag = "Sem jogos"
+            holder.chipGroupJogos.addView(genericChip)
+        } else { for (game in user.games) {
+                val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+                newChip.isSelected = false
+                newChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+                newChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
+                newChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+                newChip.text = game.name
+                newChip.tag = game.name
+                holder.chipGroupJogos.addView(newChip)
+            } }
 
         Glide.with(context)
             .load(if (user.img == "default_image"  || user.img == null) R.drawable.image_usuario_kakashi else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
@@ -103,25 +122,51 @@ class SuggestionPlayerAdapter(
             .into(holder.imageUser)
 
 
-        for (interesse in user.preference){
-            val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
-            newChip.isSelected = false
-            newChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
-            newChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
-            newChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
-            newChip.text = interesse
-            newChip.tag = interesse
-            holder.chipGroupInteresses.addView(newChip)
-        }
 
-        for (platform in user.platforms){
-            when (platform) {
-                "PC" -> holder.imagePC.visibility = View.VISIBLE
-                "XBOX"-> holder.imageXbox.visibility = View.VISIBLE
-                "MOBILE" -> holder.imageMobile.visibility = View.VISIBLE
-                "PLAYSTATION" -> holder.imagePlaystation.visibility = View.VISIBLE
+        if (user.preference.isEmpty()) {
+            val genericChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+            genericChip.isSelected = false
+            genericChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+            genericChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
+            genericChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+            genericChip.text = "Sem interesses"
+            genericChip.tag = "Sem interesses"
+            holder.chipGroupInteresses.addView(genericChip)
+        } else {
+            for (interesse in user.preference) {
+                val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+                newChip.isSelected = false
+                newChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+                newChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
+                newChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+                newChip.text = interesse
+                newChip.tag = interesse
+                holder.chipGroupInteresses.addView(newChip)
             }
         }
+
+        if (user.platforms.isEmpty()) {
+
+            val space = TextView(context)
+            space.text = "spa"
+            space.setTextColor(ContextCompat.getColor(context, R.color.md_theme_dark_inverseOnSurface))
+
+            holder.containerPlataforms.addView(space)
+
+            val genericChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+            genericChip.isSelected = false
+            genericChip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+            genericChip.setChipStrokeColorResource(R.color.md_theme_dark_inverseOnSurface)
+            genericChip.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+            genericChip.text = "Sem plataformas"
+            genericChip.tag = "Sem plataformas"
+            holder.containerPlataforms.addView(genericChip)
+        } else { for (platform in user.platforms){ when (platform) {
+                    "PC" -> holder.imagePC.visibility = View.VISIBLE
+                    "XBOX"-> holder.imageXbox.visibility = View.VISIBLE
+                    "MOBILE" -> holder.imageMobile.visibility = View.VISIBLE
+                    "PLAYSTATION" -> holder.imagePlaystation.visibility = View.VISIBLE
+                } } }
 
         when (user.qtdFriends) {
             in 0..5 -> holder.imageMedal.setImageResource(R.drawable.image_medalha_prata)
@@ -151,6 +196,13 @@ class SuggestionPlayerAdapter(
             exit()
             resetUserPositionInSharedPrefereces()
         }
+
+
+
+        // Regras quando o usuário não tiver cadastrado algo
+
+
+
     }
 
     override fun getItemCount(): Int {
