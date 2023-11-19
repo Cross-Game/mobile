@@ -103,7 +103,6 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun exitFromRoom() {
-        if (true) {
             Rest.getInstance()
                 .create(RoomService::class.java)
                 .exitFromRoom(getIdUserSigned(), idGroup)
@@ -130,7 +129,7 @@ class ChatRoomActivity : AppCompatActivity() {
                         ).show()
                     }
                 })
-        }
+
     }
 
     override fun onStart() {
