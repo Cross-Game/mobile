@@ -71,6 +71,19 @@ class NotificationFragment : Fragment(), SnackbarNotifier {
                     notificationAdapter.updateData(notificationList)
 
                     }
+
+                else{
+                    Log.e("GET", "Falha ao listar notificações")
+
+                }
+                val emptyListNotification = binding.emptyFriendsListTextView
+                if (notificationList.isEmpty()){
+                    emptyListNotification.visibility= View.VISIBLE
+                }
+                else{
+                    emptyListNotification.visibility =View.GONE
+                }
+
             }
 
             override fun onFailure(call: Call<List<NotificationResponse>>, t: Throwable) {

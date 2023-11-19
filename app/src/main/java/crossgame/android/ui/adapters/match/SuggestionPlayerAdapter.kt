@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+
 import android.widget.LinearLayout
+
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
@@ -65,7 +67,9 @@ class SuggestionPlayerAdapter(
         val buttonAddFriend = itemView.findViewById<ToggleButton>(R.id.button_add_friend)
         val buttonBack = itemView.findViewById<Button>(R.id.button_voltar)
 
+
         val containerPlataforms = itemView.findViewById<LinearLayout>(R.id.listPlataforms)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -85,6 +89,7 @@ class SuggestionPlayerAdapter(
         holder.itemView.setOnClickListener {
 
         }
+
 
         holder.chipGroupJogos.removeAllViews()
         holder.containerPlataforms.removeAllViews()
@@ -115,6 +120,7 @@ class SuggestionPlayerAdapter(
 //            .placeholder()
 //            .error()
             .into(holder.imageUser)
+
 
 
         if (user.preference.isEmpty()) {
@@ -192,7 +198,9 @@ class SuggestionPlayerAdapter(
         }
 
 
+
         // Regras quando o usuário não tiver cadastrado algo
+
 
 
     }

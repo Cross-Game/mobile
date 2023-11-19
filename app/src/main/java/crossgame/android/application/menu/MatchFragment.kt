@@ -266,6 +266,7 @@ class MatchFragment : Fragment() {
         (recyclerView.adapter as MatchAdapter).updateData(users)
         saveUsersToSharedPreferences(users)
 
+
         when(users.size){
             0 -> {
                 binding.listPlayers.visibility = View.GONE
@@ -276,6 +277,8 @@ class MatchFragment : Fragment() {
                 binding.emptyList.visibility = View.GONE
             }
         }
+
+
     }
 
 
