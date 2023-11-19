@@ -10,7 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        jcenter( )
+        }
     }
-}
+
 rootProject.name = "CrossGame Mobile Application"
 include ':app'

@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import crossgame.android.application.R
 import crossgame.android.application.SuggestionPlayerActivity
 import crossgame.android.application.databinding.CardUserFilterBinding
@@ -61,7 +62,6 @@ class MatchAdapter(private val context: Context) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = users[position]
 
-        Log.i("Sucess", "Criei o card")
         holder.nameUser.text = user.baseUser.username
         holder.chipGroup.removeAllViews()
 
@@ -198,6 +198,7 @@ class MatchAdapter(private val context: Context) :
     fun updateData(newData: List<UserMatch>) {
         users.clear()
         users.addAll(newData)
+        saveUsersToSharedPreferences(newData)
         notifyDataSetChanged()
     }
 
@@ -208,6 +209,22 @@ class MatchAdapter(private val context: Context) :
         val editor = sharedPreferences.edit()
         editor.putInt("MATCH_POSITION", userPosition)
         editor.apply()
+    }
+
+    private fun saveUsersToSharedPreferences(users: List<UserMatch>) {
+        val jsonUsers = convertListToJson(users)
+
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+
+        val editor = sharedPreferences.edit()
+        editor.putString("MATCH_USERS", jsonUsers)
+        editor.apply()
+    }
+
+    private fun convertListToJson(users: List<UserMatch>): String {
+        val gson = Gson()
+        return gson.toJson(users)
     }
 
 }

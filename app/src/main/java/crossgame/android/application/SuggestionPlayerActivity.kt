@@ -155,6 +155,7 @@ class SuggestionPlayerActivity : AppCompatActivity(), OnBackButtonClickListener 
         val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         val jsonUsers = sharedPreferences.getString("MATCH_USERS", "")
 
+        Log.i("getUsersFromSharedPreferences", jsonUsers!!)
         if (jsonUsers.isNullOrEmpty()) {
             return emptyList()
         }
@@ -165,7 +166,9 @@ class SuggestionPlayerActivity : AppCompatActivity(), OnBackButtonClickListener 
     }
 
     private fun getPositionFromSharedPrefereces(): Int {
-        return sharedPreferences.getInt("MATCH_POSITION", 0)
+        var position = sharedPreferences.getInt("MATCH_POSITION", 0)
+        Log.i("getPositionFromSharedPrefereces", "Posição Salva: " + position)
+        return position
     }
 
     private fun startTimer() {

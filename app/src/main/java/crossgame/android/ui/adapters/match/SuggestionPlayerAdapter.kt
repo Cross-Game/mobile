@@ -147,7 +147,10 @@ class SuggestionPlayerAdapter(
             }
         }
 
-        holder.buttonBack.setOnClickListener { exit() }
+        holder.buttonBack.setOnClickListener {
+            exit()
+            resetUserPositionInSharedPrefereces()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -206,5 +209,14 @@ class SuggestionPlayerAdapter(
 
     private fun exit(){
         onBackButtonClickListener.onBackButtonClick()
+    }
+
+    private fun resetUserPositionInSharedPrefereces(){
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+
+        val editor = sharedPreferences.edit()
+        editor.remove("MATCH_POSITION")
+        editor.apply()
     }
 }
