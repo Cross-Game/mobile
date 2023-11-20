@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -67,13 +68,28 @@ class MatchAdapter(private val context: Context) :
 
 
         Glide.with(context)
-            .load(if (user.img == "default_image") R.drawable.image_usuario_kakashi else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
+            .load(if (user.img == "default_image") R.drawable.user_2  else android.util.Base64.decode(user.img, android.util.Base64.DEFAULT))
 //            .placeholder()
 //            .error()
             .into(holder.imageUser)
 
         val maxGamesToShow = 3
         val games = user.games
+
+        if (games.size.equals(0)){
+            val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
+            newChip.isSelected = false
+            newChip.setChipBackgroundColorResource(
+                if (newChip.isSelected) R.color.md_theme_dark_onPrimary
+                else R.color.md_theme_dark_inverseOnSurface
+            )
+            newChip.isCloseIconVisible = false
+            newChip.text = "Sem jogos"
+            newChip.tag = "Sem jogos"
+            newChip.setTextColor(ContextCompat.getColor(context, R.color.white))
+            holder.chipGroup.addView(newChip)
+        }
+
         for (i in 0 until minOf(maxGamesToShow, games.size)) {
             val newChip = Chip(context, null, com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated)
             newChip.isSelected = false
@@ -146,7 +162,7 @@ class MatchAdapter(private val context: Context) :
     private suspend fun sendRequestFriend(userId: Long, friendUsername: String, friendUserId : Long): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val response = Rest.getInstance().create(FriendsService::class.java)
+                val response = Rest.getInstance(context).create(FriendsService::class.java)
                     .addFriendToAnUser(userId, FriendAdd(friendUsername, friendUserId, FriendshipState.SENDED),).execute()
 
                 if (response.isSuccessful) {
@@ -169,10 +185,11 @@ class MatchAdapter(private val context: Context) :
     private suspend fun sendNotificationFriend(friendUsername: String, friendUserId : Long) : Boolean{
         return withContext(Dispatchers.IO) {
             try {
-                val response = Rest.getInstance().create(NotificationService::class.java)
+                val response = Rest.getInstance(context).create(NotificationService::class.java)
                     .createNotification(friendUserId, notification = NotificationRequest(message = friendUsername + " enviou um pedido de amizade", description = friendUsername.toString(), NotificationType.FRIEND_REQUEST, NotificationState.AWAITING )).execute()
 
                 if (response.isSuccessful) {
+                    Toast.makeText(context, "Notificação de amizade enviada!", Toast.LENGTH_LONG).show()
                     return@withContext true
                 }
 

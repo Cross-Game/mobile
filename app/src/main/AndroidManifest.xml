@@ -35,6 +35,11 @@
             android:windowSoftInputMode="adjustResize"
             />
         <activity
+            android:name=".SuggestionPlayerActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity
             android:name=".FeedbacksActivity"
             android:exported="false" />
         <activity
@@ -62,6 +67,9 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatFriendActivity"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"
