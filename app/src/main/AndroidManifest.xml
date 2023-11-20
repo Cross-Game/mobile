@@ -35,6 +35,11 @@
             android:windowSoftInputMode="adjustResize"
             />
         <activity
+            android:name=".SuggestionPlayerActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity
             android:name=".FeedbacksActivity"
             android:exported="false" />
         <activity
