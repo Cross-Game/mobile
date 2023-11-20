@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -161,7 +162,7 @@ class MatchAdapter(private val context: Context) :
     private suspend fun sendRequestFriend(userId: Long, friendUsername: String, friendUserId : Long): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val response = Rest.getInstance().create(FriendsService::class.java)
+                val response = Rest.getInstance(context).create(FriendsService::class.java)
                     .addFriendToAnUser(userId, FriendAdd(friendUsername, friendUserId, FriendshipState.SENDED),).execute()
 
                 if (response.isSuccessful) {
@@ -184,10 +185,11 @@ class MatchAdapter(private val context: Context) :
     private suspend fun sendNotificationFriend(friendUsername: String, friendUserId : Long) : Boolean{
         return withContext(Dispatchers.IO) {
             try {
-                val response = Rest.getInstance().create(NotificationService::class.java)
+                val response = Rest.getInstance(context).create(NotificationService::class.java)
                     .createNotification(friendUserId, notification = NotificationRequest(message = friendUsername + " enviou um pedido de amizade", description = friendUsername.toString(), NotificationType.FRIEND_REQUEST, NotificationState.AWAITING )).execute()
 
                 if (response.isSuccessful) {
+                    Toast.makeText(context, "Notificação de amizade enviada!", Toast.LENGTH_LONG).show()
                     return@withContext true
                 }
 
