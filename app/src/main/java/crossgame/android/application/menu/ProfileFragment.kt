@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -292,6 +294,7 @@ class ProfileFragment : Fragment() {
                         val apiResponse = response.body()
                         val size = apiResponse?.size
                         if (size != null) {
+                            changeBackgroundColorImageProfileByLevel(size)
                             binding.qtdFriends.text = "Amigos \n $size"
                         }
                     }
@@ -393,6 +396,15 @@ class ProfileFragment : Fragment() {
                 else -> binding.mobileImage.visibility = View.VISIBLE
             }
 
+        }
+    }
+
+    private fun changeBackgroundColorImageProfileByLevel(qtdAmigos : Int){
+        when (qtdAmigos) {
+            in 0..5 -> binding.backgroundProfileUser.background = ColorDrawable(Color.parseColor("#CCAE9201"))
+            in 6..12 -> binding.backgroundProfileUser.background = ColorDrawable(Color.parseColor("#CCC0C0C0"))
+            in 13..21 -> binding.backgroundProfileUser.background = ColorDrawable(Color.parseColor("#B300B2D1"))
+            else -> binding.backgroundProfileUser.background = ColorDrawable(Color.parseColor("#51E00F02"))
         }
     }
 }
