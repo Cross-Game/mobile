@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "159829132486",
+    "project_id": "cross-game-fb6e4",
+    "storage_bucket": "cross-game-fb6e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159829132486:android:2ecce5837818a7a67e03c7",
+        "android_client_info": {
+          "package_name": "crossgame.android.application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159829132486-8p9g8nfvnkn0gbg53b5tkkncndolr53v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt3fr9AP_U9937Qcjwi1PkXS-BYrGAmcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159829132486-8o345q7650ndgfec2f21kek3m2sf60d1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
