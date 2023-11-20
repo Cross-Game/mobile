@@ -80,7 +80,7 @@ class FeedbacksActivity : AppCompatActivity() {
 
     fun criarCardsFeedbacks(feedback: Feedback) {
         val cardView = layoutInflater.inflate(R.layout.card_feedback, null) as CardView
-        val userNameTextView = cardView.findViewById<TextView>(R.id.text_nameUser)
+        val userNameTextView = cardView.findViewById<TextView>(R.id.usernameFeedback)
         val behaviorRatingBar = cardView.findViewById<RatingBar>(R.id.ratingBar_comportamento)
         val skillRatingBar = cardView.findViewById<RatingBar>(R.id.ratingBar_habilidade)
         val messageTextView = cardView.findViewById<TextView>(R.id.input_message)
