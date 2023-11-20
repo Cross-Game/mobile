@@ -1,3 +1,4 @@
+package crossgame.android.ui.adapters.notification
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import crossgame.android.domain.models.notifications.NotificationType
 import crossgame.android.domain.models.users.UserFriend
 import crossgame.android.service.FriendsService
 import crossgame.android.service.NotificationService
-import crossgame.android.ui.adapters.notification.SnackbarNotifier
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -112,24 +112,24 @@ class NotificationAdapter(
         val rest = Rest.getInstance(context)
         when (notification.type) {
             NotificationType.FRIEND_REQUEST -> {
-                  val service = rest.create(FriendsService::class.java)
+                val service = rest.create(FriendsService::class.java)
 
-                  service.confirmFriendRequest(userId,notification.description ).enqueue(object :
-                      Callback<UserFriend> {
-                      override fun onResponse(call: Call<UserFriend>, response: Response<UserFriend>) {
-                          if (response.isSuccessful){
-                              (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Amizade aceita!")
+                service.confirmFriendRequest(userId,notification.description ).enqueue(object :
+                    Callback<UserFriend> {
+                    override fun onResponse(call: Call<UserFriend>, response: Response<UserFriend>) {
+                        if (response.isSuccessful){
+                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Amizade aceita!")
 
-                              removeNotification(notification.id,notificationList)
+                            removeNotification(notification.id,notificationList)
 
-                          }                      }
+                        }                      }
 
-                      override fun onFailure(call: Call<UserFriend>, t: Throwable) {
-                          Log.i("PATCH",t.message.toString())
-                      }
+                    override fun onFailure(call: Call<UserFriend>, t: Throwable) {
+                        Log.i("PATCH",t.message.toString())
+                    }
 
-                  }
-                  )
+                }
+                )
 
             }
             NotificationType.GROUP_INVITE -> {
@@ -189,12 +189,12 @@ class NotificationAdapter(
                 call: Call<NotificationResponse>,
                 response: Response<NotificationResponse>
             ) {
-               if (response.isSuccessful){
-                   val updatedList = notificationList.filter { it.id != notificationId }
+                if (response.isSuccessful){
+                    val updatedList = notificationList.filter { it.id != notificationId }
 
-                   updateData(updatedList)
-                   Log.i("PATCH","Notification removed")
-               }
+                    updateData(updatedList)
+                    Log.i("PATCH","Notification removed")
+                }
             }
 
             override fun onFailure(call: Call<NotificationResponse>, t: Throwable) {
@@ -205,3 +205,4 @@ class NotificationAdapter(
 
 
 }
+

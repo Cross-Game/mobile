@@ -1,6 +1,5 @@
 package crossgame.android.application.menu
 
-import NotificationAdapter
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +15,7 @@ import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.notifications.NotificationResponse
 import crossgame.android.domain.models.notifications.NotificationState
 import crossgame.android.service.NotificationService
+import crossgame.android.ui.adapters.notification.NotificationAdapter
 import crossgame.android.ui.adapters.notification.SnackbarNotifier
 import retrofit2.Call
 import retrofit2.Callback

@@ -104,7 +104,7 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun exitFromRoom() {
-        Rest.getInstance()
+        Rest.getInstance(this)
             .create(RoomService::class.java)
             .exitFromRoom(getIdUserSigned(), idGroup)
             .enqueue(object : Callback<Unit> {
@@ -140,7 +140,7 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun retrieveImageGame(gameName: String) {
-        val rest = Rest.getInstance()
+        val rest = Rest.getInstance(this)
         val service = rest.create(GamesService::class.java)
         var link: String? = ""
 
@@ -200,7 +200,7 @@ class ChatRoomActivity : AppCompatActivity() {
 
     private fun getPhotoUser(userId: Long, binding: ActivityChatRoomBinding) {
 //        val rest = Rest.getInstance(requireActivity()) // todo alterar para autenticado
-        val rest = Rest.getInstance()
+        val rest = Rest.getInstance(this)
         rest.create(AutenticationUser::class.java).getPhoto(userId)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
@@ -247,7 +247,7 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun sendFriendRequestInRooom(userInRoom: UserInRoom) {
-        val api = Rest.getInstance().create(UserFriendService::class.java)
+        val api = Rest.getInstance(this).create(UserFriendService::class.java)
         api.addFriendToAnUser(
             this.getIdUserSigned(),
             FriendAdd
@@ -283,7 +283,7 @@ class ChatRoomActivity : AppCompatActivity() {
     private fun sendNotificationFriendship(friendId: Long) {
 
         val userNameCurrentUser = getUserSignedName()
-        Rest.getInstance().create(NotificationService::class.java)
+        Rest.getInstance(this).create(NotificationService::class.java)
             .createNotificationFriendship(
                 friend = friendId,
                 userNameCurrentUser = userNameCurrentUser
@@ -375,7 +375,7 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun retriveUsersInRooms(idGroup: Long) {
-        Rest.getInstance()
+        Rest.getInstance(this)
             .create(RoomService::class.java)
             .retrieveRoomById(idGroup)
             .enqueue(object : Callback<Room> {
@@ -449,7 +449,7 @@ class ChatRoomActivity : AppCompatActivity() {
         comportamento: Int
     ) {
 
-        Rest.getInstance()
+        Rest.getInstance(this)
             .create(FeedbackService::class.java)
             .sendFeedBackToUser(
                 userInRoom.id, SendFeedBack(
