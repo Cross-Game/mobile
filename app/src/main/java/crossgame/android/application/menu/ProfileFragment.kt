@@ -247,7 +247,7 @@ class ProfileFragment : Fragment() {
     private fun updateNameUser() {
         val sharedPreferences =
             requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-        val username = sharedPreferences.getString("username", "Sem Nome")
+        val username = sharedPreferences.getString("username", "Meu nome")
         binding.textNameUser.text = username
     }
 

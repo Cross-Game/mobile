@@ -180,7 +180,7 @@ class SuggestionPlayerAdapter(
                 if (sendRequestFriend(getUserId(), user.baseUser.username, user.baseUser.id)) {
                     Toast.makeText(context, "Solicitação de amizade enviada!", Toast.LENGTH_LONG).show()
 
-                    sendNotificationFriend(user.baseUser.username,user.baseUser.id,)
+                    sendNotificationFriend(getMyName(),user.baseUser.id,)
 
                     holder.buttonAddFriend.isChecked = true
                     holder.buttonAddFriend.setTextColor(ContextCompat.getColor(context, R.color.button_heart))
@@ -231,11 +231,11 @@ class SuggestionPlayerAdapter(
             return@withContext false
         }
     }
-    private suspend fun sendNotificationFriend(friendUsername: String, friendUserId : Long) : Boolean{
+    private suspend fun sendNotificationFriend(myName: String, friendUserId : Long) : Boolean{
         return withContext(Dispatchers.IO) {
             try {
                 val response = Rest.getInstance(context).create(NotificationService::class.java)
-                    .createNotification(friendUserId, notification = NotificationRequest(message = friendUsername + " enviou um pedido de amizade", description = friendUsername.toString(), NotificationType.FRIEND_REQUEST, NotificationState.AWAITING )).execute()
+                    .createNotification(friendUserId, notification = NotificationRequest(message = myName + " enviou um pedido de amizade", description = myName.toString(), NotificationType.FRIEND_REQUEST, NotificationState.AWAITING )).execute()
 
                 if (response.isSuccessful) {
                     Toast.makeText(context, "Notificação de amizade enviada!", Toast.LENGTH_LONG).show()
@@ -258,6 +258,12 @@ class SuggestionPlayerAdapter(
         val sharedPreferences =
             context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("id", 1).toLong()
+    }
+
+    private fun getMyName(): String {
+        val sharedPreferences =
+            context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("username", "Meu nome").toString();
     }
 
     private fun exit(){
