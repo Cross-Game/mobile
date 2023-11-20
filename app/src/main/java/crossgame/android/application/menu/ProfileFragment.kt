@@ -114,6 +114,13 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateGamesUser()
+        updateInterestsUser()
+        updatePlatformsUser()
+    }
+
     private fun openGallery() {
         launcher.launch(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
     }

@@ -1,15 +1,11 @@
 package crossgame.android.application
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.application.databinding.ActivityPlatformsBinding
@@ -22,7 +18,6 @@ import retrofit2.Response
 class PlatformsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlatformsBinding
     private val selectedPlatforms = mutableSetOf<ImageView>()
-    var platformsService = Rest.getInstance().create(PlatformsService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,11 +57,12 @@ class PlatformsActivity : AppCompatActivity() {
     }
 
     private fun onCadastrarButtonClick() {
-        val selectedPlatformNames = selectedPlatforms.map { getPlatformName(it) }
+        val selectedPlatformNames = selectedPlatforms.map { getPlatformName(it).toString() }
         if (selectedPlatformNames.isNotEmpty()) {
             val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-            val id = sharedPreferences.getString("id",null)
-            platformsService.updateGamePlatformsForUserById(id?.toLong() ?: 0, listOf("XBOX")).enqueue(object :Callback<List<String>>{
+            val id = sharedPreferences.getInt("id", 0)
+            var platformsService = Rest.getInstance(this).create(PlatformsService::class.java)
+            platformsService.updateGamePlatformsForUserById(id?.toLong() ?: 0, selectedPlatformNames).enqueue(object :Callback<List<String>>{
             override fun onResponse(
                 call: Call<List<String>>,
                 response: Response<List<String>>
@@ -79,7 +75,6 @@ class PlatformsActivity : AppCompatActivity() {
                 snackbar.setBackgroundTint(Color.parseColor("#68f273"))
                 snackbar.setTextColor(Color.parseColor("#212121"))
                 snackbar.show()
-
             }
 
             override fun onFailure(call: Call<List<String>>, t: Throwable) {
