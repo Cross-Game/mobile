@@ -34,6 +34,7 @@ import crossgame.android.domain.models.user.UserPhoto
 import crossgame.android.service.AutenticationUser
 import crossgame.android.service.FeedbackService
 import crossgame.android.service.GamesService
+import crossgame.android.service.NotificationService
 import crossgame.android.service.RoomService
 import crossgame.android.service.UserFriendService
 import crossgame.android.ui.adapters.message.MessageAdapter
@@ -103,32 +104,32 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun exitFromRoom() {
-            Rest.getInstance()
-                .create(RoomService::class.java)
-                .exitFromRoom(getIdUserSigned(), idGroup)
-                .enqueue(object : Callback<Unit> {
-                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                        if (response.isSuccessful) {
-                            finish()
-                        } else {
-                            Log.e("Error", "Erro ao sair da sala")
-                            Toast.makeText(
-                                baseContext,
-                                "Não foi possível sair da sala",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Unit>, t: Throwable) {
-                        Log.e("Error", "Erro ao sair da sala", t)
+        Rest.getInstance()
+            .create(RoomService::class.java)
+            .exitFromRoom(getIdUserSigned(), idGroup)
+            .enqueue(object : Callback<Unit> {
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if (response.isSuccessful) {
+                        finish()
+                    } else {
+                        Log.e("Error", "Erro ao sair da sala")
                         Toast.makeText(
                             baseContext,
                             "Não foi possível sair da sala",
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                })
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Log.e("Error", "Erro ao sair da sala", t)
+                    Toast.makeText(
+                        baseContext,
+                        "Não foi possível sair da sala",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
 
     }
 
@@ -261,6 +262,9 @@ class ChatRoomActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
 
                         if (response.isSuccessful) {
+
+                            sendNotificationFriendship(userInRoom.id)
+
                             Toast.makeText(baseContext, "pedido enviado", Toast.LENGTH_SHORT)
                                 .show()
                         } else {
@@ -274,6 +278,39 @@ class ChatRoomActivity : AppCompatActivity() {
                     }
                 }
             )
+    }
+
+    private fun sendNotificationFriendship(friendId: Long) {
+
+        val userNameCurrentUser = getUserSignedName()
+        Rest.getInstance().create(NotificationService::class.java)
+            .createNotificationFriendship(
+                friend = friendId,
+                userNameCurrentUser = userNameCurrentUser
+            ).enqueue(object : Callback<Unit> {
+                override fun onResponse(
+                    call: Call<Unit>,
+                    response: Response<Unit>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.i("Notification", "Notificação enviada para usuário de id $friendId")
+                    } else {
+                        Log.i(
+                            "Notification",
+                            "Falha ao enviar notificação para usuário de id $friendId"
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Log.i(
+                        "Notification",
+                        "Falha ao enviar notificação para usuário de id $friendId",
+                        t
+                    )
+                }
+
+            })
     }
 
     private fun sendMessage(idGroup: Long, text: String) {
