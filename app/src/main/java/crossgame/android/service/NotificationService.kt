@@ -1,7 +1,10 @@
 package crossgame.android.service
 
+import android.accounts.AuthenticatorDescription
 import crossgame.android.domain.models.notifications.NotificationRequest
 import crossgame.android.domain.models.notifications.NotificationResponse
+import crossgame.android.domain.models.notifications.NotificationState
+import crossgame.android.domain.models.notifications.NotificationType
 import retrofit2.http.GET
 import retrofit2.Call
 import retrofit2.http.Body
@@ -29,5 +32,14 @@ interface NotificationService {
         @Query("description") userNameCurrentUser: String,
         @Query("state") state: String = "AWAITING"
     ): Call<Unit>
+
+    @POST("/notifies/{userId}")
+    fun createNotificationWithQuery(
+        @Path("userId") userId : Long,
+        @Query("type") type: NotificationType,
+        @Query("message") message: String,
+        @Query("description") description: String,
+        @Query("state") state: NotificationState = NotificationState.AWAITING
+    ): Call<NotificationResponse>
 
 }
