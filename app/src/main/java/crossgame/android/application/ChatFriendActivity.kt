@@ -111,12 +111,14 @@ class ChatFriendActivity : AppCompatActivity() {
     }
 
     private fun sendMessage(text: String) {
+
+        var sortedFriendShipIds = friendShipIds.sorted()
         val sendMessageToUser = MessageFriend(
             Timestamp.now(),
             text,
             getIdUserSigned(), // todo user Photo
             friendId,
-            friendShipIds
+            sortedFriendShipIds
         )
 
         db.collection("messagesWithUsers")
