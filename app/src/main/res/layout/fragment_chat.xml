@@ -19,13 +19,13 @@
             android:layout_height="40dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/set_backgroud_button_options"
+            android:imeOptions="actionSearch"
             android:padding="5dp"
-            android:visibility="gone"
             android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:imeOptions="actionSearch"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/closeSearchButton"
@@ -96,14 +96,56 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView
-        android:id="@+id/emptyFriendsListTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Você ainda não adicionou amigos."
-        android:textSize="18sp"
-        android:textColor="@color/seed"
-        android:visibility="gone" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/background_the_last"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/emptyFriendsListTextView"
+            app:layout_constraintVertical_bias="0.3"
+            android:layout_marginTop="190dp"/>
+
+        <TextView
+            android:id="@+id/emptyFriendsListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Você ainda não tem amigos adicionados."
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/imageCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
+
+        <TextView
+            android:id="@+id/emptyFriendsListTextView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Construa novas amizades e envie convites na tela de 'match'."
+            android:textSize="14sp"
+            android:textColor="@color/md_theme_font_color_gray"
+            android:visibility="gone"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/emptyFriendsListTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 </FrameLayout>
