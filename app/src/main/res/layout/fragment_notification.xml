@@ -35,7 +35,7 @@
             android:layout_height="300dp"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:src="@drawable/assassins_creed_rogue_hd_png"
+            android:src="@drawable/e01366d166e79f1095aa0b426f233422"
             android:layout_marginTop="100dp"
             />
 
