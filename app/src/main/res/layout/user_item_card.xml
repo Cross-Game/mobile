@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/userProfileImageView"
-        android:layout_marginStart="18dp"
+        android:layout_marginStart="16dp"
         android:layout_toEndOf="@+id/userProfileImageView"
         android:text="Nome do Usuário"
         android:textColor="@color/white"
@@ -37,6 +37,7 @@
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/userProfileImageView"
         android:text="Mensagem do Usuário"
+        android:visibility="invisible"
         android:textColor="@color/white"
         android:textSize="15sp" />
 

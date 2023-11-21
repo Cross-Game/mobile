@@ -29,15 +29,25 @@
             android:layout_marginTop="3dp"
             android:background="@color/seed" />
 
+        <ImageView
+            android:id="@+id/emptynotificationImage"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:src="@drawable/assassins_creed_rogue_hd_png"
+            android:layout_marginTop="100dp"
+            />
+
         <TextView
             android:id="@+id/emptyFriendsListTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Você ainda não tem notificações"
-            android:textColor="@color/seed"
-            android:textSize="18sp"
-            android:visibility="gone" />
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:textStyle="bold"
+            android:text="Você não possui notificações no momento."/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

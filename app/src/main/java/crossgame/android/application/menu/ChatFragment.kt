@@ -137,12 +137,19 @@ class ChatFragment : Fragment() {
                     Log.e("GET", "Falha ao listar amigos")
                 }
 
-                // Atualiza a visibilidade do TextView após a resposta da API, esteja ou não vazia
+
                 val emptyFriendsListTextView = binding.emptyFriendsListTextView
+                val emptyFriendsListImageView = binding.imageCenter
+                val emptyFriendsListImageView2 = binding.emptyFriendsListTextView2
                 if (originalFriendList.isEmpty()) {
                     emptyFriendsListTextView.visibility = View.VISIBLE
+                    emptyFriendsListImageView.visibility = View.VISIBLE
+                    emptyFriendsListImageView2.visibility = View.VISIBLE
+
                 } else {
                     emptyFriendsListTextView.visibility = View.GONE
+                    emptyFriendsListImageView.visibility = View.GONE
+                    emptyFriendsListImageView2.visibility = View.GONE
                 }
             }
 

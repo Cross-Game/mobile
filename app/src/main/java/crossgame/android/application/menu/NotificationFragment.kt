@@ -77,11 +77,14 @@ class NotificationFragment : Fragment(), SnackbarNotifier {
 
                 }
                 val emptyListNotification = binding.emptyFriendsListTextView
+                val emptyListNotificationImage = binding.emptynotificationImage
                 if (notificationList.isEmpty()){
                     emptyListNotification.visibility= View.VISIBLE
+                    emptyListNotificationImage.visibility = View.VISIBLE
                 }
                 else{
                     emptyListNotification.visibility =View.GONE
+                    emptyListNotificationImage.visibility = View.GONE
                 }
 
             }
