@@ -12,7 +12,7 @@
         android:background="@color/black">
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="150dp"
@@ -36,13 +36,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
             <ImageView
+                app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/imageView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/valorant" />
-        </LinearLayout>
+
+            <Button
+                android:id="@+id/button_invite_friend"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_column="0"
+                android:layout_gravity="end|center"
+                android:background="@drawable/button_icon"
+                android:drawableTop="@drawable/baseline_person_add_24"
+                android:paddingLeft="22dp"
+                android:layout_marginEnd="33dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <androidx.recyclerview.widget.RecyclerView
