@@ -146,7 +146,8 @@ class NotificationAdapter(
                             if (response.isSuccessful) {
                                 val intent = Intent(context, ChatRoomActivity::class.java)
                                 intent.putExtra("idGroup", notification.description.toLong())
-                                intent.putExtra("gameName", retrieveGameNameRoom(notification.description.toLong()))
+                                val gameName = retrieveGameNameRoom(notification.description.toLong())
+                                intent.putExtra("gameName",gameName)
                                 context.startActivity(intent)
                             }
                         }
@@ -190,9 +191,7 @@ class NotificationAdapter(
             }
             NotificationType.GROUP_INVITE -> {
                 (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification Rejected");
-                {
-
-                }
+                    removeNotification(notification.id,notificationList)
             }
         }
     }
@@ -229,7 +228,7 @@ class NotificationAdapter(
         service.retrieveRoomById(id).enqueue(object : Callback<Room>{
             override fun onResponse(call: Call<Room>, response: Response<Room>) {
                 if(response.isSuccessful){
-                    gameName = response.body()?.gameName.toString();
+                    gameName = response.body()!!.gameName;
                 }
             }
 
