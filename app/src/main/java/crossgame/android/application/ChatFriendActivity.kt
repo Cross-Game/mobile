@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import crossgame.android.application.databinding.ActivityChatFriendBinding
+import crossgame.android.application.databinding.ActivityChatRoomBinding
 import crossgame.android.domain.models.messages.MessageFriend
 import crossgame.android.ui.adapters.message.MessageWithFriendAdapter
 
@@ -63,6 +65,52 @@ class ChatFriendActivity : AppCompatActivity() {
             scroolToBottom()
         }
 
+        adjusteSizeInput(binding)
+
+    }
+
+    private fun adjusteSizeInput(binding: ActivityChatFriendBinding) {
+        binding.scrollViewSendMessageToFriend.viewTreeObserver.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
+            private var initialHeight = 0
+
+            override fun onPreDraw(): Boolean {
+                if (initialHeight == 0) {
+                    initialHeight = binding.scrollViewSendMessageToFriend.height
+                    return true
+                }
+
+                val currentHeight = binding.scrollViewSendMessageToFriend.height
+
+                var testValue = initialHeight
+                if (testValue > currentHeight) {
+                    binding.scrollViewSendMessageToFriend.scrollBy(0, 3000)
+
+                    val novaAltura = 775
+                    val params = binding.listOfMessagesInChatWithFriends.layoutParams
+                    params.height = novaAltura
+                    binding.listOfMessagesInChatWithFriends.layoutParams = params
+
+//                    val novaAltura1 = 250
+//                    val params2 = binding.linearLayout4.layoutParams
+//                    params2.height = novaAltura1
+//                    binding.linearLayout4.layoutParams = params2
+                } else {
+                    val novaAltura = 1500
+                    val params = binding.listOfMessagesInChatWithFriends.layoutParams
+                    params.height = novaAltura
+                    binding.listOfMessagesInChatWithFriends.layoutParams = params
+                    binding.scrollViewSendMessageToFriend.scrollBy(0, 0)
+
+//                    val novaAltura1 = 400
+//                    val params2 = binding.linearLayout4.layoutParams
+//                    params2.height = novaAltura1
+//                    binding.linearLayout4.layoutParams = params2
+                }
+
+                return true
+            }
+        })
     }
 
     override fun onStart() {
@@ -106,8 +154,10 @@ class ChatFriendActivity : AppCompatActivity() {
                     )
                 }
                 adapterMessages.notifyDataSetChanged()
+                scroolToBottom()
             }
         adapterMessages.notifyDataSetChanged()
+        scroolToBottom()
     }
 
     private fun sendMessage(text: String) {
@@ -116,7 +166,7 @@ class ChatFriendActivity : AppCompatActivity() {
         val sendMessageToUser = MessageFriend(
             Timestamp.now(),
             text,
-            getIdUserSigned(), // todo user Photo
+            getIdUserSigned(),
             friendId,
             sortedFriendShipIds
         )
@@ -126,6 +176,7 @@ class ChatFriendActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 adapterMessages.notifyDataSetChanged()
                 clearText()
+                scroolToBottom()
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error adding document", e)
@@ -137,7 +188,9 @@ class ChatFriendActivity : AppCompatActivity() {
     }
 
     private fun scroolToBottom() {
-        binding.listOfMessagesInChatWithFriends.smoothScrollToPosition(binding.listOfMessagesInChatWithFriends.adapter!!.itemCount + 2)
+        if (binding.listOfMessagesInChatWithFriends.adapter!!.itemCount > 1) {
+            binding.listOfMessagesInChatWithFriends.smoothScrollToPosition(binding.listOfMessagesInChatWithFriends.adapter!!.itemCount + 1)
+        }
     }
 
     private fun getUserSignedName(): String {

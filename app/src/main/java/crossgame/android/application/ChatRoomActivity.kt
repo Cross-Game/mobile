@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -95,16 +96,61 @@ class ChatRoomActivity : AppCompatActivity() {
         val findViewById = findViewById<View>(R.id.imageButton6)
         findViewById.setOnClickListener {
             sendMessage(idGroup, findViewById<EditText>(R.id.textMessage).text.toString());
-            scroolToBottom()
         }
 
         findViewById<Button>(R.id.button_back_rooms).setOnClickListener {
             exitFromRoom()
         }
+
+        adjusteSizeInput(binding)
+    }
+
+    private fun adjusteSizeInput(binding: ActivityChatRoomBinding) {
+        binding.scrollViewSendMessage.viewTreeObserver.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
+            private var initialHeight = 0
+
+            override fun onPreDraw(): Boolean {
+                if (initialHeight == 0) {
+                    initialHeight = binding.scrollViewSendMessage.height
+                    return true
+                }
+
+                val currentHeight = binding.scrollViewSendMessage.height
+
+                var testValue = initialHeight
+                if (testValue > currentHeight) {
+                    binding.scrollViewSendMessage.scrollBy(0, 3000)
+
+                    val novaAltura = 600
+                    val params = binding.listofmessagesinroom.layoutParams
+                    params.height = novaAltura
+                    binding.listofmessagesinroom.layoutParams = params
+
+                    val novaAltura1 = 250
+                    val params2 = binding.linearLayout4.layoutParams
+                    params2.height = novaAltura1
+                    binding.linearLayout4.layoutParams = params2
+                } else {
+                    val novaAltura = 1200
+                    val params = binding.listofmessagesinroom.layoutParams
+                    params.height = novaAltura
+                    binding.listofmessagesinroom.layoutParams = params
+                    binding.scrollViewSendMessage.scrollBy(0, 0)
+
+                    val novaAltura1 = 400
+                    val params2 = binding.linearLayout4.layoutParams
+                    params2.height = novaAltura1
+                    binding.linearLayout4.layoutParams = params2
+                }
+
+                return true
+            }
+        })
     }
 
     private fun exitFromRoom() {
-        Rest.getInstance(this)
+        Rest.getInstance()
             .create(RoomService::class.java)
             .exitFromRoom(getIdUserSigned(), idGroup)
             .enqueue(object : Callback<Unit> {
@@ -130,7 +176,6 @@ class ChatRoomActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-
     }
 
     override fun onStart() {
@@ -199,8 +244,8 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun getPhotoUser(userId: Long, binding: ActivityChatRoomBinding) {
-//        val rest = Rest.getInstance(requireActivity()) // todo alterar para autenticado
-        val rest = Rest.getInstance(this)
+        val rest = Rest.getInstance(baseContext)
+//        val rest = Rest.getInstance(this)
         rest.create(AutenticationUser::class.java).getPhoto(userId)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
@@ -327,6 +372,7 @@ class ChatRoomActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 adapterMessages.notifyDataSetChanged()
                 clearText()
+                scroolToBottom()
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error adding document", e)
@@ -334,7 +380,9 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun scroolToBottom() {
-        binding.listofmessagesinroom.smoothScrollToPosition(binding.listofmessagesinroom.adapter!!.itemCount + 2)
+        if (binding.listofmessagesinroom.adapter!!.itemCount > 1) {
+            binding.listofmessagesinroom.smoothScrollToPosition(binding.listofmessagesinroom.adapter!!.itemCount + 1)
+        }
     }
 
     private fun clearText() {
@@ -370,12 +418,14 @@ class ChatRoomActivity : AppCompatActivity() {
                     )
                 }
                 adapterMessages.notifyDataSetChanged()
+                scroolToBottom()
             }
         adapterMessages.notifyDataSetChanged()
+        scroolToBottom()
     }
 
     private fun retriveUsersInRooms(idGroup: Long) {
-        Rest.getInstance(this)
+        Rest.getInstance()
             .create(RoomService::class.java)
             .retrieveRoomById(idGroup)
             .enqueue(object : Callback<Room> {
@@ -411,8 +461,6 @@ class ChatRoomActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-
-
     }
 
     private fun showBottomSheetFeedback(userInRoom: UserInRoom) {
@@ -427,7 +475,6 @@ class ChatRoomActivity : AppCompatActivity() {
         dialog.show()
 
         with(sheetBinding) {
-
             sendFeedBackToUser.setOnClickListener {
                 val comportamento = ratingBarComportamento.rating.toInt()
                 val habilidade = ratingBarHabilidade.rating.toInt()
