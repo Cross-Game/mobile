@@ -12,7 +12,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object Rest {
-    val baseUrl = "https://192.168.1.13:8080/"
+    val baseUrl = "https://matchmakingapi.sytes.net/"
 
     fun getInstance(): Retrofit {
         return Retrofit
