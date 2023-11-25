@@ -6,6 +6,10 @@
     <color name="label_information_background">#80FFFFFF</color>
     <color name="transparent">#77000000</color>
 
+    <color name="sucess">#00E62D</color>
+    <color name="error">#BA1A1A</color>
+    <color name="green_bottom">#00951E</color>
+
     <color name="seed">#00FF33</color>
     <color name="md_theme_light_primary">#08290D</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>

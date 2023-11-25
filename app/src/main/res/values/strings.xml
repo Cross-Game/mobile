@@ -26,5 +26,6 @@
     <string name="nome_do_jogo">Nome do jogo</string>
     <string name="insira_o_perfil_do_jogo_selecioando">Insira o nome de usuário do jogo:</string>
     <string name="nome_do_perfil_de_usuario">Nome do perfil de usuário</string>
-    <string name="meus_amigos">Meus Amigos</string>
+    <string name="meus_amigos">Conversas</string>
+    <string name="editando_perfil">Editando perfil</string>
 </resources>

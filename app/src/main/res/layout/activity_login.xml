@@ -142,64 +142,78 @@
         android:textSize="8sp"
         tools:ignore="SmallSp" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/button_google"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_btn_login"
         android:backgroundTint="@color/white"
-        android:padding="10dp"
-        android:text="@string/entrar_com_google"
+        android:padding="7dp"
+        android:text="Entrar via Google"
         app:rippleColor="#FFFFFF">
 
         <ImageView
             android:id="@+id/image_google"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="30dp"
-            android:src="@drawable/google" />
+            android:src="@drawable/google"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/text_google"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/text_google"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/image_google"
             android:fontFamily="@font/krona_one"
-            android:text="@string/entrar_com_google"
+            android:text="Cadastrar via Google"
             android:textColor="@color/cardview_light_background"
-            android:textSize="12sp" />
-    </RelativeLayout>
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/background_btn_login"
         android:backgroundTint="@color/white"
         android:padding="10.5dp"
-        android:text="@string/entrar_com_google"
+        android:text="Entrar via Google"
         app:rippleColor="#FFFFFF">
 
         <ImageView
             android:id="@+id/image_discord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="30dp"
-            android:src="@drawable/vector" />
+
+            android:src="@drawable/vector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/text_discord_singup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/text_discord_singup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/image_discord"
             android:fontFamily="@font/krona_one"
-            android:text="@string/entrar_com_discord"
+            android:text="Entrar via Discord"
             android:textColor="@color/cardview_light_background"
-            android:textSize="12sp" />
-    </RelativeLayout>
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

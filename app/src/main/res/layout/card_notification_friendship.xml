@@ -6,63 +6,67 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
     app:cardBackgroundColor="@color/md_theme_dark_inverseOnSurface"
-    app:cardCornerRadius="10dp"
-    tools:showIn="@layout/activity_notifications">
-
+    app:cardCornerRadius="10dp">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:padding="2dp">
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="161dp"
-            android:layout_height="38dp"
+            android:id="@+id/message"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="16dp"
             android:breakStrategy="balanced"
-            android:text="Marcos te enviou uma solicitação de amizade"
+            android:text="gabrielmirandamello  enviou um pedido de amizade"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
             app:layout_constraintStart_toEndOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:text="11:29"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/message"
+            app:layout_constraintTop_toTopOf="parent"></TextView>
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_person_24" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="26dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="2dp"
+            android:id="@+id/refuse_invite"
+            android:layout_width="42dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="20dp"
             android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
             android:rotationY="180"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.727"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_reply_24" />
+            app:srcCompat="@drawable/baseline_thumb_down_alt_24" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
-            android:layout_width="24dp"
-            android:layout_height="27dp"
-            android:layout_marginBottom="2dp"
+            android:id="@+id/accept_invite"
+            android:layout_width="42dp"
+            android:layout_height="45dp"
             android:backgroundTint="@color/md_theme_dark_inverseOnSurface"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.712"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/baseline_favorite_24" />
+            android:onClick="onButtonClick"
+            android:rotationY="180"
+            app:layout_constraintEnd_toEndOf="@+id/refuse_invite"
+            app:layout_constraintTop_toBottomOf="@+id/refuse_invite"
+            app:srcCompat="@drawable/accept_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

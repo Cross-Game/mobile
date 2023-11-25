@@ -18,14 +18,16 @@
 
     <TextView
         android:id="@+id/titleBottomSheet"
-        android:paddingVertical="20dp"
+        android:paddingBottom="30dp"
         app:layout_constraintTop_toBottomOf="@id/drag_handle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Editando perfil"
+        android:text="@string/editando_perfil"
+        android:textSize="16sp"
+        android:drawableTint="@color/seed"
         android:drawableLeft="@drawable/baseline_settings_24"
         style="@style/TextAppearance.Material3.TitleMedium"
-        android:textColor="@color/white"
+        android:textColor="@color/seed"
         android:drawablePadding="10dp"
 
         />
@@ -66,39 +68,9 @@
 
         />
 
-    <TextView
-        android:id="@+id/icon_editar_foto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/baseline_image_search_24"
-        app:layout_constraintStart_toStartOf="@id/text_editar_foto"
-        app:layout_constraintTop_toTopOf="@id/text_editar_foto"
-        />
-
-    <TextView
-        android:layout_marginTop="18dp"
-        android:paddingLeft="34dp"
-        android:id="@+id/text_editar_foto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
-        android:text="Editar foto"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/icon_ver_feedbacks"
-        app:layout_constraintTop_toBottomOf="@id/divider_ver_feedbacks"
-        android:paddingBottom="8dp"/>
 
 
-    <com.google.android.material.divider.MaterialDivider
-        app:layout_constraintTop_toBottomOf="@id/text_editar_foto"
-        app:layout_constraintStart_toStartOf="@id/text_editar_foto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:dividerInsetStart="2dp"
-        app:dividerInsetEnd="7dp"
-        android:id="@+id/divider_editar_foto"
-        />
+
 
     <TextView
         android:id="@+id/icon_editar_interesse"
@@ -110,7 +82,7 @@
         />
 
     <TextView
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="34dp"
         android:id="@+id/text_editar_interesse"
         android:layout_width="match_parent"
@@ -119,8 +91,8 @@
         android:text="Editar interesses"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/icon_editar_foto"
-        app:layout_constraintTop_toBottomOf="@id/divider_editar_foto"
+        app:layout_constraintStart_toStartOf="@id/icon_ver_feedbacks"
+        app:layout_constraintTop_toBottomOf="@id/divider_ver_feedbacks"
         android:paddingBottom="8dp"/>
 
 
@@ -144,7 +116,7 @@
         />
 
     <TextView
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="34dp"
         android:id="@+id/text_editar_jogo"
         android:layout_width="match_parent"
@@ -178,7 +150,7 @@
         />
 
     <TextView
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:paddingLeft="34dp"
         android:id="@+id/text_editar_plataforma"
         android:layout_width="match_parent"

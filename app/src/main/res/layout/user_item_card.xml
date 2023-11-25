@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemUserChatId"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black"
+    android:padding="16dp">
+
+
+    <ImageView
+        android:id="@+id/userProfileImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/group_997"
+         />
+
+
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/userProfileImageView"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@+id/userProfileImageView"
+        android:text="Nome do Usuário"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/userMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userNameTextView"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="2dp"
+        android:layout_toEndOf="@+id/userProfileImageView"
+        android:text="Mensagem do Usuário"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/userMessageTextView"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/darker_gray" />
+
+
+</RelativeLayout>

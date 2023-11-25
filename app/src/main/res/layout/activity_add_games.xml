@@ -4,20 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:columnCount="4"
     android:alignmentMode="alignBounds"
-    android:rowOrderPreserved="false"
+    android:background="@color/black"
+    android:columnCount="4"
     android:columnOrderPreserved="false"
-    android:background="@color/black">
+    android:rowOrderPreserved="false">
 
     <!-- Top Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_height="64dp"
         android:layout_width="match_parent"
-        android:paddingHorizontal="16dp"
-        android:columnCount="4"
-        android:useDefaultMargins="true"
+        android:layout_height="64dp"
         android:layout_gravity="fill_horizontal"
+        android:columnCount="4"
+        android:paddingHorizontal="16dp"
+        android:useDefaultMargins="true"
+        android:layout_marginTop="8dp"
+
         >
 
         <!-- Adicione elementos da top bar aqui -->
@@ -35,6 +37,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            android:id="@+id/buttonSearch"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_column="3"
@@ -45,137 +48,105 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/searchiconText"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_icon"
+            android:drawableTop="@drawable/baseline_search_24"
+            android:drawablePadding="8dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/set_backgroud_button_options"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:hint="Digite o nome do jogo"
+            app:layout_constraintBottom_toBottomOf="@id/searchiconText"
+            app:layout_constraintEnd_toStartOf="@id/searchiconText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/searchiconText"
+            android:imeOptions="actionSearch"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/closeSearchButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/set_backgroud_button_options"
+            android:padding="5dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/searchEditText"
+            app:layout_constraintTop_toTopOf="@id/searchEditText"
+            app:srcCompat="@drawable/baseline_close_24"
+            app:tint="@android:color/white" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Information Group -->
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="80dp"
-        android:paddingHorizontal="16dp"
         android:layout_columnSpan="4"
         android:layout_gravity="fill_horizontal"
         android:background="@color/black"
+        android:gravity="center"
         android:orientation="vertical"
-        android:gravity="center">
+        android:paddingHorizontal="16dp">
 
-        <!-- Adicione elementos da Information Group aqui -->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Selecione seus jogos favoritos"
             android:textColor="@color/seed"
-            android:textSize="24sp"
-            />
+            android:textSize="24sp" />
 
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/md_theme_dark_onBackground"
             android:text="Se você não encontra-lo, você pode procurar"
-            />
+            android:textColor="@color/md_theme_dark_onBackground" />
 
     </LinearLayout>
 
     <!-- Body -->
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
 
-        android:layout_columnSpan="4"
-        android:layout_rowWeight="1"
-        android:layout_gravity="fill"
-        android:background="@color/black">
 
-        <!-- Conteúdo do Body aqui -->
+    <!-- Conteúdo do Body aqui -->
 
-        <GridLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/list_of_game"
+    <androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listGames"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:orientation="horizontal"
-            android:breakStrategy="balanced"
-            android:columnCount="2"
-            android:useDefaultMargins="true"
-            >
+            android:layout_height="600dp"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:spanCount="3"
+            tools:listitem="@layout/card_title_game_medium" />
 
-            <include layout="@layout/card_image_title"
-                />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <include layout="@layout/card_image_title"
-                />
-
-<!--            -->
-<!--        <ImageView-->
-<!--            android:layout_gravity="right"-->
-<!--            android:id="@+id/imageView4"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:minWidth="200dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_height="240dp"-->
-<!--            android:background="@drawable/game_example_2" />-->
-
-<!--            <ImageView-->
-<!--                android:layout_gravity="right"-->
-<!--                android:layout_weight="1"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:minWidth="200dp"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:layout_height="240dp"-->
-<!--                android:background="@drawable/game_example_2" />-->
-
-        </GridLayout>
-
-    </FrameLayout>
 
     <!-- Bottom Bar -->
-    <GridLayout
-        android:layout_height="64dp"
-        android:layout_width="match_parent"
-        android:paddingHorizontal="16dp"
-        android:columnCount="4"
-        android:useDefaultMargins="true"
-        android:layout_gravity="fill_horizontal"
-        android:background="@color/black"
-        >
 
-
-<!--        &lt;!&ndash; Adicione elementos da top bar aqui &ndash;&gt;-->
-<!--        <Button-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_column="0"-->
-<!--            android:text="aqui"-->
-<!--            />-->
-
-<!--        <Button-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_column="1"-->
-<!--            android:text="aqui"-->
-<!--            />-->
-
-<!--        <Button-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_column="2"-->
-<!--            android:text="aqui"-->
-<!--            />-->
-
-<!--        <Button-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_column="3"-->
-<!--            android:text="aqui"-->
-<!--            />-->
-
-    </GridLayout>
 
 </GridLayout>

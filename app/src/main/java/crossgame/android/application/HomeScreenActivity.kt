@@ -22,14 +22,14 @@ class HomeScreenActivity: AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val sharedPreferences = getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
-        val username = sharedPreferences.getString("username", null)
-        if (username != null) {
+        val username = sharedPreferences.getString("username", "")
+        if (username != "") {
             redirectToMatch()
         }
     }
 
     private fun redirectToMatch() {
-        startActivity(Intent(baseContext, NotificationsActivity::class.java))
+        startActivity(Intent(baseContext, ProfileActivity::class.java))
     }
 
     private fun telaCadastro(){
