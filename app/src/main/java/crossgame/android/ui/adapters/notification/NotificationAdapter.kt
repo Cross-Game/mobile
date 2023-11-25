@@ -109,7 +109,6 @@ class NotificationAdapter(
 
 
     override fun onAccept(notification: NotificationResponse) {
-
         val sharedPreferences =
             context.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getInt("id", 0).toLong()
@@ -119,23 +118,19 @@ class NotificationAdapter(
             NotificationType.FRIEND_REQUEST -> {
                 val service = rest.create(FriendsService::class.java)
 
-                service.confirmFriendRequest(userId,notification.description ).enqueue(object :
+                service.confirmFriendRequest(userId, notification.description).enqueue(object :
                     Callback<UserFriend> {
                     override fun onResponse(call: Call<UserFriend>, response: Response<UserFriend>) {
-                        if (response.isSuccessful){
+                        if (response.isSuccessful) {
                             (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Amizade aceita!")
-
-                            removeNotification(notification.id,notificationList)
-
-                        }                      }
-
-                    override fun onFailure(call: Call<UserFriend>, t: Throwable) {
-                        Log.i("PATCH",t.message.toString())
+                            removeNotification(notification.id, notificationList)
+                        }
                     }
 
-                }
-                )
-
+                    override fun onFailure(call: Call<UserFriend>, t: Throwable) {
+                        Log.i("PATCH", t.message.toString())
+                    }
+                })
             }
             NotificationType.GROUP_INVITE -> {
                 (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Entrando no grupo...")
@@ -144,12 +139,11 @@ class NotificationAdapter(
                     .enqueue(object : Callback<Unit> {
                         override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                             if (response.isSuccessful) {
-                                val intent = Intent(context, ChatRoomActivity::class.java)
-                                intent.putExtra("idGroup", notification.description.toLong())
-
-                                // Chamada do retrieveGameNameRoom com o callback
                                 retrieveGameNameRoom(notification.description.toLong()) { gameName ->
+                                    val intent = Intent(context, ChatRoomActivity::class.java)
+                                    intent.putExtra("idGroup", notification.description.toLong())
                                     intent.putExtra("gameName", gameName)
+                                    removeNotification(notification.id, notificationList)
                                     context.startActivity(intent)
                                 }
                             }
@@ -157,14 +151,13 @@ class NotificationAdapter(
 
                         override fun onFailure(call: Call<Unit>, t: Throwable) {
                             Log.e("Room", "Erro ao entrar na sala!")
-
                             (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Erro ao entrar na sala!")
-
                         }
                     })
             }
         }
     }
+
 
     override fun onReject(notification: NotificationResponse) {
         val sharedPreferences =

@@ -285,7 +285,7 @@ class GroupsFragment : Fragment() {
                                 val intent = Intent(context, ChatRoomActivity::class.java)
                                 intent.putExtra("idGroup", response.body()!!.id)
                                 intent.putExtra("gameName", response.body()!!.gameName)
-                                intent.putExtra("groupName", response.body()!!.name)
+                                intent.putExtra("nomeSala", response.body()!!.name)
                                 context!!.startActivity(intent)
                             }
                         } else {

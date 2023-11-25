@@ -107,7 +107,7 @@ class ChatRoomActivity : AppCompatActivity() {
 
         idGroup = intent.getLongExtra("idGroup", -1L)
         gameName = intent.getStringExtra("gameName")!!
-        groupName = intent.getStringExtra("groupName")!!
+
 
 
 
@@ -372,14 +372,39 @@ class ChatRoomActivity : AppCompatActivity() {
             })
     }
 
+    // Adicione esta função à classe ChatRoomActivity
+    private suspend fun retrieveRoomNameById(roomId: Long): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = Rest.getInstance(baseContext)
+                    .create(RoomService::class.java)
+                    .retrieveRoomById(roomId)
+                    .execute()
+
+                if (response.isSuccessful) {
+                    val room = response.body()
+                    return@withContext room?.name ?: "Nome da Sala Indisponível"
+                } else {
+                    Log.e("retrieveRoomNameById", "Erro ao recuperar o nome da sala. Código de erro: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("retrieveRoomNameById", "Erro durante a recuperação do nome da sala: ${e.message}")
+            }
+            return@withContext "Erro ao recuperar o nome da sala"
+        }
+    }
+
+
+
     private suspend fun sendNotificationInviteRoom(friendId: Long): Boolean {
         return withContext(Dispatchers.IO) {
             try {
+                val roomName = retrieveRoomNameById(idGroup)
                 val response = Rest.getInstance(baseContext)
                     .create(NotificationService::class.java)
                     .createNotificationWithQuery(
                         friendId,
-                        message = "Você foi convidado para entrar no grupo $groupName",
+                        message = "Você foi convidado para entrar no grupo $roomName",
                         description = idGroup.toString(),
                         type = NotificationType.GROUP_INVITE,
                         state = NotificationState.AWAITING
