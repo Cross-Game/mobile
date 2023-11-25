@@ -8,16 +8,18 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -61,6 +63,7 @@ import java.io.InputStream
 
 class ChatRoomActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatRoomBinding
+    private lateinit var rootView: View
     private lateinit var db: FirebaseFirestore
     private lateinit var adapterMessages: MessageAdapter
     private var listMessageInGroup = mutableListOf<MessageInGroup>()
@@ -79,6 +82,7 @@ class ChatRoomActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChatRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
 
         val recyclerViewMessages = binding.listofmessagesinroom
 
@@ -109,7 +113,6 @@ class ChatRoomActivity : AppCompatActivity() {
         val findViewById = findViewById<View>(R.id.imageButton6)
         findViewById.setOnClickListener {
             sendMessage(idGroup, findViewById<EditText>(R.id.textMessage).text.toString());
-            scroolToBottom()
         }
 
         findViewById<Button>(R.id.button_back_rooms).setOnClickListener {
@@ -120,10 +123,56 @@ class ChatRoomActivity : AppCompatActivity() {
             showBottomSheetDialogFriends()
         }
         }
+
+        adjusteSizeInput(binding)
+    }
+
+    private fun adjusteSizeInput(binding: ActivityChatRoomBinding) {
+        binding.scrollViewSendMessage.viewTreeObserver.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
+            private var initialHeight = 0
+
+            override fun onPreDraw(): Boolean {
+                if (initialHeight == 0) {
+                    initialHeight = binding.scrollViewSendMessage.height
+                    return true
+                }
+
+                val currentHeight = binding.scrollViewSendMessage.height
+
+                var testValue = initialHeight
+                if (testValue > currentHeight) {
+                    binding.scrollViewSendMessage.scrollBy(0, 3000)
+
+                    val novaAltura = 600
+                    val params = binding.listofmessagesinroom.layoutParams
+                    params.height = novaAltura
+                    binding.listofmessagesinroom.layoutParams = params
+
+                    val novaAltura1 = 250
+                    val params2 = binding.linearLayout4.layoutParams
+                    params2.height = novaAltura1
+                    binding.linearLayout4.layoutParams = params2
+                } else {
+                    val novaAltura = 1200
+                    val params = binding.listofmessagesinroom.layoutParams
+                    params.height = novaAltura
+                    binding.listofmessagesinroom.layoutParams = params
+                    binding.scrollViewSendMessage.scrollBy(0, 0)
+
+                    val novaAltura1 = 400
+                    val params2 = binding.linearLayout4.layoutParams
+                    params2.height = novaAltura1
+                    binding.linearLayout4.layoutParams = params2
+                }
+
+                return true
+            }
+        })
     }
 
     private fun exitFromRoom() {
-        Rest.getInstance(this)
+        Rest.getInstance()
             .create(RoomService::class.java)
             .exitFromRoom(getIdUserSigned(), idGroup)
             .enqueue(object : Callback<Unit> {
@@ -132,24 +181,15 @@ class ChatRoomActivity : AppCompatActivity() {
                         finish()
                     } else {
                         Log.e("Error", "Erro ao sair da sala")
-                        Toast.makeText(
-                            baseContext,
-                            "Não foi possível sair da sala",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        exibirSnackbar("Não foi possível sair da sala. Tente novamente", false)
                     }
                 }
 
                 override fun onFailure(call: Call<Unit>, t: Throwable) {
                     Log.e("Error", "Erro ao sair da sala", t)
-                    Toast.makeText(
-                        baseContext,
-                        "Não foi possível sair da sala",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    exibirSnackbar("Não foi possível sair da sala. Tente novamente", false)
                 }
             })
-
     }
 
     override fun onStart() {
@@ -174,20 +214,18 @@ class ChatRoomActivity : AppCompatActivity() {
 
                     Glide.with(baseContext)
                         .load(link)
-                        .placeholder(R.drawable.game_example_2)
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.placeholder_image)
                         .into(findViewById(R.id.imageView13))
                 } else {
-                    Log.e("Error", "Houve um erro ao buscar a imagem da sala")
-                    Toast.makeText(
-                        baseContext,
-                        "Houve um erro ao buscar a imagem da sala",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Log.e("retrieveImageGame", "Houve um erro ao buscar a imagem da sala. Imagem default selecionada.")
+                    exibirSnackbar("Ops! Ocorreu um erro ao buscar imagem da sala.", false)
                 }
             }
 
             override fun onFailure(call: Call<GameResponse>, t: Throwable) {
-                Log.e("GET", "Falha ao listar os Jogos", t)
+                Log.e("retrieveImageGame", "Falha ao buscar imagem da sala: " + t.message)
+                Log.e("retrieveImageGame", "Houve um erro ao buscar a imagem da sala. Imagem default selecionada.")
             }
         })
     }
@@ -218,8 +256,8 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun getPhotoUser(userId: Long, binding: ActivityChatRoomBinding) {
-//        val rest = Rest.getInstance(requireActivity()) // todo alterar para autenticado
-        val rest = Rest.getInstance(this)
+        val rest = Rest.getInstance(baseContext)
+//        val rest = Rest.getInstance(this)
         rest.create(AutenticationUser::class.java).getPhoto(userId)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
@@ -245,12 +283,12 @@ class ChatRoomActivity : AppCompatActivity() {
                                 .into(binding.includeSelectOptions.imageView7)
                         }
                     } else {
-                        Log.i("GET", "Ops, imagem incompatível !")
+                        Log.e("getPhotoUser", "Ops, imagem incompatível !")
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Log.i("GET", "Falha ao obter a foto de perfil")
+                    Log.e("getPhotoUser", "Falha ao obter a foto de perfil")
                 }
             })
     }
@@ -284,16 +322,15 @@ class ChatRoomActivity : AppCompatActivity() {
 
                             sendNotificationFriendship(userInRoom.id)
 
-                            Toast.makeText(baseContext, "pedido enviado", Toast.LENGTH_SHORT)
-                                .show()
+                            exibirSnackbar("Convite para entrar na sala enviado!")
                         } else {
-                            Toast.makeText(baseContext, response.message(), Toast.LENGTH_SHORT)
-                                .show()
+                            exibirSnackbar("Falha ao enviar convite para o jogador ${userInRoom.name}. Tente novamente.")
                         }
                     }
 
                     override fun onFailure(call: Call<Unit>, t: Throwable) {
-                        Toast.makeText(baseContext, t.message, Toast.LENGTH_SHORT).show()
+                        Log.e("sendFriendRequestInRooom", "Falha ao enviar convite para entrar na sala: " + t.message)
+                        exibirSnackbar("Falha ao enviar convite para o jogador ${userInRoom.name}. Tente novamente.")
                     }
                 }
             )
@@ -312,18 +349,18 @@ class ChatRoomActivity : AppCompatActivity() {
                     response: Response<Unit>
                 ) {
                     if (response.isSuccessful) {
-                        Log.i("Notification", "Notificação enviada para usuário de id $friendId")
+
                     } else {
-                        Log.i(
-                            "Notification",
+                        Log.e(
+                            "sendNotificationFriendship",
                             "Falha ao enviar notificação para usuário de id $friendId"
                         )
                     }
                 }
 
                 override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    Log.i(
-                        "Notification",
+                    Log.e(
+                        "sendNotificationFriendship",
                         "Falha ao enviar notificação para usuário de id $friendId",
                         t
                     )
@@ -371,6 +408,7 @@ class ChatRoomActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 adapterMessages.notifyDataSetChanged()
                 clearText()
+                scroolToBottom()
             }
             .addOnFailureListener { e ->
                 Log.w("TAG", "Error adding document", e)
@@ -378,7 +416,9 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     private fun scroolToBottom() {
-        binding.listofmessagesinroom.smoothScrollToPosition(binding.listofmessagesinroom.adapter!!.itemCount + 2)
+        if (binding.listofmessagesinroom.adapter!!.itemCount > 1) {
+            binding.listofmessagesinroom.smoothScrollToPosition(binding.listofmessagesinroom.adapter!!.itemCount + 1)
+        }
     }
 
     private fun clearText() {
@@ -392,11 +432,7 @@ class ChatRoomActivity : AppCompatActivity() {
             { result, error ->
                 if (error != null) {
                     Log.w("Tag", "Error listening for messages.", error)
-                    Toast.makeText(
-                        baseContext,
-                        "Erro ao recuperar as mensagens",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    exibirSnackbar("Ops! Encontramos uma falha ao recuperar mensagens. Por favor, tente recarregar a página.")
                 }
 
                 listMessageInGroup.clear()
@@ -414,12 +450,14 @@ class ChatRoomActivity : AppCompatActivity() {
                     )
                 }
                 adapterMessages.notifyDataSetChanged()
+                scroolToBottom()
             }
         adapterMessages.notifyDataSetChanged()
+        scroolToBottom()
     }
 
     private fun retriveUsersInRooms(idGroup: Long) {
-        Rest.getInstance(this)
+        Rest.getInstance()
             .create(RoomService::class.java)
             .retrieveRoomById(idGroup)
             .enqueue(object : Callback<Room> {
@@ -438,21 +476,13 @@ class ChatRoomActivity : AppCompatActivity() {
                         adapterUsersRoom.notifyDataSetChanged()
                     } else {
                         Log.e("Error", "Houve um erro ao buscar os usuários")
-                        Toast.makeText(
-                            baseContext,
-                            "Houve um erro ao buscar os usuários",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        exibirSnackbar("Ops! Encontramos uma falha ao carregar usuários. Por favor, tente recarregar a página.", false)
                     }
                 }
 
                 override fun onFailure(call: Call<Room>, t: Throwable) {
                     Log.e("Error", "Houve um erro ao buscar os usuários", t)
-                    Toast.makeText(
-                        baseContext,
-                        "Houve um erro ao buscar os usuários",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    exibirSnackbar("Ops! Encontramos uma falha ao carregar usuários. Por favor, tente recarregar a página.", false)
                 }
             })
 
@@ -471,7 +501,6 @@ class ChatRoomActivity : AppCompatActivity() {
         dialog.show()
 
         with(sheetBinding) {
-
             sendFeedBackToUser.setOnClickListener {
                 val comportamento = ratingBarComportamento.rating.toInt()
                 val habilidade = ratingBarHabilidade.rating.toInt()
@@ -508,24 +537,16 @@ class ChatRoomActivity : AppCompatActivity() {
                     response: Response<UserAndFeedback>
                 ) {
                     if (response.isSuccessful) {
-                        Log.i("Room", "Feedback Enviado!")
-                        Toast.makeText(baseContext, "Enviado FeedBack", Toast.LENGTH_SHORT)
-                            .show()
+                        exibirSnackbar( "Feedback para ${userInRoom.name} enviado com sucesso!", true)
                     } else {
                         Log.i("Error", "Erro ao Enviar feedback")
-                        Toast.makeText(
-                            baseContext,
-                            "Erro ao Enviar feedback",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        exibirSnackbar("Erro ao enviar feedback para ${userInRoom.name}. Por favor, tente novamente.", false)
                     }
                 }
 
                 override fun onFailure(call: Call<UserAndFeedback>, t: Throwable) {
-                    Log.i("Error", "Erro ao Enviar feedback")
-                    Toast.makeText(baseContext, "Erro ao Enviar feedback", Toast.LENGTH_SHORT)
-                        .show()
+                    Log.i("Error", "Erro ao Enviar feedback: " + t.message)
+                    exibirSnackbar("Erro ao enviar feedback para ${userInRoom.name}. Por favor, tente novamente.", false)
                 }
             })
     }
@@ -534,7 +555,7 @@ class ChatRoomActivity : AppCompatActivity() {
         val sharedPreferences =
             this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
 
-        return sharedPreferences.getString("username", "KakaLopz").toString()
+        return sharedPreferences.getString("username", "Meu nome").toString()
     }
 
     private fun getIdUserSigned(): Long {
@@ -603,10 +624,27 @@ class ChatRoomActivity : AppCompatActivity() {
                 return@withContext response.body() ?: emptyList()
             }
             Log.e("ERRO", response.body().toString())
+            exibirSnackbar("Falha ao carregar amigos. Por favor, tente novamente.", false)
         } catch (e: Exception) {
+            exibirSnackbar("Falha ao carregar amigos. Por favor, tente novamente.", false)
             Log.e("EXCEPTION", e.message.toString())
         }
         return@withContext emptyList()
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 
 }

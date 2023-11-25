@@ -17,16 +17,20 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
         fun bindCurrentUserMessage(messageInGroup: MessageInGroup) {
             if (binding is MyMessageLayoutBinding) {
                 binding.messageText.text = messageInGroup.text
+                binding.idHourSendMessageMy.text = "${messageInGroup.createdAt.toDate().hours.toString()}:${messageInGroup.createdAt.toDate().minutes.toString()}"
             } else if(binding is MessageForOthersLayoutBinding){
                 binding.messageText.text = messageInGroup.text
+                binding.idHourSendMessage.text = "${messageInGroup.createdAt.toDate().hours.toString()}:${messageInGroup.createdAt.toDate().minutes.toString()}"
             }
         }
 
         fun bindOtherUserMessage(messageInGroup: MessageInGroup) {
             if (binding is MessageForOthersLayoutBinding) {
                 binding.messageText.text = messageInGroup.text
+                binding.idHourSendMessage.text = "${messageInGroup.createdAt.toDate().hours.toString()}:${messageInGroup.createdAt.toDate().minutes.toString()}"
             }else if(binding is MyMessageLayoutBinding){
                 binding.messageText.text = messageInGroup.text
+                binding.idHourSendMessageMy.text = "${messageInGroup.createdAt.toDate().hours.toString()}:${messageInGroup.createdAt.toDate().minutes.toString()}"
             }
         }
     }
@@ -61,9 +65,9 @@ class MessageAdapter(private val messageInGroups: MutableList<MessageInGroup>, p
     override fun getItemViewType(position: Int): Int {
         val message = messageInGroups[position]
         return if (message.uid == getIdUserSigned()) {
-            1
-        } else {
             0
+        } else {
+            1
         }
     }
 

@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.databinding.ActivityAddInterestsBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.users.UserPreference
@@ -20,6 +22,7 @@ import retrofit2.Response
 
 class AddInterestsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddInterestsBinding
+    private lateinit var rootView: View
 
     private lateinit var preferencesService: PreferencesService
 
@@ -31,6 +34,7 @@ class AddInterestsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddInterestsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
         binding.buttonBack.setOnClickListener { onExit(it) }
         getAllUserInterestsInDatabase()
     }
@@ -153,6 +157,8 @@ class AddInterestsActivity : AppCompatActivity() {
                 }
             }
         }
+
+        exibirSnackbar("Lista de interesses atualizada com sucesso!.", true)
     }
 
     fun enableOrDisableChip(view: View) {
@@ -180,5 +186,20 @@ class AddInterestsActivity : AppCompatActivity() {
         Log.i("EXIT", "Saindo da tela")
         insertOrDeleteInterestForUser()
         finish()
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 }

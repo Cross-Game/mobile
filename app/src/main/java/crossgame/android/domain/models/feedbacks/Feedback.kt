@@ -8,6 +8,6 @@ data class Feedback (
     val behavior: Int,
     val skill: Int,
     val feedbackText: String,
-    val feedbackGivenDate: String // todo revisar aqui
+    val feedbackGivenDate: String
 )
 
