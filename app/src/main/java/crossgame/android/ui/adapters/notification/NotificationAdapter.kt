@@ -138,7 +138,7 @@ class NotificationAdapter(
 
             }
             NotificationType.GROUP_INVITE -> {
-                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification accepted")
+                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Entrando no grupo...")
                 rest.create(RoomService::class.java)
                     .addCommonUser(userId, notification.description.toLong())
                     .enqueue(object : Callback<Unit> {
@@ -193,7 +193,7 @@ class NotificationAdapter(
                 )
             }
             NotificationType.GROUP_INVITE -> {
-                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification Rejected");
+                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Grupo recusado!");
                     removeNotification(notification.id,notificationList)
             }
         }
