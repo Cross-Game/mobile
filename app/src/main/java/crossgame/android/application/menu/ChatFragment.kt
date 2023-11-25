@@ -14,8 +14,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import crossgame.android.application.R
 import crossgame.android.application.databinding.FragmentChatBinding
 import crossgame.android.domain.models.friends.Friends
 import crossgame.android.ui.adapters.friends.FriendsAdapter
@@ -33,6 +36,7 @@ import java.io.InputStream
 class ChatFragment : Fragment() {
 
     private lateinit var binding: FragmentChatBinding
+    private lateinit var rootView: View
     private var originalFriendList: List<Friends> = mutableListOf()
     private lateinit var searchEditText: EditText
     private lateinit var searchIcon: ImageView
@@ -45,6 +49,7 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentChatBinding.inflate(inflater, container, false)
+        rootView = binding.root
 
         searchIcon = binding.searchIconTextView
         searchEditText = binding.searchEditText
@@ -134,6 +139,7 @@ class ChatFragment : Fragment() {
                         getPhotoUser(friend.friendUserId)
                     }
                 } else {
+                    exibirSnackbar("Ops! Ocorreu uma falha ao obter amigos. Por favor, recarregue a página.", false)
                     Log.e("GET", "Falha ao listar amigos")
                 }
 
@@ -155,6 +161,7 @@ class ChatFragment : Fragment() {
 
             override fun onFailure(call: Call<List<UserList>>, t: Throwable) {
                 Log.e("GET", "Falha ao listar amigos", t)
+                exibirSnackbar("Ops! Ocorreu uma falha ao obter amigos. Por favor, recarregue a página.", false)
 
                 // Atualiza a visibilidade do TextView caso ocorra falha ao listar amigos
                 val emptyFriendsListTextView = binding.emptyFriendsListTextView
@@ -167,7 +174,19 @@ class ChatFragment : Fragment() {
         })
     }
 
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
 
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+        snackbar.show()
+    }
 
     private fun getPhotoUser(friendUserId: Long) {
         val rest = Rest.getInstance(requireActivity())
@@ -194,12 +213,12 @@ class ChatFragment : Fragment() {
 
                         }
                     } else {
-                        Log.i("GET", "Ops, imagem incompatível !")
+                        exibirSnackbar("Ops! Ocorreu uma falha ao obter foto de perfil. Uma imagem default foi colocada.", false)
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Log.i("GET", "Falha ao obter a foto de perfil")
+                    exibirSnackbar("Ops! Ocorreu uma falha ao obter foto de perfil. Uma imagem default foi colocada.", false)
                 }
             })
     }
