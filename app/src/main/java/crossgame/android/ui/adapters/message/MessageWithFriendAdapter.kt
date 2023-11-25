@@ -20,16 +20,20 @@ class MessageWithFriendAdapter(
         fun bindCurrentUserMessage(message: MessageFriend) {
             if (binding is MyMessageLayoutBinding) {
                 binding.messageText.text = message.text
+                binding.idHourSendMessageMy.text = "${message.createdAt.toDate().hours.toString()}:${message.createdAt.toDate().minutes.toString()}"
             } else if (binding is MessageForOthersLayoutBinding) {
                 binding.messageText.text = message.text
+                binding.idHourSendMessage.text = "${message.createdAt.toDate().hours.toString()}:${message.createdAt.toDate().minutes.toString()}"
             }
         }
 
         fun bindOtherUserMessage(message: MessageFriend) {
             if (binding is MessageForOthersLayoutBinding) {
                 binding.messageText.text = message.text
+                binding.idHourSendMessage.text = "${message.createdAt.toDate().hours.toString()}:${message.createdAt.toDate().minutes.toString()}"
             } else if (binding is MyMessageLayoutBinding) {
                 binding.messageText.text = message.text
+                binding.idHourSendMessageMy.text = "${message.createdAt.toDate().hours.toString()}:${message.createdAt.toDate().minutes.toString()}"
             }
         }
     }

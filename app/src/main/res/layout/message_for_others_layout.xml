@@ -19,9 +19,11 @@
         tools:text="teste"
         android:textAlignment="textStart"
         android:textSize="21sp"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
+        android:id="@+id/idHourSendMessage"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_weight="1"

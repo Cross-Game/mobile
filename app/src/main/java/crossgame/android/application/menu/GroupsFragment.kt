@@ -12,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
@@ -169,7 +171,7 @@ class GroupsFragment : Fragment() {
 
 
     private fun retrievePublicRooms() {
-        listRoom.clear() // todo rever
+        listRoom.clear()
         val api = Rest.getInstance().create(RoomService::class.java)
 
         api.retrieveAll().enqueue(object : Callback<List<Room>> {
@@ -226,10 +228,35 @@ class GroupsFragment : Fragment() {
             createRoom(sheetBinding, gameName)
         }
 
+        sheetBinding.scrollViewCreateRoom.viewTreeObserver.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
+            private var initialHeight = 0
+
+            override fun onPreDraw(): Boolean {
+                if (initialHeight == 0) {
+                    initialHeight = sheetBinding.scrollViewCreateRoom.height
+                    return true
+                }
+
+                val currentHeight = sheetBinding.scrollViewCreateRoom.height
+
+                var testValue = initialHeight + 100
+                if (testValue > currentHeight) {
+                    sheetBinding.scrollViewCreateRoom.scrollBy(0, 3000)
+                } else {
+                    sheetBinding.scrollViewCreateRoom.scrollBy(0, 0)
+                }
+
+                return true
+            }
+        })
+
         with(dialog.behavior) {
             state = BottomSheetBehavior.STATE_EXPANDED
         }
         dialog.show()
+
+
 
         this.listGames()
     }
