@@ -107,6 +107,9 @@ class ChatRoomActivity : AppCompatActivity() {
 
         idGroup = intent.getLongExtra("idGroup", -1L)
         gameName = intent.getStringExtra("gameName")!!
+        groupName = intent.getStringExtra("groupName")!!
+
+
 
         retrieveMessages(idGroup)
 
