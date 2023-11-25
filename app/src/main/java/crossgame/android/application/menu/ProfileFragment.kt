@@ -19,10 +19,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.AddGamesActivity
 import crossgame.android.application.AddInterestsActivity
 import crossgame.android.application.FeedbacksActivity
@@ -58,6 +60,7 @@ import java.io.InputStream
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var rootView: View
     private var originalGamesList: List<GameResponse> = mutableListOf()
     private var preferenceList: List<Preference> = mutableListOf()
     private lateinit var gamesAdapter: GamesAdapter
@@ -82,6 +85,7 @@ class ProfileFragment : Fragment() {
         binding.imageJogador.setImageResource(R.drawable.carbon_user_avatar_empty)
         binding.btnSettingProfile.setOnClickListener { showBottomSheet() }
         binding.btnAddPhoto.setOnClickListener { updatePhotoUser() }
+        rootView = binding.root
 
         val recyclerView = binding.listGames
         gamesAdapter = GamesAdapter(requireContext(), mutableListOf()) {
@@ -146,16 +150,15 @@ class ProfileFragment : Fragment() {
                                 ) {
                                     if (response.isSuccessful) {
                                         getPhotoUser()
-                                        Toast.makeText(context, "Imagem de perfil atualizada!",
-                                            Toast.LENGTH_LONG).show()
+                                        exibirSnackbar("Foto de perfil atualizada com sucesso!", true)
                                     } else {
-                                        Toast.makeText(context, response.code().toString(),
-                                            Toast.LENGTH_LONG).show()
+                                        exibirSnackbar("Ops! Ocorreu uma falha ao atualizar foto de perfil. Por favor, tente novamente.", false)
                                     }
                                 }
 
                                 override fun onFailure(call: Call<Unit>, t: Throwable) {
                                     Log.i("GET", t.message.toString())
+                                    exibirSnackbar("Ops! Ocorreu uma falha ao atualizar foto de perfil. Por favor, tente novamente.", false)
                                 }
                             })
                     }
@@ -236,11 +239,13 @@ class ProfileFragment : Fragment() {
                             binding.imageJogador.setImageBitmap(decodedByte)
                         }
                     } else {
+                        exibirSnackbar("Ops! Ocorreu uma falha ao carregar imagem de perfil!", false)
                         Log.i("GET", "Ops, imagem incompatível !")
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    exibirSnackbar("Ops! Ocorreu uma falha ao carregar imagem de perfil!", false)
                     Log.i("GET", "Falha ao atualizar a foto de perfil")
                 }
             })
@@ -407,4 +412,18 @@ class ProfileFragment : Fragment() {
             else -> binding.backgroundProfileUser.background = ColorDrawable(Color.parseColor("#51E00F02"))
         }
     }
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+        snackbar.show()
+    }
+
 }

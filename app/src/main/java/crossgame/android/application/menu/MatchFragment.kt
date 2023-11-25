@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import crossgame.android.application.databinding.BsGameListBinding
 import crossgame.android.application.databinding.FragmentMatchBinding
@@ -36,6 +38,7 @@ class MatchFragment : Fragment() {
 
 
     private lateinit var binding: FragmentMatchBinding
+    private lateinit var rootView: View
     private lateinit var listUsers: List<UserMatch>
     private lateinit var recyclerView: RecyclerView
     private lateinit var matchHelper: MatchHelper
@@ -54,7 +57,7 @@ class MatchFragment : Fragment() {
         val sharedPreferences =
             requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         userId = sharedPreferences.getInt("id", 1).toLong()
-
+        rootView = binding.root
         recyclerView = binding.listPlayers
         matchHelper = MatchHelper(requireContext())
 
@@ -409,5 +412,20 @@ class MatchFragment : Fragment() {
     fun convertListToJson(users: List<UserMatch>): String {
         val gson = Gson()
         return gson.toJson(users)
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), crossgame.android.application.R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), crossgame.android.application.R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), crossgame.android.application.R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), crossgame.android.application.R.color.white))
+        }
+
+        snackbar.show()
     }
 }

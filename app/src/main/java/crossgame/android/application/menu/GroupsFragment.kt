@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.ChatRoomActivity
 import crossgame.android.application.R
 import crossgame.android.application.databinding.BsCreatinRoomBinding
@@ -41,6 +43,7 @@ import retrofit2.Response
 class GroupsFragment : Fragment() {
 
     private lateinit var binding: FragmentGroupsBinding
+    private lateinit var rootView: View
     private lateinit var adapterRooms: RoomAdapter
     private var listRoom: MutableList<Room> = mutableListOf()
     private var isShowingMyRooms = false
@@ -59,6 +62,8 @@ class GroupsFragment : Fragment() {
         )
 
         val recyclerViewRoom = binding.listOfRooms
+        rootView = binding.root
+
         recyclerViewRoom.layoutManager =
             LinearLayoutManager(
                 binding.root.context,
@@ -249,6 +254,7 @@ class GroupsFragment : Fragment() {
                     override fun onResponse(call: Call<Room>, response: Response<Room>) {
                         if (response.isSuccessful) {
                             if (response.body() != null) {
+                                exibirSnackbar("Sucesso ao criar sala. Você será redirecinado para o grupo.", true)
                                 val intent = Intent(context, ChatRoomActivity::class.java)
                                 intent.putExtra("idGroup", response.body()!!.id)
                                 intent.putExtra("gameName", response.body()!!.gameName)
@@ -256,29 +262,17 @@ class GroupsFragment : Fragment() {
                             }
                         } else {
                             Log.e("Error", "Houve um erro ao cria uma sala!")
-                            Toast.makeText(
-                                view?.context,
-                                "Houve um erro ao cria uma sala!",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            exibirSnackbar("Ops! Ocorreu um erro ao criar a sala. Por favor, tente novamente.", false)
                         }
                     }
 
                     override fun onFailure(call: Call<Room>, t: Throwable) {
                         Log.e("Error", "Houve um erro ao cria uma sala!", t)
-                        Toast.makeText(
-                            view?.context,
-                            "Houve um erro ao cria uma sala!",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        exibirSnackbar("Ops! Ocorreu um erro ao criar a sala. Por favor, tente novamente.", false)
                     }
                 })
         } else {
-            Toast.makeText(
-                view?.context,
-                "Houve um erro ao cria uma sala!, algumas informações não validas",
-                Toast.LENGTH_LONG
-            ).show()
+            exibirSnackbar("Ops! Ocorreu um erro ao criar a sala. Verifique as informações preenchidas e tente novamente.", false)
         }
 
     }
@@ -318,16 +312,12 @@ class GroupsFragment : Fragment() {
                     gamesAdapter.updateData(originalGamesList)
                 } else {
                     Log.e("Error", "Houve um erro ao listar os jogos")
-                    Toast.makeText(
-                        view?.context,
-                        "Houve um erro ao listar os jogos",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    exibirSnackbar("Ops! Ocorreu um erro ao obter a listagem de jogos.", false)
                 }
             }
 
             override fun onFailure(call: Call<List<GameResponse>>, t: Throwable) {
-                Log.e("GET", "Falha ao listar os Jogos", t)
+                exibirSnackbar("Ops! Ocorreu um erro ao obter a listagem de jogos.", false)
             }
         })
     }
@@ -360,6 +350,21 @@ class GroupsFragment : Fragment() {
         val sharedPreferences =
             requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("id", 4).toLong()
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        }
+
+        snackbar.show()
     }
 
 }

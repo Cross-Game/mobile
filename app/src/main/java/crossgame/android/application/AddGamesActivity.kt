@@ -9,7 +9,9 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.databinding.ActivityAddGamesBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.games.GameRequestPost
@@ -24,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class AddGamesActivity : AppCompatActivity() {
     private lateinit var binding : ActivityAddGamesBinding
+    private lateinit var rootView: View
     private var originalGamesList: List<GameResponse> = mutableListOf()
     private lateinit var gamesAdapter: GamesAdapter
     private lateinit var progressDialog: ProgressDialog
@@ -33,12 +36,13 @@ class AddGamesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddGamesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
         progressDialog = ProgressDialog(this)
         progressDialog.setInverseBackgroundForced(true)
         progressDialog.setTitle("Carregando...")
         progressDialog.show()
 
-        // Dentro do método `onCreate` após a configuração do botão de pesquisa:
+
         binding.buttonSearch.setOnClickListener {
             toggleSearchBar()
         }
@@ -105,20 +109,20 @@ class AddGamesActivity : AppCompatActivity() {
             override fun onResponse(call: Call<GameResponse>, response: Response<GameResponse>) {
                 if (response.isSuccessful) {
                     val game = response.body()
-                    Toast.makeText(baseContext, "Jogo encontrado: ${game?.name}", Toast.LENGTH_SHORT).show()
+                    exibirSnackbar("Jogo ${game?.name} encontrado! Adicione-o na sua lista.", true)
 
                     // Recarregar a lista de jogos após encontrar o jogo
                     getAllGames()
                 } else {
                     // Trate a falha na chamada da API
-                    Toast.makeText(baseContext, "Falha ao buscar o jogo", Toast.LENGTH_SHORT).show()
+                    exibirSnackbar("Ops! O jogo ${gameName} não foi encontrado. Verifique se o nome do jogo está correto.", false)
                 }
             }
 
             override fun onFailure(call: Call<GameResponse>, t: Throwable) {
                 // Trate a falha na requisição
                 Log.e("GET", "Falha ao buscar o jogo", t)
-                Toast.makeText(baseContext, "Falha ao buscar o jogo", Toast.LENGTH_SHORT).show()
+                exibirSnackbar("Ops! Ocorreu uma falha ao buscar o jogo. Por favor, tente novamente.", false)
             }
         })
     }
@@ -157,6 +161,7 @@ class AddGamesActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<List<GameResponse>>, t: Throwable) {
                 Log.e("GET", "Falha ao listar os Jogos", t)
+                exibirSnackbar("Ops! Ocorreu uma falha ao obter os jogos. Por favor, tente novamente.", false)
             }
         })
     }
@@ -180,16 +185,34 @@ class AddGamesActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     Toast.makeText(baseContext, "Jogo Adicionado: $nomeItem", Toast.LENGTH_SHORT).show()
+                    exibirSnackbar("Lista de jogos atualizada com sucesso!.", true)
                     finish()
                 } else {
                     Toast.makeText(baseContext, "Jogo não Adicionado: $nomeItem", Toast.LENGTH_SHORT).show()
+                    exibirSnackbar("Ops! Encontramos uma falha ao atualizar a lista de jogos.", false)
                 }
             }
 
             override fun onFailure(call: Call<GsonConverterFactory>, t: Throwable) {
                 Log.e("GET", "Falha ao listar os Jogos", t)
+                exibirSnackbar("Ops! Encontramos uma falha ao atualizar a Lista de jogos.", false)
             }
         })
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 
     fun deleteGameForUser(){
