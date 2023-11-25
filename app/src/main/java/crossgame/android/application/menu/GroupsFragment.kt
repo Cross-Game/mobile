@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -23,10 +24,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.ChatRoomActivity
 import crossgame.android.application.R
 import crossgame.android.application.databinding.BsCreatinRoomBinding
+import crossgame.android.application.databinding.BsGameListBinding
 import crossgame.android.application.databinding.FragmentGroupsBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.games.GameResponse
@@ -37,6 +40,9 @@ import crossgame.android.service.GamesService
 import crossgame.android.service.RoomService
 import crossgame.android.ui.adapters.games.GamesAdapter
 import crossgame.android.ui.adapters.room.RoomAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,6 +57,8 @@ class GroupsFragment : Fragment() {
     private var isShowingMyRooms = false
     private lateinit var gamesAdapter: GamesAdapter
     private var originalGamesList: List<GameResponse> = mutableListOf()
+    var gamesForFilter = mutableListOf<String>()
+    private lateinit var recyclerViewRoom: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,7 +71,7 @@ class GroupsFragment : Fragment() {
             false
         )
 
-        val recyclerViewRoom = binding.listOfRooms
+        recyclerViewRoom = binding.listOfRooms
         rootView = binding.root
 
         recyclerViewRoom.layoutManager =
@@ -73,10 +81,18 @@ class GroupsFragment : Fragment() {
 
         binding.addingRoom.setOnClickListener { showBottomSheetCreateRoom() }
 
+        binding.buttonSort.setOnClickListener {
+            Log.i("ButtonSort", "Abrindo modal")
+            CoroutineScope(Dispatchers.Main).launch {
+                showBottomSheetGameFilter()
+            }
+        }
+
         adapterRooms =
             RoomAdapter(listRoom, binding.root.context, getIdUserSigned(), getUserSignedName())
         recyclerViewRoom.adapter = adapterRooms
 
+        listGames();
         val gestureDetector =
             GestureDetectorCompat(binding.root.context, object : SimpleOnGestureListener() {
                 override fun onFling(
@@ -117,6 +133,7 @@ class GroupsFragment : Fragment() {
                 event!!
             )
         }
+
 
         return binding.root
     }
@@ -259,6 +276,7 @@ class GroupsFragment : Fragment() {
 
 
         this.listGames()
+        gamesAdapter.updateData(originalGamesList)
     }
 
 
@@ -281,25 +299,38 @@ class GroupsFragment : Fragment() {
                     override fun onResponse(call: Call<Room>, response: Response<Room>) {
                         if (response.isSuccessful) {
                             if (response.body() != null) {
-                                exibirSnackbar("Sucesso ao criar sala. Você será redirecinado para o grupo.", true)
+                                exibirSnackbar(
+                                    "Sucesso ao criar sala. Você será redirecinado para o grupo.",
+                                    true
+                                )
                                 val intent = Intent(context, ChatRoomActivity::class.java)
                                 intent.putExtra("idGroup", response.body()!!.id)
                                 intent.putExtra("gameName", response.body()!!.gameName)
+                                intent.putExtra("groupName", response.body()!!.name)
                                 context!!.startActivity(intent)
                             }
                         } else {
                             Log.e("Error", "Houve um erro ao cria uma sala!")
-                            exibirSnackbar("Ops! Ocorreu um erro ao criar a sala. Por favor, tente novamente.", false)
+                            exibirSnackbar(
+                                "Ops! Ocorreu um erro ao criar a sala. Por favor, tente novamente.",
+                                false
+                            )
                         }
                     }
 
                     override fun onFailure(call: Call<Room>, t: Throwable) {
                         Log.e("Error", "Houve um erro ao cria uma sala!", t)
-                        exibirSnackbar("Ops! Ocorreu um erro ao criar a sala. Por favor, tente novamente.", false)
+                        exibirSnackbar(
+                            "Ops! Ocorreu um erro ao criar a sala. Por favor, tente novamente.",
+                            false
+                        )
                     }
                 })
         } else {
-            exibirSnackbar("Ops! Ocorreu um erro ao criar a sala. Verifique as informações preenchidas e tente novamente.", false)
+            exibirSnackbar(
+                "Ops! Ocorreu um erro ao criar a sala. Verifique as informações preenchidas e tente novamente.",
+                false
+            )
         }
 
     }
@@ -336,7 +367,6 @@ class GroupsFragment : Fragment() {
                             it.platforms, it.cover, it.genres
                         )
                     } ?: emptyList()
-                    gamesAdapter.updateData(originalGamesList)
                 } else {
                     Log.e("Error", "Houve um erro ao listar os jogos")
                     exibirSnackbar("Ops! Ocorreu um erro ao obter a listagem de jogos.", false)
@@ -379,14 +409,13 @@ class GroupsFragment : Fragment() {
         return sharedPreferences.getInt("id", 4).toLong()
     }
 
-    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+    private fun exibirSnackbar(mensagem: String, isSucess: Boolean = true) {
         val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
 
         if (isSucess) {
             snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.sucess))
             snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-        }
-        else {
+        } else {
             snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.error))
             snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
         }
@@ -394,4 +423,79 @@ class GroupsFragment : Fragment() {
         snackbar.show()
     }
 
+    private suspend fun showBottomSheetGameFilter() {
+        val dialog = BottomSheetDialog(requireContext())
+        val sheetBinding: BsGameListBinding =
+            BsGameListBinding.inflate(layoutInflater, null, false);
+        val chipGroup = sheetBinding.listOfGames;
+
+
+        originalGamesList.map { jogo ->
+            val newChip = Chip(
+                requireContext(),
+                null,
+                com.google.android.material.R.style.Widget_Material3_Chip_Assist_Elevated
+            )
+
+            val isSelected = gamesForFilter.contains(jogo.name)
+            newChip.isSelected = isSelected
+            newChip.setChipBackgroundColorResource(
+                if (newChip.isSelected) R.color.md_theme_dark_onPrimary
+                else R.color.md_theme_dark_inverseOnSurface
+            )
+            newChip.isCloseIconVisible = isSelected
+            newChip.setCloseIconTint(ColorStateList.valueOf(resources.getColor(R.color.white)))
+            newChip.text = jogo.name
+            newChip.tag = jogo.name
+            newChip.setOnClickListener { enableOrRemoveChipFilter(newChip) }
+            newChip.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.white)))
+            chipGroup.addView(newChip)
+        }
+
+        dialog.setContentView(sheetBinding.root)
+        dialog.show()
+
+        dialog.setOnDismissListener {
+            filterRoomsByGame()
+        }
+    }
+
+    fun filterRoomsByGame(){
+
+        var listFilter = listRoom;
+
+        if (!gamesForFilter.isEmpty()) {
+             listFilter = listRoom.filter { room ->
+                room.gameName in gamesForFilter
+            }.toMutableList()
+        }
+
+
+        adapterRooms =
+            RoomAdapter(listFilter, binding.root.context, getIdUserSigned(), getUserSignedName())
+        recyclerViewRoom.adapter = adapterRooms
+    }
+
+    fun enableOrRemoveChipFilter(view: View) {
+        if (view is Chip) {
+            val chip = view as Chip
+            val gameName = chip.tag as String
+
+            if (chip.isSelected) {
+                chip.isSelected = false
+                chip.isCloseIconVisible = false
+                chip.setChipBackgroundColorResource(R.color.md_theme_dark_inverseOnSurface)
+                gamesForFilter.remove(gameName)
+
+            } else {
+                chip.isSelected = true
+                chip.setChipBackgroundColorResource(R.color.md_theme_dark_onPrimary)
+                chip.isCloseIconVisible = true
+                chip.setCloseIconTint(ColorStateList.valueOf(resources.getColor(R.color.white)))
+                Log.i("INFO", "Adicionando jogo " + gameName.toString() + " para filtragem")
+                gamesForFilter.add(gameName)
+            }
+            filterRoomsByGame()
+        }
+    }
 }
