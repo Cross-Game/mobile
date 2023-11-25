@@ -37,7 +37,6 @@
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/userProfileImageView"
         android:text="Mensagem do Usuário"
-        android:visibility="invisible"
         android:textColor="@color/white"
         android:textSize="15sp" />
 

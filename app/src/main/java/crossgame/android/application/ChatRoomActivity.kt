@@ -40,6 +40,7 @@ import crossgame.android.domain.models.notifications.NotificationType
 import crossgame.android.domain.models.rooms.Room
 import crossgame.android.domain.models.user.UserInRoom
 import crossgame.android.domain.models.user.UserPhoto
+import crossgame.android.domain.models.user.UserPictureGeneric
 import crossgame.android.domain.models.users.UserFriend
 import crossgame.android.service.AutenticationUser
 import crossgame.android.service.FeedbackService
@@ -237,22 +238,25 @@ class ChatRoomActivity : AppCompatActivity() {
         adapterUsersRoom.setOnItemClickListener(object : UsersRoomAdapter.OnItemClickListener {
             override fun onItemClick(position: Int, userInRoom: UserInRoom) {
 
-                if (positionUser == position && isSelected) {
-                    binding.includeSelectOptions.root.visibility = View.GONE
-                    binding.include.root.visibility = View.VISIBLE
-                    positionUser = position
-                    isSelected = false
-                } else {
-                    binding.includeSelectOptions.root.visibility = View.VISIBLE
-                    binding.include.root.visibility = View.GONE
-                    binding.includeSelectOptions.textView7.text = userInRoom.name
-                    binding.includeSelectOptions.imageView7.setImageResource(R.drawable.carbon_user_avatar_empty)
 
-                    getPhotoUser(userInRoom.id, binding)
+                if(userInRoom.id != getIdUserSigned()) {
+                    if (positionUser == position && isSelected) {
+                        binding.includeSelectOptions.root.visibility = View.GONE
+                        binding.include.root.visibility = View.VISIBLE
+                        positionUser = position
+                        isSelected = false
+                    } else {
+                        binding.includeSelectOptions.root.visibility = View.VISIBLE
+                        binding.include.root.visibility = View.GONE
+                        binding.includeSelectOptions.textView7.text = userInRoom.name
+                        binding.includeSelectOptions.imageView7.setImageResource(R.drawable.carbon_user_avatar_empty)
 
-                    positionUser = position
-                    isSelected = true
-                    configureOptionsOfUsers(userInRoom)
+                        getPhotoUser(userInRoom.id, binding)
+
+                        positionUser = position
+                        isSelected = true
+                        configureOptionsOfUsers(userInRoom)
+                    }
                 }
             }
         })
@@ -401,7 +405,7 @@ class ChatRoomActivity : AppCompatActivity() {
         val sendMessageInGroup = MessageInGroup(
             Timestamp.now(),
             idGroup,
-            "imgUser", // todo user Photo
+            UserPictureGeneric.get(), // todo user Photo
             text,
             getIdUserSigned()
         )
