@@ -6,9 +6,10 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -21,6 +22,7 @@ import crossgame.android.ui.adapters.message.MessageWithFriendAdapter
 class ChatFriendActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatFriendBinding
+    private lateinit var rootView: View
     private var friendId = -1L
     private var friendUserName = ""
 
@@ -36,6 +38,7 @@ class ChatFriendActivity : AppCompatActivity() {
 
         binding = ActivityChatFriendBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
 
 
 
@@ -132,11 +135,7 @@ class ChatFriendActivity : AppCompatActivity() {
             { result, error ->
                 if (error != null) {
                     Log.w("Tag", "Error listening for messages.", error)
-                    Toast.makeText(
-                        baseContext,
-                        "Erro ao recuperar as mensagens",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    exibirSnackbar("Ops! Ocorreu uma falha ao obter algumas mensagens. Por favor, tente novamente.", false)
                 }
 
                 listMessageWithFriend.clear()
@@ -204,6 +203,21 @@ class ChatFriendActivity : AppCompatActivity() {
         val sharedPreferences =
             this.getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("id", 4).toLong()
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 
 }

@@ -58,18 +58,19 @@
             />
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="16dp"
         android:layout_columnSpan="4"
         android:layout_rowWeight="1"
-        android:layout_gravity="fill"
         android:background="@color/black">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/computer_image"
@@ -120,17 +121,20 @@
                 app:layout_constraintTop_toTopOf="@+id/mobile_image"
                 android:background="@drawable/selected_background_playstation" />
 
-            <Button
-                android:id="@+id/btn_cadastrar_plataforma"
-                android:layout_width="250dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="115dp"
-                android:text="Cadastrar plataforma"
-                android:backgroundTint="#00951E"
-                app:layout_constraintEnd_toEndOf="@+id/playstation_image"
-                app:layout_constraintStart_toStartOf="@+id/mobile_image"
-                app:layout_constraintTop_toBottomOf="@+id/mobile_image"></Button>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+
+        <Button
+            android:id="@+id/btn_cadastrar_plataforma"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/green_bottom"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="30dp"
+            android:text="Atualizar plataformas"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"></Button>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </GridLayout>

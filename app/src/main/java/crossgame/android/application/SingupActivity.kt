@@ -5,14 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.GsonBuilder
 import crossgame.android.application.databinding.ActivitySingupBinding
 import crossgame.android.domain.httpClient.Rest
@@ -22,17 +26,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class SingupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySingupBinding
     private lateinit var googleSingInClient: GoogleSignInClient
     private var senhaVisivel = false
     private var confirmarSenhaVisivel = false
+    private lateinit var rootView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySingupBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
 
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.google_web_client_id))
@@ -122,36 +129,26 @@ class SingupActivity : AppCompatActivity() {
     private fun cadastrar(nome: String, email: String, senha: String, confirmarSenha: String) {
         googleSingInClient.signOut()
         if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
-            Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show()
+            exibirSnackbar("Preencha todos os campos.", false)
             return
         }
 
         if (!isValidEmail(email)) {
-            Toast.makeText(
-                this,
-                "Email inválido. Verifique o formato do email.",
-                Toast.LENGTH_SHORT
-            ).show()
+            exibirSnackbar("Email inválido. Verifique o formato do email.", false)
             return
         }
 
         if (!isValidPassword(senha)) {
-            Toast.makeText(
-                this,
-                "Senha inválida. A senha deve conter pelo menos 12 caracteres com pelo menos uma letra maiúscula.",
-                Toast.LENGTH_SHORT
-            ).show()
+            exibirSnackbar("Senha inválida. A senha deve ter pelo menos 12 caracteres, incluindo pelo menos uma letra maiúscula.", false)
             return
         }
 
         if (senha != confirmarSenha) {
-            Toast.makeText(
-                this,
-                "As senhas não coincidem. Verifique sua senha e confirmação de senha.",
-                Toast.LENGTH_SHORT
-            ).show()
+            exibirSnackbar("As senhas não coincidem. Verifique as senhas digitadas.", false)
             return
         }
+
+        binding.btnRegistrar.isActivated = true;
 
         val userRegisterRequest =
             UserRegisterRequest(nome.toString(), email.toString(), senha.toString(), "USER")
@@ -164,23 +161,19 @@ class SingupActivity : AppCompatActivity() {
                     response: Response<GsonBuilder>
                 ) {
                     if (response.isSuccessful) {
-                        Toast.makeText(
-                            this@SingupActivity,
-                            "Cadastro realizado com sucesso!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        exibirSnackbar("Cadastro realizado com sucesso! Aproveite sua jornada!", true)
                         val intent = Intent(this@SingupActivity, LoginActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        val errorMessage = "Erro ao registrar: " + response.message()
-                        Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        exibirSnackbar("Ops! Ocorreu um problema ao cadastrar. Por favor, tente novamente.", false)
+                        Log.i("cadastrar", "Erro ao realizar cadastro: " + response.message())
                     }
                 }
 
                 override fun onFailure(call: Call<GsonBuilder>, t: Throwable) {
-                    val errorMessage = "Erro de comunicação com o servidor: " + t.message
-                    Toast.makeText(this@SingupActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                    exibirSnackbar("Ops! Ocorreu um problema ao cadastrar. Por favor, tente novamente.", false)
+                    Log.i("cadastrar", "Erro ao realizar cadastro: " + t.message)
                 }
             })
 
@@ -240,5 +233,20 @@ class SingupActivity : AppCompatActivity() {
             binding.imageMostraSenha.isGone = false
             binding.editTextSenha.error = null
         }
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 }

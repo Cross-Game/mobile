@@ -4,16 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.databinding.ActivityLoginBinding
 import crossgame.android.application.menu.ProfileFragment
 import crossgame.android.domain.httpClient.Rest
@@ -29,11 +33,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var googleSingInClient: GoogleSignInClient
     private var senhaVisivel = false
+    private lateinit var rootView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
 
 
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -85,12 +91,12 @@ class LoginActivity : AppCompatActivity() {
                         )
                     )
                 } else {
-                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
+                    Log.e("launcher", task.exception?.message.toString());
                 }
 
 
             } else {
-                Toast.makeText(this, result.toString(), Toast.LENGTH_SHORT).show()
+                Log.e("launcher", result.toString());
             }
         }
 
@@ -117,27 +123,20 @@ class LoginActivity : AppCompatActivity() {
                         val editor = prefs.edit()
                         editor.putString("TOKEN", response.body()?.encodedToken.toString())
                         editor.apply()
-                        Toast.makeText(
-                            baseContext,
-                            "Login Realizado !",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        exibirSnackbar("Sucesso ao realizar login! Bem-vindo de volta!")
                         decodeJWT(response.body()?.encodedToken.toString())
                         redirectToMatch()
                     } else {
 
-                        Toast.makeText(baseContext, "Usuario não cadastrado !", Toast.LENGTH_SHORT)
-                            .show()
+                        exibirSnackbar("Falha ao realizar login. Usuário ou senha inválidos.", false)
                         googleSingInClient.signOut()
                     }
                 }
 
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                    Toast.makeText(
-                        baseContext,
-                        "Erro na conexão com a internet",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.e("register", "Falha ao registrar usuário: " + t.message)
+
+                    exibirSnackbar("Ops! Ocorreu uma falha ao realizar login. Por favor, tente novamente.", false)
                 }
 
             })
@@ -157,7 +156,7 @@ class LoginActivity : AppCompatActivity() {
 
         } catch (exception: Exception) {
             googleSingInClient.signOut()
-            println("Erro ao decodificar o token: ${exception.message}")
+            Log.e("decodeJWT", "Erro ao decodificar token: " + exception.message.toString() )
         }
     }
 
@@ -168,5 +167,20 @@ class LoginActivity : AppCompatActivity() {
         editor.putString("email", emailUser)
         editor.putInt("id", idUser)
         editor.apply()
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 }

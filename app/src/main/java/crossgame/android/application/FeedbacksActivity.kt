@@ -4,10 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import crossgame.android.application.databinding.ActivityFeedbacksBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.feedbacks.Feedback
@@ -18,6 +21,7 @@ import retrofit2.Response
 
 class FeedbacksActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFeedbacksBinding
+    private lateinit var rootView: View
 
     private lateinit var feedbacksService: FeedbackService
 
@@ -28,6 +32,7 @@ class FeedbacksActivity : AppCompatActivity() {
         binding = ActivityFeedbacksBinding.inflate(layoutInflater)
         getAllUserFeedbacksInDatabase()
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
 
         binding.buttonBack.setOnClickListener { backProfile() }
     }
@@ -57,6 +62,7 @@ class FeedbacksActivity : AppCompatActivity() {
                     } else {
                         apiResponse?.forEach { feedback ->
                             userFeedbacks.add(feedback)
+                            exibirSnackbar("Ops! Ocorreu uma falha ao obter seus feedbacks.", false)
                             criarCardsFeedbacks(feedback)
                         }
                         atualizarQuantidadeDeFeedbacks()
@@ -66,6 +72,7 @@ class FeedbacksActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<List<Feedback>>, t: Throwable) {
                 Log.e("ERROR", "Erro ao Feedbacks: " + t.message.toString())
+                exibirSnackbar("Ops! Ocorreu uma falha ao obter seus feedbacks.", false)
             }
         })
     }
@@ -103,5 +110,20 @@ class FeedbacksActivity : AppCompatActivity() {
         textView.setTextSize(18.0F)
         textView.gravity = Gravity.CENTER
         binding.body.addView(textView)
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 }

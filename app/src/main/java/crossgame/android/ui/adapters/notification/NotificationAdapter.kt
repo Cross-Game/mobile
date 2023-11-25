@@ -1,18 +1,23 @@
 package crossgame.android.ui.adapters.notification
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import crossgame.android.application.ChatRoomActivity
 import crossgame.android.application.databinding.CardNotificationFriendshipBinding
 import crossgame.android.application.databinding.CardNotificationGroupBinding
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.domain.models.notifications.NotificationResponse
 import crossgame.android.domain.models.notifications.NotificationState
 import crossgame.android.domain.models.notifications.NotificationType
+import crossgame.android.domain.models.rooms.Room
 import crossgame.android.domain.models.users.UserFriend
 import crossgame.android.service.FriendsService
 import crossgame.android.service.NotificationService
+import crossgame.android.service.RoomService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -134,10 +139,26 @@ class NotificationAdapter(
             }
             NotificationType.GROUP_INVITE -> {
                 (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification accepted")
+                rest.create(RoomService::class.java)
+                    .addCommonUser(userId, notification.description.toLong())
+                    .enqueue(object : Callback<Unit> {
+                        override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                            if (response.isSuccessful) {
+                                val intent = Intent(context, ChatRoomActivity::class.java)
+                                intent.putExtra("idGroup", notification.description.toLong())
+                                val gameName = retrieveGameNameRoom(notification.description.toLong())
+                                intent.putExtra("gameName",gameName)
+                                context.startActivity(intent)
+                            }
+                        }
 
-                // Lógica para aceitar um convite de grupo
-                // Chame a API relevante para aceitar esse convite de grupo
-                // Exemplo: apiService.acceptGroupInvite(notification.id)
+                        override fun onFailure(call: Call<Unit>, t: Throwable) {
+                            Log.e("Room", "Erro ao entrar na sala!")
+
+                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Erro ao entrar na sala!")
+
+                        }
+                    })
             }
         }
     }
@@ -169,11 +190,8 @@ class NotificationAdapter(
                 )
             }
             NotificationType.GROUP_INVITE -> {
-                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification Rejected")
-
-                // Lógica para recusar um convite de grupo
-                // Chame a API relevante para recusar esse convite de grupo
-                // Exemplo: apiService.rejectGroupInvite(notification.id)
+                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Group Notification Rejected");
+                    removeNotification(notification.id,notificationList)
             }
         }
     }
@@ -201,6 +219,26 @@ class NotificationAdapter(
                 Log.i("PATCH",t.message.toString())
             }
         })
+    }
+
+    private fun retrieveGameNameRoom(id : Long) : String{
+        var gameName = "";
+        val rest = Rest.getInstance(context)
+        val service = rest.create(RoomService::class.java)
+        service.retrieveRoomById(id).enqueue(object : Callback<Room>{
+            override fun onResponse(call: Call<Room>, response: Response<Room>) {
+                if(response.isSuccessful){
+                    gameName = response.body()!!.gameName;
+                }
+            }
+
+            override fun onFailure(call: Call<Room>, t: Throwable) {
+                Log.i("Retrieve",t.message.toString())
+
+            }
+
+        })
+        return  gameName
     }
 
 

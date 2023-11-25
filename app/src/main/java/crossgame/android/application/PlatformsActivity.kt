@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import crossgame.android.domain.httpClient.Rest
 import crossgame.android.application.databinding.ActivityPlatformsBinding
@@ -17,12 +18,16 @@ import retrofit2.Response
 
 class PlatformsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlatformsBinding
+    private lateinit var rootView: View
     private val selectedPlatforms = mutableSetOf<ImageView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlatformsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        rootView = findViewById(android.R.id.content)
+
+
         val computerImage = binding.computerImage
         val xboxImage = binding.xboxImage
         val mobileImage = binding.mobileImage
@@ -42,6 +47,7 @@ class PlatformsActivity : AppCompatActivity() {
     }
 
     private fun toGoBack() {
+        onCadastrarButtonClick()
         finish()
     }
 
@@ -67,26 +73,12 @@ class PlatformsActivity : AppCompatActivity() {
                 call: Call<List<String>>,
                 response: Response<List<String>>
             ) {
-                val rootView = findViewById<View>(android.R.id.content)
-                val mensagem = "Plataformas adicionadas com sucesso!"
-                val duracao = Snackbar.LENGTH_SHORT
-
-                val snackbar = Snackbar.make(rootView, mensagem, duracao)
-                snackbar.setBackgroundTint(Color.parseColor("#68f273"))
-                snackbar.setTextColor(Color.parseColor("#212121"))
-                snackbar.show()
+                exibirSnackbar("Minhas plataformas atualizada com sucesso!", true)
             }
 
             override fun onFailure(call: Call<List<String>>, t: Throwable) {
 
-                val rootView = findViewById<View>(android.R.id.content)
-                val mensagem = "Erro ao adicionar plataformas!"
-                val duracao = Snackbar.LENGTH_SHORT
-
-                val snackbar = Snackbar.make(rootView, mensagem, duracao)
-                snackbar.setBackgroundTint(Color.parseColor("#F44336"))
-                snackbar.setTextColor(Color.parseColor("#FFFFFF"))
-                snackbar.show()
+                exibirSnackbar("Ops! Ocorreu um erro ao atualizar plataformas. Tente novamente", false)
             }
 
         })
@@ -102,6 +94,21 @@ class PlatformsActivity : AppCompatActivity() {
             binding.playstationImage -> GameplayPlatformType.PLAYSTATION
             else -> GameplayPlatformType.PC
         }
+    }
+
+    private fun exibirSnackbar(mensagem: String, isSucess : Boolean = true) {
+        val snackbar = Snackbar.make(rootView, mensagem, Snackbar.LENGTH_SHORT)
+
+        if (isSucess) {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.sucess))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+        else {
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.error))
+            snackbar.setTextColor(ContextCompat.getColor(this, R.color.white))
+        }
+
+        snackbar.show()
     }
 
 }
