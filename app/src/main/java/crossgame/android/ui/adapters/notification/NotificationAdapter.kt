@@ -146,9 +146,12 @@ class NotificationAdapter(
                             if (response.isSuccessful) {
                                 val intent = Intent(context, ChatRoomActivity::class.java)
                                 intent.putExtra("idGroup", notification.description.toLong())
-                                val gameName = retrieveGameNameRoom(notification.description.toLong())
-                                intent.putExtra("gameName",gameName)
-                                context.startActivity(intent)
+
+                                // Chamada do retrieveGameNameRoom com o callback
+                                retrieveGameNameRoom(notification.description.toLong()) { gameName ->
+                                    intent.putExtra("gameName", gameName)
+                                    context.startActivity(intent)
+                                }
                             }
                         }
 
@@ -221,25 +224,26 @@ class NotificationAdapter(
         })
     }
 
-    private fun retrieveGameNameRoom(id : Long) : String{
-        var gameName = "";
+    private fun retrieveGameNameRoom(id: Long, callback: (String) -> Unit) {
         val rest = Rest.getInstance(context)
         val service = rest.create(RoomService::class.java)
-        service.retrieveRoomById(id).enqueue(object : Callback<Room>{
+        service.retrieveRoomById(id).enqueue(object : Callback<Room> {
             override fun onResponse(call: Call<Room>, response: Response<Room>) {
-                if(response.isSuccessful){
-                    gameName = response.body()!!.gameName;
+                if (response.isSuccessful) {
+                    val gameName = response.body()?.gameName ?: ""
+                    callback(gameName)
+                } else {
+                    callback("")
                 }
             }
 
             override fun onFailure(call: Call<Room>, t: Throwable) {
-                Log.i("Retrieve",t.message.toString())
-
+                Log.i("Retrieve", t.message.toString())
+                callback("")
             }
-
         })
-        return  gameName
     }
+
 
 
 }
