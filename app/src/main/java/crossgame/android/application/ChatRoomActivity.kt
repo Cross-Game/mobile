@@ -537,12 +537,21 @@ class ChatRoomActivity : AppCompatActivity() {
                 val comportamento = ratingBarComportamento.rating.toInt()
                 val habilidade = ratingBarHabilidade.rating.toInt()
                 val descricao = editTextDescricaoFeedback.text.toString()
+
                 sendFeedback(
                     userInRoom,
                     descricao,
                     habilidade,
                     comportamento
-                )
+                ) { success ->
+                    if (success) {
+                        exibirSnackbar("Feedback para ${userInRoom.name} enviado com sucesso!", true)
+                        dialog.dismiss()
+
+                    } else {
+                        exibirSnackbar("Erro ao enviar feedback para ${userInRoom.name}. Por favor, tente novamente.", false)
+                    }
+                }
             }
         }
     }
@@ -551,9 +560,9 @@ class ChatRoomActivity : AppCompatActivity() {
         userInRoom: UserInRoom,
         descricao: String,
         habilidade: Int,
-        comportamento: Int
+        comportamento: Int,
+        callback: (Boolean) -> Unit
     ) {
-
         Rest.getInstance(this)
             .create(FeedbackService::class.java)
             .sendFeedBackToUser(
@@ -569,16 +578,19 @@ class ChatRoomActivity : AppCompatActivity() {
                     response: Response<UserAndFeedback>
                 ) {
                     if (response.isSuccessful) {
-                        exibirSnackbar( "Feedback para ${userInRoom.name} enviado com sucesso!", true)
+                        exibirSnackbar("Feedback para ${userInRoom.name} enviado com sucesso!", true)
+                        callback(true)
                     } else {
                         Log.i("Error", "Erro ao Enviar feedback")
                         exibirSnackbar("Erro ao enviar feedback para ${userInRoom.name}. Por favor, tente novamente.", false)
+                        callback(false)
                     }
                 }
 
                 override fun onFailure(call: Call<UserAndFeedback>, t: Throwable) {
                     Log.i("Error", "Erro ao Enviar feedback: " + t.message)
                     exibirSnackbar("Erro ao enviar feedback para ${userInRoom.name}. Por favor, tente novamente.", false)
+                    callback(false)
                 }
             })
     }
