@@ -62,7 +62,6 @@ class FeedbacksActivity : AppCompatActivity() {
                     } else {
                         apiResponse?.forEach { feedback ->
                             userFeedbacks.add(feedback)
-                            exibirSnackbar("Ops! Ocorreu uma falha ao obter seus feedbacks.", false)
                             criarCardsFeedbacks(feedback)
                         }
                         atualizarQuantidadeDeFeedbacks()
