@@ -1,12 +1,16 @@
 package crossgame.android.application.menu
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
@@ -14,6 +18,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +33,7 @@ import crossgame.android.application.databinding.FragmentMatchBinding
 import crossgame.android.domain.models.users.UserMatch
 import crossgame.android.infra.MatchHelper
 import crossgame.android.ui.adapters.match.MatchAdapter
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,6 +60,59 @@ class MatchFragment : Fragment() {
             container,
             false
         )
+
+        binding.layoutAnimation.visibility = View.VISIBLE
+        // Initial visibility setup
+        binding.apply {
+
+            userIconCenter.visibility = View.VISIBLE
+            circleMuitoPequeno.visibility = View.VISIBLE
+            circlePequeno.visibility = View.VISIBLE
+            userIconTopEnd.visibility = View.VISIBLE
+            userIconEndStart.visibility = View.VISIBLE
+            circleMedio.visibility = View.VISIBLE
+            userIconTopStart.visibility = View.VISIBLE
+            userIconEndEnd.visibility = View.VISIBLE
+            circleGrande.visibility = View.VISIBLE
+        }
+
+        // Step 1: Fade in userIconCenter
+        fadeInView(binding.userIconCenter)
+
+        // Set the initial radius for the ripple effect
+        val initialRadius = 0
+
+        // Define a slower duration for each step
+        val duration = 2000L
+
+        // Step 2: Create a ripple effect and fade in circle_muitoPequeno
+        createRippleEffect(binding.circleMuitoPequeno, initialRadius, duration) {
+            fadeInView(it)
+        }
+
+        // Step 3: Create a ripple effect and fade in circle_pequeno
+        createRippleEffect(binding.circlePequeno, initialRadius, 3000L) {
+            fadeInView(it)
+        }
+
+        // Step 4: Fade in userIconTopEnd and userIconEndStart, then add border
+        fadeInViewWithBorder(binding.userIconTopEnd)
+        fadeInViewWithBorder(binding.userIconEndStart)
+
+        // Step 5: Create a ripple effect and fade in circle_medio
+        createRippleEffect(binding.circleMedio, initialRadius, 5000L) {
+            fadeInView(it)
+        }
+
+        // Step 6: Fade in userIconTopStart and userIconEndEnd, then add border
+        fadeInViewWithBorder(binding.userIconTopStart)
+        fadeInViewWithBorder(binding.userIconEndEnd)
+
+        // Step 7: Create a ripple effect and fade in circle_grande
+        createRippleEffect(binding.circleGrande, initialRadius, 10000L) {
+            fadeInView(it)
+        }
+
         val sharedPreferences =
             requireActivity().getSharedPreferences("MinhasPreferencias", Context.MODE_PRIVATE)
         userId = sharedPreferences.getInt("id", 1).toLong()
@@ -68,6 +127,9 @@ class MatchFragment : Fragment() {
                 recyclerView.adapter = MatchAdapter(requireContext())
                 (recyclerView.adapter as MatchAdapter).updateData(listUsers)
                 onListenServices()
+
+                binding.layoutAnimation.visibility = View.GONE
+                binding.layoutContent.visibility = View.VISIBLE
             }
         }
         buildingServices()
@@ -427,5 +489,51 @@ class MatchFragment : Fragment() {
         }
 
         snackbar.show()
+    }
+
+    private fun fadeInView(view: View) {
+        ViewCompat.animate(view)
+            .alpha(1f)
+            .setDuration(2000)
+            .start()
+    }
+
+    private fun fadeInViewWithBorder(circleImageView: CircleImageView) {
+        fadeInView(circleImageView)
+        circleImageView.borderColor = ContextCompat.getColor(requireContext(), crossgame.android.application.R.color.seed)
+        circleImageView.borderWidth = 2.dpToPx()
+    }
+
+    private fun createRippleEffect(circleImageView: CircleImageView, initialRadius: Int, duration: Long, onAnimationEnd: (CircleImageView) -> Unit) {
+        circleImageView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                circleImageView.viewTreeObserver.removeOnPreDrawListener(this)
+                val endRadius = circleImageView.width.coerceAtLeast(circleImageView.height) / 2
+                val anim = ValueAnimator.ofInt(initialRadius, endRadius)
+                anim.addUpdateListener { valueAnimator ->
+                    val value = valueAnimator.animatedValue as Int
+                    circleImageView.layoutParams.width = value * 2
+                    circleImageView.layoutParams.height = value * 2
+                    circleImageView.requestLayout()
+                }
+                anim.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animator: Animator) {}
+                    override fun onAnimationEnd(animator: Animator) {
+                        onAnimationEnd(circleImageView)
+                    }
+
+                    override fun onAnimationCancel(animator: Animator) {}
+                    override fun onAnimationRepeat(animator: Animator) {}
+                })
+                anim.duration = duration
+                anim.start()
+                return true
+            }
+        })
+    }
+
+    private fun Int.dpToPx(): Int {
+        val scale = resources.displayMetrics.density
+        return (this * scale + 0.5f).toInt()
     }
 }
