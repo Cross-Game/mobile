@@ -46,8 +46,19 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:visibility="gone"
-            android:textStyle="bold"
-            android:text="Você não possui notificações no momento."/>
+            android:text="Você não possui notificações."/>
+
+        <TextView
+            android:id="@+id/emptyFriendsListTextView2"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Amplie sua participação. Conheça mais jogadores e participe de grupos."
+            android:textAlignment="center"
+            android:textColor="#505050"
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

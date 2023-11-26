@@ -122,7 +122,7 @@ class NotificationAdapter(
                     Callback<UserFriend> {
                     override fun onResponse(call: Call<UserFriend>, response: Response<UserFriend>) {
                         if (response.isSuccessful) {
-                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Amizade aceita!")
+                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Convite de amizade aceito!")
                             removeNotification(notification.id, notificationList)
                         }
                     }
@@ -133,7 +133,7 @@ class NotificationAdapter(
                 })
             }
             NotificationType.GROUP_INVITE -> {
-                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Entrando no grupo...")
+                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Redirecionando para o grupo...")
                 rest.create(RoomService::class.java)
                     .addCommonUser(userId, notification.description.toLong())
                     .enqueue(object : Callback<Unit> {
@@ -151,7 +151,7 @@ class NotificationAdapter(
 
                         override fun onFailure(call: Call<Unit>, t: Throwable) {
                             Log.e("Room", "Erro ao entrar na sala!")
-                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Erro ao entrar na sala!")
+                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Ops! Ocorreu um erro ao entrar na sala. Por favor, tente novamente.")
                         }
                     })
             }
@@ -173,7 +173,7 @@ class NotificationAdapter(
                     Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         if (response.isSuccessful){
-                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Pedido removido!")
+                            (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Solicitação de amizade removida.")
                             removeNotification(notification.id,notificationList)
 
                         }           }
@@ -186,7 +186,7 @@ class NotificationAdapter(
                 )
             }
             NotificationType.GROUP_INVITE -> {
-                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Grupo recusado!");
+                (snackbarNotifier as? SnackbarNotifier)?.showSnackbar("Convite para participar do grupo recusado.");
                     removeNotification(notification.id,notificationList)
             }
         }

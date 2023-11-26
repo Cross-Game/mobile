@@ -43,7 +43,8 @@
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:text="Selecione um jogo"
-            android:textSize="25sp"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/titleBottomSheet" />
 
 
@@ -67,7 +68,8 @@
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:text="Nome"
-            android:textSize="25sp"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/list_of_game" />
 
         <EditText
@@ -85,7 +87,8 @@
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:text="Descrição"
-            android:textSize="25sp"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/editText_nome" />
 
         <EditText
