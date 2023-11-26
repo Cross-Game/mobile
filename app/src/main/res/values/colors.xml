@@ -10,6 +10,10 @@
     <color name="error">#BA1A1A</color>
     <color name="green_bottom">#00951E</color>
 
+
+    <color name="circle">#6500951E</color>
+    <color name="circle_background">#6A012E0A</color>
+
     <color name="seed">#00FF33</color>
     <color name="md_theme_light_primary">#08290D</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
